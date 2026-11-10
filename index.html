@@ -2,148 +2,478 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>NICHA CRM</title>
-  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 24px 16px;
-      background: #fff8f5;
-      color: #70552d;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    .card {
-      max-width: 420px;
-      margin: 40px auto;
-      padding: 28px 20px;
-      background: white;
-      border-radius: 20px;
-      box-shadow: 0 4px 20px #00000010;
-    }
-    h1 { color: #c47b9b; }
-    #status {
-      margin-top: 20px;
-      padding: 14px;
-      background: #fff0f5;
-      border-radius: 12px;
-      overflow-wrap: anywhere;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NICHA CRM</title>
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#faf6f3;
+  color:#59463f;
+  padding-bottom:85px;
+}
+header{
+  background:#fff;
+  padding:18px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  box-shadow:0 2px 10px #00000008;
+}
+.logo{color:#bd7894;font-size:22px;font-weight:bold;letter-spacing:1px}
+.sublogo{font-size:11px;color:#967b78;margin-top:3px}
+.container{max-width:520px;margin:auto;padding:16px}
+.welcome{
+  background:linear-gradient(135deg,#e9bdc9,#c77f9c);
+  border-radius:22px;
+  padding:22px;
+  color:white;
+  box-shadow:0 8px 20px #bd789433;
+}
+.welcome small{opacity:.9}
+.welcome h2{margin:8px 0;font-size:23px}
+.member-level{
+  display:inline-block;
+  background:#ffffff35;
+  padding:6px 13px;
+  border-radius:20px;
+  font-size:12px;
+}
+.points{
+  background:#fff;
+  color:#9f637c;
+  border-radius:18px;
+  margin-top:18px;
+  padding:17px;
+}
+.points-label{font-size:13px;color:#927d7a}
+.points-number{font-size:38px;font-weight:bold;margin:5px 0}
+.points-rule{font-size:12px;color:#a18e88}
+.section-title{
+  font-size:17px;
+  font-weight:bold;
+  margin:24px 0 12px;
+}
+.menu-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+}
+.menu-card{
+  background:white;
+  border-radius:16px;
+  padding:17px 10px;
+  text-align:center;
+  box-shadow:0 3px 12px #00000007;
+}
+.menu-icon{font-size:27px;margin-bottom:8px}
+.menu-card strong{font-size:13px}
+.menu-card small{display:block;color:#a18e88;margin-top:5px}
+.progress-card,.white-card{
+  background:white;
+  border-radius:17px;
+  padding:17px;
+  margin-top:13px;
+  box-shadow:0 3px 12px #00000007;
+}
+.progress-track{
+  height:9px;
+  background:#f5e8eb;
+  border-radius:20px;
+  margin:12px 0 7px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:#c77f9c;
+  border-radius:20px;
+}
+.reward,.history-item{
+  background:#fff;
+  border-radius:15px;
+  padding:15px;
+  margin-bottom:10px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 2px 10px #00000008;
+}
+.reward-name{font-weight:bold;font-size:14px}
+.reward-points{color:#b66f8c;font-size:13px;margin-top:5px}
+.history-item{align-items:flex-start}
+.history-date{font-size:11px;color:#a18e88;margin-top:5px}
+.history-value{text-align:right;font-weight:bold;color:#b66f8c}
+.profile-row{
+  padding:13px 0;
+  border-bottom:1px solid #f2e9e6;
+  font-size:14px;
+}
+.profile-row span{float:right;color:#a8798d}
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+  box-shadow:0 -3px 15px #0000000c;
+  z-index:10;
+}
+.nav-btn{
+  border:0;
+  background:none;
+  color:#a69a96;
+  font-size:11px;
+  cursor:pointer;
+}
+.nav-btn .ico{display:block;font-size:21px;margin-bottom:4px}
+.nav-btn.active{color:#bd7894;font-weight:bold}
+.page{display:none}
+.page.active{display:block}
+.status{
+  text-align:center;
+  padding:14px;
+  font-size:13px;
+  color:#9d7586;
+}
+.empty{text-align:center;color:#aa9993;padding:25px;font-size:13px}
+.footer{text-align:center;color:#b3a29b;font-size:10px;margin:25px 0}
+</style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>NICHA CRM</h1>
-    <p>ณิชานวดเพื่อสุขภาพ</p>
-    <h3>ระบบสมาชิกสะสมแต้ม</h3>
-    <div id="status">กำลังเชื่อมต่อ LINE...</div>
-    <div id="member"></div>
+
+<header>
+  <div>
+    <div class="logo">NICHA CRM</div>
+    <div class="sublogo">ณิชานวดเพื่อสุขภาพ</div>
   </div>
+  <div style="font-size:23px">🌸</div>
+</header>
 
-  <script>
-    const LIFF_ID = '2012451889-JlA6fHip';
-    const API_URL = 'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
+<div id="status" class="status">กำลังเชื่อมต่อสมาชิก...</div>
 
-    function registerMember(idToken) {
-      return new Promise((resolve, reject) => {
-        const callbackName = 'nichaRegisterCallback';
+<main class="container" id="app" style="display:none">
 
-        const oldScript = document.getElementById('nicha-api-script');
-        if (oldScript) oldScript.remove();
+  <section class="page active" id="home">
+    <div class="welcome">
+      <small>ยินดีต้อนรับสมาชิก</small>
+      <h2 id="memberName">สมาชิก NICHA</h2>
+      <span class="member-level" id="memberLevel">สมาชิกทั่วไป</span>
 
-        const params = new URLSearchParams({
-          action: 'register',
-          idToken: idToken,
-          callback: callbackName
-        });
+      <div class="points">
+        <div class="points-label">แต้มสะสมของคุณ</div>
+        <div class="points-number"><span id="memberPoints">0</span> <small style="font-size:15px">แต้ม</small></div>
+        <div class="points-rule">ทุกยอดชำระ 100 บาท รับ 1 แต้ม</div>
+      </div>
+    </div>
 
-        const script = document.createElement('script');
-        script.id = 'nicha-api-script';
-        script.src = API_URL + '?' + params.toString();
+    <div class="section-title">เมนูสมาชิก</div>
+    <div class="menu-grid">
+      <div class="menu-card" onclick="showPage('rewards')">
+        <div class="menu-icon">🎁</div>
+        <strong>สิทธิพิเศษ</strong>
+        <small>แลกรางวัลของคุณ</small>
+      </div>
+      <div class="menu-card" onclick="showPage('history')">
+        <div class="menu-icon">⭐</div>
+        <strong>ประวัติแต้ม</strong>
+        <small>ดูรายการย้อนหลัง</small>
+      </div>
+    </div>
 
-        let finished = false;
+    <div class="section-title">ระดับสมาชิก</div>
+    <div class="progress-card">
+      <strong id="levelText">สมาชิกทั่วไป</strong>
+      <div class="progress-track">
+        <div class="progress-fill" id="levelProgress"></div>
+      </div>
+      <small id="levelHint" style="color:#a18e88">ขอบคุณที่เป็นสมาชิกณิชาค่ะ</small>
+    </div>
 
-        function cleanup() {
-          finished = true;
-          delete window[callbackName];
-          script.remove();
-          clearTimeout(timer);
-        }
+    <div class="section-title">ของรางวัลสำหรับคุณ</div>
+    <div id="homeRewards"></div>
+  </section>
 
-        const timer = setTimeout(() => {
-          if (finished) return;
-          cleanup();
-          reject(new Error('หมดเวลารอฐานข้อมูล กรุณาลองใหม่'));
-        }, 20000);
+  <section class="page" id="rewards">
+    <div class="section-title">🎁 สิทธิพิเศษและของรางวัล</div>
+    <p style="font-size:12px;color:#a18e88">ใช้แต้มสะสมแลกรางวัลจากณิชานวดเพื่อสุขภาพ</p>
+    <div id="rewardList"></div>
+  </section>
 
-        window[callbackName] = function(result) {
-          if (finished) return;
-          cleanup();
+  <section class="page" id="history">
+    <div class="section-title">⭐ ประวัติการสะสมแต้ม</div>
+    <div id="historyList"></div>
 
-          if (result && result.success) {
-            resolve(result);
-          } else {
-            reject(new Error(result.message || 'บันทึกสมาชิกไม่สำเร็จ'));
-          }
-        };
+    <div class="section-title">🎁 ประวัติการแลกรางวัล</div>
+    <div id="redemptionList"></div>
+  </section>
 
-        script.onerror = function() {
-          if (finished) return;
-          cleanup();
-          reject(new Error('ติดต่อฐานข้อมูลไม่ได้'));
-        };
+  <section class="page" id="profile">
+    <div class="section-title">👤 ข้อมูลสมาชิก</div>
+    <div class="white-card">
+      <div class="profile-row">ชื่อสมาชิก <span id="profileName">-</span></div>
+      <div class="profile-row">เบอร์โทรศัพท์ <span id="profilePhone">ยังไม่ได้ระบุ</span></div>
+      <div class="profile-row">ระดับสมาชิก <span id="profileLevel">-</span></div>
+      <div class="profile-row">แต้มสะสม <span id="profilePoints">0 แต้ม</span></div>
+      <div class="profile-row">วันที่สมัคร <span id="profileJoined">-</span></div>
+    </div>
+  </section>
 
-        document.body.appendChild(script);
-      });
+  <div class="footer">NICHA CRM · ณิชานวดเพื่อสุขภาพ</div>
+</main>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" onclick="showPage('home',this)">
+    <span class="ico">🏠</span>หน้าหลัก
+  </button>
+  <button class="nav-btn" onclick="showPage('rewards',this)">
+    <span class="ico">🎁</span>สิทธิพิเศษ
+  </button>
+  <button class="nav-btn" onclick="showPage('history',this)">
+    <span class="ico">⭐</span>ประวัติ
+  </button>
+  <button class="nav-btn" onclick="showPage('profile',this)">
+    <span class="ico">👤</span>โปรไฟล์
+  </button>
+</nav>
+
+<script>
+const LIFF_ID = '2012451889-JlA6fHip';
+
+const API_URL = 'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
+
+function apiCall(action,idToken){
+  return new Promise((resolve,reject)=>{
+    const callbackName='nichaCallback_'+Date.now();
+
+    const script=document.createElement('script');
+    const params=new URLSearchParams({
+      action:action,
+      idToken:idToken,
+      callback:callbackName
+    });
+
+    const timer=setTimeout(()=>{
+      delete window[callbackName];
+      script.remove();
+      reject(new Error('หมดเวลารอข้อมูลจากฐานข้อมูล'));
+    },25000);
+
+    window[callbackName]=(data)=>{
+      clearTimeout(timer);
+      delete window[callbackName];
+      script.remove();
+
+      if(data && data.success) resolve(data);
+      else reject(new Error(data.message || 'ไม่สามารถอ่านข้อมูลสมาชิกได้'));
+    };
+
+    script.onerror=()=>{
+      clearTimeout(timer);
+      delete window[callbackName];
+      script.remove();
+      reject(new Error('ติดต่อฐานข้อมูลไม่สำเร็จ'));
+    };
+
+    script.src=API_URL+'?'+params.toString();
+    document.body.appendChild(script);
+  });
+}
+
+function showPage(page,button){
+  document.querySelectorAll('.page').forEach(el=>{
+    el.classList.remove('active');
+  });
+
+  document.getElementById(page).classList.add('active');
+
+  document.querySelectorAll('.nav-btn').forEach(el=>{
+    el.classList.remove('active');
+  });
+
+  if(button) button.classList.add('active');
+  else {
+    const index={home:0,rewards:1,history:2,profile:3}[page];
+    document.querySelectorAll('.nav-btn')[index].classList.add('active');
+  }
+
+  window.scrollTo(0,0);
+}
+
+function safeText(value){
+  return String(value == null ? '' : value);
+}
+
+function renderDashboard(data){
+  const m=data.member;
+
+  document.getElementById('memberName').textContent=m.name;
+  document.getElementById('memberLevel').textContent=m.level;
+  document.getElementById('memberPoints').textContent=m.points.toLocaleString('th-TH');
+
+  document.getElementById('levelText').textContent=m.level;
+  document.getElementById('profileName').textContent=m.name;
+  document.getElementById('profilePhone').textContent=m.phone || 'ยังไม่ได้ระบุ';
+  document.getElementById('profileLevel').textContent=m.level;
+  document.getElementById('profilePoints').textContent=m.points+' แต้ม';
+  document.getElementById('profileJoined').textContent=m.joined || '-';
+
+  document.getElementById('levelProgress').style.width='0%';
+  document.getElementById('levelHint').textContent='ขอบคุณที่เป็นสมาชิกณิชาค่ะ';
+
+  renderRewards(data.rewards || []);
+  renderHistory(data.history || []);
+  renderRedemptions(data.redemptions || []);
+
+  document.getElementById('status').style.display='none';
+  document.getElementById('app').style.display='block';
+}
+
+function renderRewards(items){
+  const list=document.getElementById('rewardList');
+  const home=document.getElementById('homeRewards');
+
+  list.innerHTML='';
+  home.innerHTML='';
+
+  if(!items.length){
+    list.innerHTML='<div class="empty">ยังไม่มีรายการของรางวัลในขณะนี้</div>';
+    home.innerHTML='<div class="empty">รอติดตามของรางวัลเร็ว ๆ นี้ค่ะ 🌸</div>';
+    return;
+  }
+
+  items.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='reward';
+
+    const info=document.createElement('div');
+    const name=document.createElement('div');
+    name.className='reward-name';
+    name.textContent='🎁 '+item.name;
+
+    const points=document.createElement('div');
+    points.className='reward-points';
+    points.textContent='ใช้ '+item.points+' แต้ม';
+
+    info.append(name,points);
+
+    const status=document.createElement('small');
+    status.textContent=item.status || 'พร้อมให้แลก';
+    status.style.color='#b66f8c';
+
+    card.append(info,status);
+    list.appendChild(card);
+
+    const mini=document.createElement('div');
+    mini.className='reward';
+    mini.textContent='🎁 '+item.name+' · '+item.points+' แต้ม';
+    home.appendChild(mini);
+  });
+}
+
+function renderHistory(items){
+  const list=document.getElementById('historyList');
+  list.innerHTML='';
+
+  if(!items.length){
+    list.innerHTML='<div class="empty">ยังไม่มีประวัติการสะสมแต้มค่ะ</div>';
+    return;
+  }
+
+  items.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='history-item';
+
+    const left=document.createElement('div');
+    const name=document.createElement('strong');
+    name.textContent=item.item || 'รายการใช้บริการ';
+
+    const date=document.createElement('div');
+    date.className='history-date';
+    date.textContent=item.date || '';
+
+    left.append(name,date);
+
+    const right=document.createElement('div');
+    right.className='history-value';
+    right.textContent=(Number(item.earned)>0?'+':'')+
+      (Number(item.earned)||0)+' แต้ม';
+
+    card.append(left,right);
+    list.appendChild(card);
+  });
+}
+
+function renderRedemptions(items){
+  const list=document.getElementById('redemptionList');
+  list.innerHTML='';
+
+  if(!items.length){
+    list.innerHTML='<div class="empty">ยังไม่มีประวัติการแลกรางวัลค่ะ</div>';
+    return;
+  }
+
+  items.forEach(item=>{
+    const card=document.createElement('div');
+    card.className='history-item';
+
+    const left=document.createElement('div');
+    const name=document.createElement('strong');
+    name.textContent='🎁 '+item.reward;
+
+    const date=document.createElement('div');
+    date.className='history-date';
+    date.textContent=item.date || '';
+
+    left.append(name,date);
+
+    const right=document.createElement('div');
+    right.className='history-value';
+    right.textContent='-'+(Number(item.points)||0)+' แต้ม';
+
+    card.append(left,right);
+    list.appendChild(card);
+  });
+}
+
+async function start(){
+  const status=document.getElementById('status');
+
+  try{
+    await liff.init({liffId:LIFF_ID});
+
+    if(!liff.isLoggedIn()){
+      status.textContent='กำลังเข้าสู่ระบบ LINE...';
+      liff.login();
+      return;
     }
 
-    async function startLIFF() {
-      const status = document.getElementById('status');
-      const member = document.getElementById('member');
+    status.textContent='กำลังโหลดข้อมูลสมาชิก...';
 
-      try {
-        await liff.init({ liffId: LIFF_ID });
+    const idToken=liff.getIDToken();
 
-        if (!liff.isLoggedIn()) {
-          status.textContent = 'กรุณาเข้าสู่ระบบ LINE...';
-          liff.login();
-          return;
-        }
-
-        status.textContent = 'กำลังตรวจสอบสมาชิก...';
-
-        const profile = await liff.getProfile();
-        const idToken = liff.getIDToken();
-console.log('มี ID Token:', !!idToken);
-        if (!idToken) {
-          throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
-        }
-
-        const result = await registerMember(idToken);
-
-        status.textContent = result.isNew
-          ? 'สมัครสมาชิก NICHA CRM สำเร็จ'
-          : 'เข้าสู่ระบบสมาชิกสำเร็จ';
-
-        member.innerHTML = '';
-
-        const greeting = document.createElement('p');
-        greeting.textContent = 'สวัสดีคุณ ' + profile.displayName;
-        member.appendChild(greeting);
-
-        const message = document.createElement('p');
-        message.textContent = 'ข้อมูลสมาชิกเชื่อมต่อเรียบร้อยแล้ว';
-        member.appendChild(message);
-
-      } catch (error) {
-        status.textContent = 'เกิดข้อผิดพลาด: ' + error.message;
-      }
+    if(!idToken){
+      throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
     }
 
-    startLIFF();
-  </script>
+    const data=await apiCall('dashboard',idToken);
+    renderDashboard(data);
+
+  }catch(error){
+    status.textContent='เกิดข้อผิดพลาด: '+error.message;
+  }
+}
+
+start();
+</script>
 </body>
 </html>
