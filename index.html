@@ -117,7 +117,7 @@
 
         const profile = await liff.getProfile();
         const idToken = liff.getIDToken();
-
+console.log('มี ID Token:', !!idToken);
         if (!idToken) {
           throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
         }
