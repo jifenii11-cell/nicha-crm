@@ -39,42 +39,104 @@
     <h1>NICHA CRM</h1>
     <p>ณิชานวดเพื่อสุขภาพ</p>
     <h3>ระบบสมาชิกสะสมแต้ม</h3>
-    <div id="status">กำลังเริ่มต้น LINE...</div>
+    <div id="status">กำลังเชื่อมต่อ LINE...</div>
     <div id="member"></div>
   </div>
 
   <script>
     const LIFF_ID = '2012451889-JlA6fHip';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
+
+    function registerMember(idToken) {
+      return new Promise((resolve, reject) => {
+        const callbackName = 'nichaRegisterCallback';
+
+        const oldScript = document.getElementById('nicha-api-script');
+        if (oldScript) oldScript.remove();
+
+        const params = new URLSearchParams({
+          action: 'register',
+          idToken: idToken,
+          callback: callbackName
+        });
+
+        const script = document.createElement('script');
+        script.id = 'nicha-api-script';
+        script.src = API_URL + '?' + params.toString();
+
+        let finished = false;
+
+        function cleanup() {
+          finished = true;
+          delete window[callbackName];
+          script.remove();
+          clearTimeout(timer);
+        }
+
+        const timer = setTimeout(() => {
+          if (finished) return;
+          cleanup();
+          reject(new Error('หมดเวลารอฐานข้อมูล กรุณาลองใหม่'));
+        }, 20000);
+
+        window[callbackName] = function(result) {
+          if (finished) return;
+          cleanup();
+
+          if (result && result.success) {
+            resolve(result);
+          } else {
+            reject(new Error(result.message || 'บันทึกสมาชิกไม่สำเร็จ'));
+          }
+        };
+
+        script.onerror = function() {
+          if (finished) return;
+          cleanup();
+          reject(new Error('ติดต่อฐานข้อมูลไม่ได้'));
+        };
+
+        document.body.appendChild(script);
+      });
+    }
 
     async function startLIFF() {
       const status = document.getElementById('status');
       const member = document.getElementById('member');
 
       try {
-        if (typeof liff === 'undefined') {
-          throw new Error('โหลด LINE SDK ไม่สำเร็จ');
-        }
-
         await liff.init({ liffId: LIFF_ID });
 
-        if (!liff.isInClient() && !liff.isLoggedIn()) {
-          status.textContent = 'กำลังเข้าสู่ระบบ LINE...';
+        if (!liff.isLoggedIn()) {
+          status.textContent = 'กรุณาเข้าสู่ระบบ LINE...';
           liff.login();
           return;
         }
 
-        if (!liff.isLoggedIn()) {
-          status.textContent = 'กรุณาเข้าสู่ระบบ LINE';
-          return;
-        }
+        status.textContent = 'กำลังตรวจสอบสมาชิก...';
 
         const profile = await liff.getProfile();
+        const idToken = liff.getIDToken();
 
-        status.textContent = 'เชื่อมต่อ LINE สำเร็จ';
-        member.innerHTML =
-          '<p>สวัสดีคุณ ' +
-          profile.displayName +
-          '</p>';
+        if (!idToken) {
+          throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
+        }
+
+        const result = await registerMember(idToken);
+
+        status.textContent = result.isNew
+          ? 'สมัครสมาชิก NICHA CRM สำเร็จ'
+          : 'เข้าสู่ระบบสมาชิกสำเร็จ';
+
+        member.innerHTML = '';
+
+        const greeting = document.createElement('p');
+        greeting.textContent = 'สวัสดีคุณ ' + profile.displayName;
+        member.appendChild(greeting);
+
+        const message = document.createElement('p');
+        message.textContent = 'ข้อมูลสมาชิกเชื่อมต่อเรียบร้อยแล้ว';
+        member.appendChild(message);
 
       } catch (error) {
         status.textContent = 'เกิดข้อผิดพลาด: ' + error.message;
