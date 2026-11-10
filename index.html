@@ -671,7 +671,7 @@ async function start(){
     status.textContent = 'กำลังตรวจสอบสมาชิก...';
 
     const idToken = liff.getIDToken();
-
+console.log('มี ID Token:', !!idToken);
     if(!idToken){
       throw new Error(
         'ไม่พบ LINE ID Token กรุณาตรวจสอบ LIFF และ LINE Login'
