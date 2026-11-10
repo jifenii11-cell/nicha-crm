@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#237849">
 <title>NICHA CRM</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
@@ -12,27 +13,27 @@
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#faf6f3;
-  color:#59463f;
+  background:#f3f8f4;
+  color:#294b38;
   padding-bottom:85px;
 }
 header{
   background:#fff;
-  padding:18px 20px;
+  padding:17px 20px;
   display:flex;
   align-items:center;
   justify-content:space-between;
   box-shadow:0 2px 10px #00000008;
 }
-.logo{color:#bd7894;font-size:22px;font-weight:bold;letter-spacing:1px}
-.sublogo{font-size:11px;color:#967b78;margin-top:3px}
+.logo{color:#23834e;font-size:23px;font-weight:bold;letter-spacing:1px}
+.sublogo{font-size:11px;color:#789783;margin-top:3px}
 .container{max-width:520px;margin:auto;padding:16px}
 .welcome{
-  background:linear-gradient(135deg,#e9bdc9,#c77f9c);
+  background:linear-gradient(135deg,#267b4b,#43a66b);
   border-radius:22px;
   padding:22px;
   color:white;
-  box-shadow:0 8px 20px #bd789433;
+  box-shadow:0 8px 22px #267b4b25;
 }
 .welcome small{opacity:.9}
 .welcome h2{margin:8px 0;font-size:23px}
@@ -45,18 +46,19 @@ header{
 }
 .points{
   background:#fff;
-  color:#9f637c;
+  color:#247849;
   border-radius:18px;
   margin-top:18px;
   padding:17px;
 }
-.points-label{font-size:13px;color:#927d7a}
+.points-label{font-size:13px;color:#789783}
 .points-number{font-size:38px;font-weight:bold;margin:5px 0}
-.points-rule{font-size:12px;color:#a18e88}
+.points-rule{font-size:12px;color:#8aa092}
 .section-title{
   font-size:17px;
   font-weight:bold;
   margin:24px 0 12px;
+  color:#28563b;
 }
 .menu-grid{
   display:grid;
@@ -65,24 +67,27 @@ header{
 }
 .menu-card{
   background:white;
-  border-radius:16px;
-  padding:17px 10px;
+  border:1px solid #e8f0e9;
+  border-radius:17px;
+  padding:18px 10px;
   text-align:center;
-  box-shadow:0 3px 12px #00000007;
+  box-shadow:0 4px 14px #245b3810;
+  cursor:pointer;
 }
-.menu-icon{font-size:27px;margin-bottom:8px}
-.menu-card strong{font-size:13px}
-.menu-card small{display:block;color:#a18e88;margin-top:5px}
+.menu-icon{font-size:28px;margin-bottom:8px}
+.menu-card strong{font-size:13px;color:#315d40}
+.menu-card small{display:block;color:#8ba293;margin-top:5px}
 .progress-card,.white-card{
   background:white;
+  border:1px solid #e8f0e9;
   border-radius:17px;
   padding:17px;
   margin-top:13px;
-  box-shadow:0 3px 12px #00000007;
+  box-shadow:0 4px 14px #245b3810;
 }
 .progress-track{
   height:9px;
-  background:#f5e8eb;
+  background:#e5f1e8;
   border-radius:20px;
   margin:12px 0 7px;
   overflow:hidden;
@@ -90,11 +95,12 @@ header{
 .progress-fill{
   height:100%;
   width:0%;
-  background:#c77f9c;
+  background:linear-gradient(90deg,#23834e,#6bc58a);
   border-radius:20px;
 }
 .reward,.history-item{
   background:#fff;
+  border:1px solid #e8f0e9;
   border-radius:15px;
   padding:15px;
   margin-bottom:10px;
@@ -102,51 +108,10 @@ header{
   justify-content:space-between;
   align-items:center;
   gap:10px;
-  box-shadow:0 2px 10px #00000008;
+  box-shadow:0 3px 12px #00000007;
 }
-.reward-name{font-weight:bold;font-size:14px}
-.reward-points{color:#b66f8c;font-size:13px;margin-top:5px}
-.history-item{align-items:flex-start}
-.history-date{font-size:11px;color:#a18e88;margin-top:5px}
-.history-value{text-align:right;font-weight:bold;color:#b66f8c}
-.profile-row{
-  padding:13px 0;
-  border-bottom:1px solid #f2e9e6;
-  font-size:14px;
-}
-.profile-row span{float:right;color:#a8798d}
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:white;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-  box-shadow:0 -3px 15px #0000000c;
-  z-index:10;
-}
-.nav-btn{
-  border:0;
-  background:none;
-  color:#a69a96;
-  font-size:11px;
-  cursor:pointer;
-}
-.nav-btn .ico{display:block;font-size:21px;margin-bottom:4px}
-.nav-btn.active{color:#bd7894;font-weight:bold}
-.page{display:none}
-.page.active{display:block}
-.status{
-  text-align:center;
-  padding:14px;
-  font-size:13px;
-  color:#9d7586;
-}
-.empty{text-align:center;color:#aa9993;padding:25px;font-size:13px}
-.footer{text-align:center;color:#b3a29b;font-size:10px;margin:25px 0}
-  /* ปุ่มแลกรางวัล */
+.reward-name{font-weight:bold;font-size:14px;color:#315d40}
+.reward-points{color:#27864e;font-size:13px;margin-top:5px}
 .reward-actions{
   display:flex;
   flex-direction:column;
@@ -158,20 +123,71 @@ header{
   border:0;
   border-radius:20px;
   padding:9px 14px;
-  background:#c77f9c;
+  background:linear-gradient(135deg,#23834e,#48a96b);
   color:white;
   font-size:12px;
   font-weight:bold;
   cursor:pointer;
 }
 .redeem-btn:disabled{
-  background:#ddd2d5;
-  color:#897d80;
+  background:#dce8df;
+  color:#829388;
   cursor:not-allowed;
 }
-.reward-note{
-  font-size:10px;
-  color:#a18e88;
+.reward-note{font-size:10px;color:#829888}
+.history-item{align-items:flex-start}
+.history-date{font-size:11px;color:#8ba293;margin-top:5px}
+.history-value{text-align:right;font-weight:bold;color:#27864e}
+.profile-row{
+  padding:13px 0;
+  border-bottom:1px solid #e8f0e9;
+  font-size:14px;
+}
+.profile-row span{float:right;color:#27864e}
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:white;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:10px 4px calc(10px + env(safe-area-inset-bottom));
+  box-shadow:0 -3px 15px #245b3810;
+  z-index:10;
+}
+.nav-btn{
+  border:0;
+  background:none;
+  color:#91a197;
+  font-size:11px;
+  cursor:pointer;
+}
+.nav-btn .ico{display:block;font-size:21px;margin-bottom:4px}
+.nav-btn.active{color:#23834e;font-weight:bold}
+.page{display:none}
+.page.active{display:block}
+.status{
+  text-align:center;
+  padding:14px;
+  font-size:13px;
+  color:#27864e;
+  line-height:1.7;
+}
+.empty{text-align:center;color:#8ba293;padding:25px;font-size:13px}
+.footer{text-align:center;color:#9aafa0;font-size:10px;margin:25px 0}
+.info-banner{
+  background:#e7f3e9;
+  color:#34754b;
+  padding:13px;
+  border-radius:13px;
+  font-size:12px;
+  line-height:1.6;
+  margin:12px 0;
+}
+button:focus-visible{
+  outline:2px solid #23834e;
+  outline-offset:3px;
 }
 </style>
 </head>
@@ -183,7 +199,7 @@ header{
     <div class="logo">NICHA CRM</div>
     <div class="sublogo">ณิชานวดเพื่อสุขภาพ</div>
   </div>
-  <div style="font-size:23px">🌸</div>
+  <div style="font-size:25px">🌿</div>
 </header>
 
 <div id="status" class="status">กำลังเชื่อมต่อสมาชิก...</div>
@@ -198,7 +214,10 @@ header{
 
       <div class="points">
         <div class="points-label">แต้มสะสมของคุณ</div>
-        <div class="points-number"><span id="memberPoints">0</span> <small style="font-size:15px">แต้ม</small></div>
+        <div class="points-number">
+          <span id="memberPoints">0</span>
+          <small style="font-size:15px">แต้ม</small>
+        </div>
         <div class="points-rule">ทุกยอดชำระ 100 บาท รับ 1 แต้ม</div>
       </div>
     </div>
@@ -223,7 +242,9 @@ header{
       <div class="progress-track">
         <div class="progress-fill" id="levelProgress"></div>
       </div>
-      <small id="levelHint" style="color:#a18e88">ขอบคุณที่เป็นสมาชิกณิชาค่ะ</small>
+      <small id="levelHint" style="color:#8ba293">
+        ขอบคุณที่เป็นสมาชิกณิชาค่ะ
+      </small>
     </div>
 
     <div class="section-title">ของรางวัลสำหรับคุณ</div>
@@ -232,7 +253,9 @@ header{
 
   <section class="page" id="rewards">
     <div class="section-title">🎁 สิทธิพิเศษและของรางวัล</div>
-    <p style="font-size:12px;color:#a18e88">ใช้แต้มสะสมแลกรางวัลจากณิชานวดเพื่อสุขภาพ</p>
+    <div class="info-banner">
+      สะสมแต้มจากการใช้บริการ แล้วนำแต้มมาแลกรางวัลพิเศษจากณิชานวดเพื่อสุขภาพ 🌿
+    </div>
     <div id="rewardList"></div>
   </section>
 
@@ -247,11 +270,21 @@ header{
   <section class="page" id="profile">
     <div class="section-title">👤 ข้อมูลสมาชิก</div>
     <div class="white-card">
-      <div class="profile-row">ชื่อสมาชิก <span id="profileName">-</span></div>
-      <div class="profile-row">เบอร์โทรศัพท์ <span id="profilePhone">ยังไม่ได้ระบุ</span></div>
-      <div class="profile-row">ระดับสมาชิก <span id="profileLevel">-</span></div>
-      <div class="profile-row">แต้มสะสม <span id="profilePoints">0 แต้ม</span></div>
-      <div class="profile-row">วันที่สมัคร <span id="profileJoined">-</span></div>
+      <div class="profile-row">
+        ชื่อสมาชิก <span id="profileName">-</span>
+      </div>
+      <div class="profile-row">
+        เบอร์โทรศัพท์ <span id="profilePhone">ยังไม่ได้ระบุ</span>
+      </div>
+      <div class="profile-row">
+        ระดับสมาชิก <span id="profileLevel">-</span>
+      </div>
+      <div class="profile-row">
+        แต้มสะสม <span id="profilePoints">0 แต้ม</span>
+      </div>
+      <div class="profile-row">
+        วันที่สมัคร <span id="profileJoined">-</span>
+      </div>
     </div>
   </section>
 
@@ -276,43 +309,59 @@ header{
 <script>
 const LIFF_ID = '2012451889-JlA6fHip';
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
+const API_URL =
+'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
+
+let memberIdToken = '';
+let currentMember = null;
 
 function apiCall(action,idToken,extraParams={}){
   return new Promise((resolve,reject)=>{
-    const callbackName='nichaCallback_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+    const callbackName =
+      'nichaCallback_'+Date.now()+'_'+
+      Math.random().toString(36).slice(2);
 
-    const script=document.createElement('script');
-    const params=new URLSearchParams({
-      action:action,
-      idToken:idToken,
-      callback:callbackName,
+    const script = document.createElement('script');
+
+    const params = new URLSearchParams({
+      action: action,
+      idToken: idToken,
+      callback: callbackName,
       ...extraParams
     });
 
-    const timer=setTimeout(()=>{
+    const timer = setTimeout(()=>{
       delete window[callbackName];
       script.remove();
       reject(new Error('หมดเวลารอข้อมูลจากฐานข้อมูล'));
     },25000);
 
-    window[callbackName]=(data)=>{
+    window[callbackName] = (data)=>{
       clearTimeout(timer);
       delete window[callbackName];
       script.remove();
 
-      if(data && data.success) resolve(data);
-      else reject(new Error(data.message || 'ไม่สามารถดำเนินการได้'));
+      if(data && data.success){
+        resolve(data);
+      }else{
+        reject(new Error(
+          data && data.message
+            ? data.message
+            : 'ไม่สามารถดำเนินการได้'
+        ));
+      }
     };
 
-    script.onerror=()=>{
+    script.onerror = ()=>{
       clearTimeout(timer);
       delete window[callbackName];
       script.remove();
-      reject(new Error('ติดต่อฐานข้อมูลไม่สำเร็จ'));
+      reject(new Error(
+        'ติดต่อฐานข้อมูลไม่สำเร็จ กรุณาตรวจสอบ Apps Script'
+      ));
     };
 
-    script.src=API_URL+'?'+params.toString();
+    script.src = API_URL+'?'+params.toString();
     document.body.appendChild(script);
   });
 }
@@ -328,10 +377,18 @@ function showPage(page,button){
     el.classList.remove('active');
   });
 
-  if(button) button.classList.add('active');
-  else {
-    const index={home:0,rewards:1,history:2,profile:3}[page];
-    document.querySelectorAll('.nav-btn')[index].classList.add('active');
+  if(button){
+    button.classList.add('active');
+  }else{
+    const index = {
+      home:0,
+      rewards:1,
+      history:2,
+      profile:3
+    }[page];
+
+    document.querySelectorAll('.nav-btn')[index]
+      .classList.add('active');
   }
 
   window.scrollTo(0,0);
@@ -342,113 +399,146 @@ function safeText(value){
 }
 
 function renderDashboard(data){
-  const m=data.member;
+  if(!data || !data.member){
+    throw new Error('ไม่พบข้อมูลสมาชิกจากฐานข้อมูล');
+  }
 
-  document.getElementById('memberName').textContent=m.name;
-  document.getElementById('memberLevel').textContent=m.level;
-  document.getElementById('memberPoints').textContent=m.points.toLocaleString('th-TH');
+  const m = data.member;
+  currentMember = m;
 
-  document.getElementById('levelText').textContent=m.level;
-  document.getElementById('profileName').textContent=m.name;
-  document.getElementById('profilePhone').textContent=m.phone || 'ยังไม่ได้ระบุ';
-  document.getElementById('profileLevel').textContent=m.level;
-  document.getElementById('profilePoints').textContent=m.points+' แต้ม';
-  document.getElementById('profileJoined').textContent=m.joined || '-';
+  const points = Number(m.points)||0;
 
-  document.getElementById('levelProgress').style.width='0%';
-  document.getElementById('levelHint').textContent='ขอบคุณที่เป็นสมาชิกณิชาค่ะ';
+  document.getElementById('memberName').textContent =
+    safeText(m.name || 'สมาชิก NICHA');
+
+  document.getElementById('memberLevel').textContent =
+    safeText(m.level || 'สมาชิกทั่วไป');
+
+  document.getElementById('memberPoints').textContent =
+    points.toLocaleString('th-TH');
+
+  document.getElementById('levelText').textContent =
+    safeText(m.level || 'สมาชิกทั่วไป');
+
+  document.getElementById('profileName').textContent =
+    safeText(m.name || '-');
+
+  document.getElementById('profilePhone').textContent =
+    safeText(m.phone || 'ยังไม่ได้ระบุ');
+
+  document.getElementById('profileLevel').textContent =
+    safeText(m.level || '-');
+
+  document.getElementById('profilePoints').textContent =
+    points.toLocaleString('th-TH')+' แต้ม';
+
+  document.getElementById('profileJoined').textContent =
+    safeText(m.joined || '-');
+
+  document.getElementById('levelProgress').style.width = '0%';
+  document.getElementById('levelHint').textContent =
+    'ขอบคุณที่เป็นสมาชิกณิชาค่ะ 🌿';
 
   renderRewards(data.rewards || []);
   renderHistory(data.history || []);
   renderRedemptions(data.redemptions || []);
 
-  document.getElementById('status').style.display='none';
-  document.getElementById('app').style.display='block';
+  document.getElementById('status').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
 }
 
-
 function renderRewards(items){
-  const list=document.getElementById('rewardList');
-  const home=document.getElementById('homeRewards');
+  const list = document.getElementById('rewardList');
+  const home = document.getElementById('homeRewards');
 
-  list.innerHTML='';
-  home.innerHTML='';
+  list.innerHTML = '';
+  home.innerHTML = '';
 
-  const activeItems=items.filter(item =>
+  const activeItems = items.filter(item=>
     ['เปิดใช้งาน','ใช้งาน','ACTIVE'].includes(
       String(item.status || '').trim()
     )
   );
 
   if(!activeItems.length){
-    list.innerHTML='<div class="empty">ยังไม่มีรายการของรางวัลในขณะนี้</div>';
-    home.innerHTML='<div class="empty">รอติดตามของรางวัลเร็ว ๆ นี้ค่ะ 🌸</div>';
+    list.innerHTML =
+      '<div class="empty">ยังไม่มีรายการของรางวัลในขณะนี้</div>';
+
+    home.innerHTML =
+      '<div class="empty">รอติดตามของรางวัลเร็ว ๆ นี้ค่ะ 🌿</div>';
     return;
   }
 
-  const currentPoints=Number(
-    document.getElementById('memberPoints').textContent.replace(/,/g,'')
+  const currentPoints = Number(
+    document.getElementById('memberPoints')
+      .textContent.replace(/,/g,'')
   ) || 0;
 
   activeItems.forEach(item=>{
-    const cost=Number(item.points)||0;
-    const canRedeem=currentPoints>=cost;
+    const cost = Number(item.points)||0;
+    const canRedeem = currentPoints >= cost;
 
-    const card=document.createElement('div');
-    card.className='reward';
+    const card = document.createElement('div');
+    card.className = 'reward';
 
-    const info=document.createElement('div');
+    const info = document.createElement('div');
 
-    const name=document.createElement('div');
-    name.className='reward-name';
-    name.textContent='🎁 '+item.name;
+    const name = document.createElement('div');
+    name.className = 'reward-name';
+    name.textContent = '🎁 '+safeText(item.name);
 
-    const points=document.createElement('div');
-    points.className='reward-points';
-    points.textContent='ใช้ '+cost+' แต้ม';
+    const points = document.createElement('div');
+    points.className = 'reward-points';
+    points.textContent = 'ใช้ '+cost+' แต้ม';
 
     info.append(name,points);
 
-    const actions=document.createElement('div');
-    actions.className='reward-actions';
+    const actions = document.createElement('div');
+    actions.className = 'reward-actions';
 
-    const button=document.createElement('button');
-    button.type='button';
-    button.className='redeem-btn';
-    button.textContent=canRedeem?'แลกรางวัล':'แต้มไม่พอ';
-    button.disabled=!canRedeem;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'redeem-btn';
+    button.textContent = canRedeem ? 'แลกรางวัล' : 'แต้มไม่พอ';
+    button.disabled = !canRedeem;
 
     button.addEventListener('click',()=>{
       redeemMemberReward(item,button);
     });
 
-    const note=document.createElement('div');
-    note.className='reward-note';
-    note.textContent=canRedeem?'แต้มเพียงพอ':'ต้องสะสมเพิ่มอีก '+(cost-currentPoints)+' แต้ม';
+    const note = document.createElement('div');
+    note.className = 'reward-note';
+    note.textContent = canRedeem
+      ? 'แต้มเพียงพอ'
+      : 'ต้องสะสมเพิ่มอีก '+(cost-currentPoints)+' แต้ม';
 
     actions.append(button,note);
     card.append(info,actions);
     list.appendChild(card);
 
-    const mini=document.createElement('div');
-    mini.className='reward';
-    mini.textContent='🎁 '+item.name+' · '+cost+' แต้ม';
+    const mini = document.createElement('div');
+    mini.className = 'reward';
+    mini.textContent =
+      '🎁 '+safeText(item.name)+' · '+cost+' แต้ม';
+
     home.appendChild(mini);
   });
 }
 
-
-let memberIdToken='';
-
 async function redeemMemberReward(item,button){
-  const cost=Number(item.points)||0;
+  const cost = Number(item.points)||0;
 
   if(!memberIdToken){
     alert('ไม่พบข้อมูลยืนยันสมาชิก กรุณาเปิดผ่าน LINE ใหม่');
     return;
   }
 
-  const confirmed=confirm(
+  if(!item.code){
+    alert('ไม่พบรหัสรางวัล กรุณาติดต่อร้าน');
+    return;
+  }
+
+  const confirmed = confirm(
     'ยืนยันแลกรางวัล '+item.name+
     '\nใช้ '+cost+' แต้ม'+
     '\nเมื่อยืนยันแล้ว ระบบจะหักแต้มทันที'
@@ -456,62 +546,69 @@ async function redeemMemberReward(item,button){
 
   if(!confirmed) return;
 
-  button.disabled=true;
-  button.textContent='กำลังแลก...';
+  button.disabled = true;
+  button.textContent = 'กำลังแลก...';
 
   try{
-    const result=await apiCall(
+    const result = await apiCall(
       'redeem',
       memberIdToken,
       {rewardCode:item.code}
     );
 
     alert(
-      'แลกรางวัลสำเร็จ 🌸'+
+      'แลกรางวัลสำเร็จ 🌿'+
       '\nรางวัล: '+result.rewardName+
       '\nใช้แต้ม: '+result.pointsUsed+
       '\nแต้มคงเหลือ: '+result.remainingPoints
     );
 
-    const dashboard=await apiCall('dashboard',memberIdToken);
-    renderDashboard(dashboard);
+    const dashboard = await apiCall(
+      'dashboard',
+      memberIdToken
+    );
 
+    renderDashboard(dashboard);
     showPage('history');
 
   }catch(error){
     alert('แลกรางวัลไม่สำเร็จ: '+error.message);
-    button.disabled=false;
-    button.textContent='แลกรางวัล';
+    button.disabled = false;
+    button.textContent = 'แลกรางวัล';
   }
 }
 
 function renderHistory(items){
-  const list=document.getElementById('historyList');
-  list.innerHTML='';
+  const list = document.getElementById('historyList');
+  list.innerHTML = '';
 
   if(!items.length){
-    list.innerHTML='<div class="empty">ยังไม่มีประวัติการสะสมแต้มค่ะ</div>';
+    list.innerHTML =
+      '<div class="empty">ยังไม่มีประวัติการสะสมแต้มค่ะ</div>';
     return;
   }
 
   items.forEach(item=>{
-    const card=document.createElement('div');
-    card.className='history-item';
+    const card = document.createElement('div');
+    card.className = 'history-item';
 
-    const left=document.createElement('div');
-    const name=document.createElement('strong');
-    name.textContent=item.item || 'รายการใช้บริการ';
+    const left = document.createElement('div');
 
-    const date=document.createElement('div');
-    date.className='history-date';
-    date.textContent=item.date || '';
+    const name = document.createElement('strong');
+    name.textContent = safeText(item.item || 'รายการใช้บริการ');
+
+    const date = document.createElement('div');
+    date.className = 'history-date';
+    date.textContent = safeText(item.date || '');
 
     left.append(name,date);
 
-    const right=document.createElement('div');
-    right.className='history-value';
-    right.textContent=(Number(item.earned)>0?'+':'')+
-      (Number(item.earned)||0)+' แต้ม';
+    const right = document.createElement('div');
+    right.className = 'history-value';
+
+    const earned = Number(item.earned)||0;
+    right.textContent =
+      (earned>0?'+':'')+earned+' แต้ม';
 
     card.append(left,right);
     list.appendChild(card);
@@ -519,31 +616,34 @@ function renderHistory(items){
 }
 
 function renderRedemptions(items){
-  const list=document.getElementById('redemptionList');
-  list.innerHTML='';
+  const list = document.getElementById('redemptionList');
+  list.innerHTML = '';
 
   if(!items.length){
-    list.innerHTML='<div class="empty">ยังไม่มีประวัติการแลกรางวัลค่ะ</div>';
+    list.innerHTML =
+      '<div class="empty">ยังไม่มีประวัติการแลกรางวัลค่ะ</div>';
     return;
   }
 
   items.forEach(item=>{
-    const card=document.createElement('div');
-    card.className='history-item';
+    const card = document.createElement('div');
+    card.className = 'history-item';
 
-    const left=document.createElement('div');
-    const name=document.createElement('strong');
-    name.textContent='🎁 '+item.reward;
+    const left = document.createElement('div');
 
-    const date=document.createElement('div');
-    date.className='history-date';
-    date.textContent=item.date || '';
+    const name = document.createElement('strong');
+    name.textContent = '🎁 '+safeText(item.reward);
+
+    const date = document.createElement('div');
+    date.className = 'history-date';
+    date.textContent = safeText(item.date || '');
 
     left.append(name,date);
 
-    const right=document.createElement('div');
-    right.className='history-value';
-    right.textContent='-'+(Number(item.points)||0)+' แต้ม';
+    const right = document.createElement('div');
+    right.className = 'history-value';
+    right.textContent =
+      '-'+(Number(item.points)||0)+' แต้ม';
 
     card.append(left,right);
     list.appendChild(card);
@@ -551,30 +651,47 @@ function renderRedemptions(items){
 }
 
 async function start(){
-  const status=document.getElementById('status');
+  const status = document.getElementById('status');
 
   try{
+    if(typeof liff === 'undefined'){
+      throw new Error('โหลด LINE LIFF SDK ไม่สำเร็จ');
+    }
+
+    status.textContent = 'กำลังเชื่อมต่อ LINE...';
+
     await liff.init({liffId:LIFF_ID});
 
     if(!liff.isLoggedIn()){
-      status.textContent='กำลังเข้าสู่ระบบ LINE...';
+      status.textContent = 'กำลังเข้าสู่ระบบ LINE...';
       liff.login();
       return;
     }
 
-    status.textContent='กำลังโหลดข้อมูลสมาชิก...';
+    status.textContent = 'กำลังตรวจสอบสมาชิก...';
 
-    const idToken=liff.getIDToken();
-memberIdToken=idToken;
+    const idToken = liff.getIDToken();
+
     if(!idToken){
-      throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
+      throw new Error(
+        'ไม่พบ LINE ID Token กรุณาตรวจสอบ LIFF และ LINE Login'
+      );
     }
 
-    const data=await apiCall('dashboard',idToken);
+    memberIdToken = idToken;
+
+    status.textContent = 'กำลังโหลดข้อมูลสมาชิก...';
+
+    const data = await apiCall('dashboard',idToken);
+
     renderDashboard(data);
 
   }catch(error){
-    status.textContent='เกิดข้อผิดพลาด: '+error.message;
+    console.error('NICHA CRM ERROR:',error);
+
+    status.textContent =
+      'เกิดข้อผิดพลาด: '+safeText(error.message)+
+      '\nกรุณาติดต่อร้านณิชานวดเพื่อสุขภาพ';
   }
 }
 
