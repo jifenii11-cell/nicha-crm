@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>NICHA CRM</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -17,18 +18,19 @@
     }
     .card {
       max-width: 420px;
-      margin: 50px auto;
-      padding: 30px 20px;
+      margin: 40px auto;
+      padding: 28px 20px;
       background: white;
       border-radius: 20px;
       box-shadow: 0 4px 20px #00000010;
     }
     h1 { color: #c47b9b; }
     #status {
-      margin-top: 25px;
+      margin-top: 20px;
       padding: 14px;
       background: #fff0f5;
       border-radius: 12px;
+      overflow-wrap: anywhere;
     }
   </style>
 </head>
@@ -37,7 +39,49 @@
     <h1>NICHA CRM</h1>
     <p>ณิชานวดเพื่อสุขภาพ</p>
     <h3>ระบบสมาชิกสะสมแต้ม</h3>
-    <p id="status">เว็บไซต์พร้อมใช้งาน</p>
+    <div id="status">กำลังเริ่มต้น LINE...</div>
+    <div id="member"></div>
   </div>
+
+  <script>
+    const LIFF_ID = '2012451889-JlA6fHip';
+
+    async function startLIFF() {
+      const status = document.getElementById('status');
+      const member = document.getElementById('member');
+
+      try {
+        if (typeof liff === 'undefined') {
+          throw new Error('โหลด LINE SDK ไม่สำเร็จ');
+        }
+
+        await liff.init({ liffId: LIFF_ID });
+
+        if (!liff.isInClient() && !liff.isLoggedIn()) {
+          status.textContent = 'กำลังเข้าสู่ระบบ LINE...';
+          liff.login();
+          return;
+        }
+
+        if (!liff.isLoggedIn()) {
+          status.textContent = 'กรุณาเข้าสู่ระบบ LINE';
+          return;
+        }
+
+        const profile = await liff.getProfile();
+
+        status.textContent = 'เชื่อมต่อ LINE สำเร็จ';
+        member.innerHTML =
+          '<p>สวัสดีคุณ ' +
+          profile.displayName +
+          '</p>';
+
+      } catch (error) {
+        status.textContent = 'เกิดข้อผิดพลาด: ' + error.message;
+      }
+    }
+
+    startLIFF();
+  </script>
 </body>
 </html>
