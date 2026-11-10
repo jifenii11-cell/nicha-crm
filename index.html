@@ -71,10 +71,10 @@
         const profile = await liff.getProfile();
 
         status.textContent = 'เชื่อมต่อ LINE สำเร็จ';
-        member.innerHTML =
-          '<p>สวัสดีคุณ ' +
-          profile.displayName +
-          '</p>';
+        member.innerHTML = `
+  <p>สวัสดีคุณ ${profile.displayName || 'ไม่พบชื่อสมาชิก'}</p>
+  <p>LINE User ID: ${profile.userId || 'ไม่พบ User ID'}</p>
+`;
 
       } catch (error) {
         status.textContent = 'เกิดข้อผิดพลาด: ' + error.message;
