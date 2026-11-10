@@ -146,6 +146,33 @@ header{
 }
 .empty{text-align:center;color:#aa9993;padding:25px;font-size:13px}
 .footer{text-align:center;color:#b3a29b;font-size:10px;margin:25px 0}
+  /* ปุ่มแลกรางวัล */
+.reward-actions{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:6px;
+  min-width:95px;
+}
+.redeem-btn{
+  border:0;
+  border-radius:20px;
+  padding:9px 14px;
+  background:#c77f9c;
+  color:white;
+  font-size:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.redeem-btn:disabled{
+  background:#ddd2d5;
+  color:#897d80;
+  cursor:not-allowed;
+}
+.reward-note{
+  font-size:10px;
+  color:#a18e88;
+}
 </style>
 </head>
 
@@ -251,15 +278,16 @@ const LIFF_ID = '2012451889-JlA6fHip';
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
 
-function apiCall(action,idToken){
+function apiCall(action,idToken,extraParams={}){
   return new Promise((resolve,reject)=>{
-    const callbackName='nichaCallback_'+Date.now();
+    const callbackName='nichaCallback_'+Date.now()+'_'+Math.random().toString(36).slice(2);
 
     const script=document.createElement('script');
     const params=new URLSearchParams({
       action:action,
       idToken:idToken,
-      callback:callbackName
+      callback:callbackName,
+      ...extraParams
     });
 
     const timer=setTimeout(()=>{
@@ -274,7 +302,7 @@ function apiCall(action,idToken){
       script.remove();
 
       if(data && data.success) resolve(data);
-      else reject(new Error(data.message || 'ไม่สามารถอ่านข้อมูลสมาชิกได้'));
+      else reject(new Error(data.message || 'ไม่สามารถดำเนินการได้'));
     };
 
     script.onerror=()=>{
@@ -338,6 +366,7 @@ function renderDashboard(data){
   document.getElementById('app').style.display='block';
 }
 
+
 function renderRewards(items){
   const list=document.getElementById('rewardList');
   const home=document.getElementById('homeRewards');
@@ -345,39 +374,115 @@ function renderRewards(items){
   list.innerHTML='';
   home.innerHTML='';
 
-  if(!items.length){
+  const activeItems=items.filter(item =>
+    ['เปิดใช้งาน','ใช้งาน','ACTIVE'].includes(
+      String(item.status || '').trim()
+    )
+  );
+
+  if(!activeItems.length){
     list.innerHTML='<div class="empty">ยังไม่มีรายการของรางวัลในขณะนี้</div>';
     home.innerHTML='<div class="empty">รอติดตามของรางวัลเร็ว ๆ นี้ค่ะ 🌸</div>';
     return;
   }
 
-  items.forEach(item=>{
+  const currentPoints=Number(
+    document.getElementById('memberPoints').textContent.replace(/,/g,'')
+  ) || 0;
+
+  activeItems.forEach(item=>{
+    const cost=Number(item.points)||0;
+    const canRedeem=currentPoints>=cost;
+
     const card=document.createElement('div');
     card.className='reward';
 
     const info=document.createElement('div');
+
     const name=document.createElement('div');
     name.className='reward-name';
     name.textContent='🎁 '+item.name;
 
     const points=document.createElement('div');
     points.className='reward-points';
-    points.textContent='ใช้ '+item.points+' แต้ม';
+    points.textContent='ใช้ '+cost+' แต้ม';
 
     info.append(name,points);
 
-    const status=document.createElement('small');
-    status.textContent=item.status || 'พร้อมให้แลก';
-    status.style.color='#b66f8c';
+    const actions=document.createElement('div');
+    actions.className='reward-actions';
 
-    card.append(info,status);
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='redeem-btn';
+    button.textContent=canRedeem?'แลกรางวัล':'แต้มไม่พอ';
+    button.disabled=!canRedeem;
+
+    button.addEventListener('click',()=>{
+      redeemMemberReward(item,button);
+    });
+
+    const note=document.createElement('div');
+    note.className='reward-note';
+    note.textContent=canRedeem?'แต้มเพียงพอ':'ต้องสะสมเพิ่มอีก '+(cost-currentPoints)+' แต้ม';
+
+    actions.append(button,note);
+    card.append(info,actions);
     list.appendChild(card);
 
     const mini=document.createElement('div');
     mini.className='reward';
-    mini.textContent='🎁 '+item.name+' · '+item.points+' แต้ม';
+    mini.textContent='🎁 '+item.name+' · '+cost+' แต้ม';
     home.appendChild(mini);
   });
+}
+
+
+let memberIdToken='';
+
+async function redeemMemberReward(item,button){
+  const cost=Number(item.points)||0;
+
+  if(!memberIdToken){
+    alert('ไม่พบข้อมูลยืนยันสมาชิก กรุณาเปิดผ่าน LINE ใหม่');
+    return;
+  }
+
+  const confirmed=confirm(
+    'ยืนยันแลกรางวัล '+item.name+
+    '\nใช้ '+cost+' แต้ม'+
+    '\nเมื่อยืนยันแล้ว ระบบจะหักแต้มทันที'
+  );
+
+  if(!confirmed) return;
+
+  button.disabled=true;
+  button.textContent='กำลังแลก...';
+
+  try{
+    const result=await apiCall(
+      'redeem',
+      memberIdToken,
+      {rewardCode:item.code}
+    );
+
+    alert(
+      'แลกรางวัลสำเร็จ 🌸'+
+      '\nรางวัล: '+result.rewardName+
+      '\nใช้แต้ม: '+result.pointsUsed+
+      '\nแต้มคงเหลือ: '+result.remainingPoints
+    );
+
+    const dashboard=await apiCall('dashboard',memberIdToken);
+    renderDashboard(dashboard);
+
+    showPage('history');
+
+  }catch(error){
+    alert('แลกรางวัลไม่สำเร็จ: '+error.message);
+    button.disabled=false;
+    button.textContent='แลกรางวัล';
+  }
 }
 
 function renderHistory(items){
@@ -460,7 +565,7 @@ async function start(){
     status.textContent='กำลังโหลดข้อมูลสมาชิก...';
 
     const idToken=liff.getIDToken();
-
+memberIdToken=idToken;
     if(!idToken){
       throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
     }
