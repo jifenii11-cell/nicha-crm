@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -26,12 +27,15 @@ button:disabled{opacity:.5}
 .reward button{white-space:nowrap}
 .history{padding:12px 0;border-bottom:1px solid #edf1ee;font-size:13px}
 .muted{color:#7b9185;font-size:12px}
+input{width:100%;padding:13px;border:1px solid #d7e5dc;border-radius:10px;margin:8px 0;font-size:15px}
+.hidden{display:none!important}
 #status{text-align:center;padding:18px;color:#176b4b;font-size:14px}
-input{width:100%;padding:12px;border:1px solid #d7e5dc;border-radius:10px;margin:8px 0;font-size:15px}
-.hidden{display:none}
+.full{width:100%;margin-top:10px}
+.notice{background:#edf7f0;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px}
 </style>
 </head>
 <body>
+
 <header>
 <h1>NICHA CRM</h1>
 <p>MEMBER REWARDS PROGRAM</p>
@@ -40,7 +44,29 @@ input{width:100%;padding:12px;border:1px solid #d7e5dc;border-radius:10px;margin
 <main>
 <div id="status">กำลังเริ่มต้นระบบสมาชิก...</div>
 
+<!-- สมัครสมาชิก / เพิ่มเบอร์โทร -->
+<div id="registerArea" class="card hidden">
+<h3 id="formTitle">สมัครสมาชิก NICHA</h3>
+<div class="notice" id="formMessage">
+กรุณากรอกชื่อและเบอร์โทรศัพท์เพื่อสมัครสมาชิก
+</div>
+
+<label>ชื่อสมาชิก</label>
+<input id="inputName" type="text" placeholder="กรอกชื่อของคุณ">
+
+<label>เบอร์โทรศัพท์</label>
+<input id="inputPhone" type="tel" inputmode="numeric"
+maxlength="10" placeholder="ตัวอย่าง 0812345678">
+
+<button class="full" id="registerBtn" onclick="submitRegistration()">
+ยืนยันข้อมูลสมาชิก
+</button>
+<p id="formError" class="muted"></p>
+</div>
+
+<!-- บัตรสมาชิก -->
 <div id="memberArea" class="hidden">
+
 <div class="card member">
 <div class="small">NICHA MEMBER CARD</div>
 <h2 id="memberName">สมาชิก</h2>
@@ -65,6 +91,7 @@ input{width:100%;padding:12px;border:1px solid #d7e5dc;border-radius:10px;margin
 <h3>👤 ข้อมูลสมาชิก</h3>
 <div id="memberInfo" class="muted"></div>
 </div>
+
 </div>
 </main>
 
@@ -73,24 +100,29 @@ const API_URL='https://script.google.com/macros/s/AKfycbwoJMHW6PWqh7OHwmyo8_YpJB
 const LIFF_ID='2012451889-JlA6fHip';
 
 let lineUserId='';
+let profileName='สมาชิก NICHA';
 
 function api(action,params={}){
   return new Promise((resolve,reject)=>{
     const callback='nichaCallback'+Date.now()+Math.floor(Math.random()*1000);
     const script=document.createElement('script');
     const query=new URLSearchParams({action,...params,callback});
+
     window[callback]=data=>{
       resolve(data);
       delete window[callback];
       script.remove();
     };
+
     script.onerror=()=>{
       reject(new Error('เชื่อมต่อ API ไม่สำเร็จ'));
       delete window[callback];
       script.remove();
     };
+
     script.src=API_URL+'?'+query.toString();
     document.body.appendChild(script);
+
     setTimeout(()=>{
       if(window[callback]){
         delete window[callback];
@@ -101,134 +133,256 @@ function api(action,params={}){
   });
 }
 
+function showStatus(message){
+  const el=document.getElementById('status');
+  el.innerText=message;
+  el.classList.remove('hidden');
+}
+
+function hideStatus(){
+  document.getElementById('status').classList.add('hidden');
+}
+
 async function start(){
- try{
-   await liff.init({liffId:LIFF_ID});
-   if(!liff.isLoggedIn()){
-     liff.login();
-     return;
-   }
-   const profile=await liff.getProfile();
-   lineUserId=profile.userId;
+  try{
+    await liff.init({liffId:LIFF_ID});
 
-   let result=await api('getMember',{lineUserId});
-   if(!result.success){
-     const name=profile.displayName||'สมาชิก NICHA';
-     result=await api('register',{
-       lineUserId,
-       name
-     });
-   }
+    if(!liff.isLoggedIn()){
+      liff.login();
+      return;
+    }
 
-   if(!result.success) throw new Error(result.message||'โหลดสมาชิกไม่สำเร็จ');
+    const profile=await liff.getProfile();
+    lineUserId=profile.userId;
+    profileName=profile.displayName||'สมาชิก NICHA';
 
-   showMember(result.member);
-   await loadRewards();
-   await loadHistory();
-   document.getElementById('status').classList.add('hidden');
-   document.getElementById('memberArea').classList.remove('hidden');
- }catch(err){
-   document.getElementById('status').innerText=
-     'เชื่อมต่อไม่สำเร็จ: '+err.message;
- }
+    const result=await api('getMember',{lineUserId});
+
+    if(result.success && result.member){
+      const member=result.member;
+
+      if(!member.phone){
+        showRegistration(member.name||profileName,true);
+        return;
+      }
+
+      await enterMember(member);
+      return;
+    }
+
+    showRegistration(profileName,false);
+
+  }catch(err){
+    showStatus('เชื่อมต่อไม่สำเร็จ: '+err.message);
+  }
+}
+
+function showRegistration(name,isExisting){
+  hideStatus();
+
+  document.getElementById('memberArea').classList.add('hidden');
+  document.getElementById('registerArea').classList.remove('hidden');
+
+  document.getElementById('inputName').value=name||profileName;
+
+  document.getElementById('formTitle').innerText=
+    isExisting?'เพิ่มเบอร์โทรสมาชิก':'สมัครสมาชิก NICHA';
+
+  document.getElementById('formMessage').innerText=
+    isExisting
+    ?'กรุณากรอกเบอร์โทรศัพท์เพื่อให้ร้านค้นหาสมาชิกและดูแลแต้มของคุณได้'
+    :'ยินดีต้อนรับค่ะ กรุณากรอกชื่อและเบอร์โทรเพื่อสมัครสมาชิก';
+
+  document.getElementById('registerBtn').innerText=
+    isExisting?'บันทึกเบอร์โทร':'ยืนยันสมัครสมาชิก';
+}
+
+async function submitRegistration(){
+  const name=document.getElementById('inputName').value.trim();
+  const phone=document.getElementById('inputPhone').value.replace(/\D/g,'');
+  const btn=document.getElementById('registerBtn');
+  const error=document.getElementById('formError');
+
+  error.innerText='';
+
+  if(!name){
+    error.innerText='กรุณากรอกชื่อสมาชิก';
+    return;
+  }
+
+  if(!/^0[0-9]{9}$/.test(phone)){
+    error.innerText='กรุณากรอกเบอร์โทรศัพท์ 10 หลัก';
+    return;
+  }
+
+  try{
+    btn.disabled=true;
+    btn.innerText='กำลังบันทึกข้อมูล...';
+
+    const result=await api('register',{
+      lineUserId,
+      name,
+      phone
+    });
+
+    if(!result.success){
+      throw new Error(result.message||'บันทึกข้อมูลไม่สำเร็จ');
+    }
+
+    await enterMember(result.member);
+
+  }catch(err){
+    error.innerText=err.message;
+    btn.disabled=false;
+    btn.innerText='ลองอีกครั้ง';
+  }
+}
+
+async function enterMember(member){
+  showMember(member);
+
+  document.getElementById('registerArea').classList.add('hidden');
+  document.getElementById('memberArea').classList.remove('hidden');
+
+  hideStatus();
+
+  await loadRewards();
+  await loadHistory();
 }
 
 function showMember(m){
- document.getElementById('memberName').innerText=m.name||'สมาชิก NICHA';
- document.getElementById('points').innerText=m.points||0;
- document.getElementById('level').innerText=m.level||'Bronze';
- document.getElementById('nextLevel').innerText=
-   m.nextLevel?'อีก '+m.pointsToNextLevel+' แต้ม สู่ระดับ '+m.nextLevel:'คุณอยู่ระดับสูงสุดแล้ว';
- document.getElementById('memberInfo').innerText=
-   'ชื่อ: '+(m.name||'-')+' | เบอร์โทร: '+(m.phone||'ยังไม่ได้ระบุ');
- const limits={'Bronze':100,'Silver':300,'Gold':600,'Platinum VIP':600};
- const current={'Bronze':0,'Silver':100,'Gold':300,'Platinum VIP':600};
- const max=limits[m.level]||600;
- const min=current[m.level]||0;
- const percent=m.level==='Platinum VIP'?100:
-   Math.min(100,Math.max(0,((m.points-min)/(max-min))*100));
- document.getElementById('progressBar').style.width=percent+'%';
+  document.getElementById('memberName').innerText=m.name||'สมาชิก NICHA';
+  document.getElementById('points').innerText=m.points||0;
+  document.getElementById('level').innerText=m.level||'Bronze';
+
+  document.getElementById('nextLevel').innerText=
+    m.nextLevel
+    ?'อีก '+m.pointsToNextLevel+' แต้ม สู่ระดับ '+m.nextLevel
+    :'คุณอยู่ระดับสูงสุดแล้ว';
+
+  document.getElementById('memberInfo').innerText=
+    'ชื่อ: '+(m.name||'-')+' | เบอร์โทร: '+(m.phone||'-');
+
+  const limits={'Bronze':100,'Silver':300,'Gold':600,'Platinum VIP':600};
+  const current={'Bronze':0,'Silver':100,'Gold':300,'Platinum VIP':600};
+  const max=limits[m.level]||600;
+  const min=current[m.level]||0;
+
+  const percent=m.level==='Platinum VIP'
+    ?100
+    :Math.min(100,Math.max(0,((m.points-min)/(max-min))*100));
+
+  document.getElementById('progressBar').style.width=percent+'%';
 }
 
 async function loadRewards(){
- const box=document.getElementById('rewards');
- const data=await api('getRewards');
- if(!data.success) throw new Error('โหลดรางวัลไม่สำเร็จ');
- if(!data.rewards.length){
-   box.innerHTML='<p class="muted">ยังไม่มีรางวัลในขณะนี้</p>';
-   return;
- }
- box.innerHTML='';
- data.rewards.forEach(r=>{
-   const item=document.createElement('div');
-   item.className='reward';
-   const info=document.createElement('div');
-   const name=document.createElement('b');
-   name.textContent=r.name;
-   const cost=document.createElement('div');
-   cost.className='muted';
-   cost.textContent=r.points+' แต้ม';
-   info.append(name,cost);
-   const btn=document.createElement('button');
-   btn.textContent='แลกรางวัล';
-   btn.onclick=()=>redeem(r.rewardId);
-   item.append(info,btn);
-   box.appendChild(item);
- });
+  const box=document.getElementById('rewards');
+  const data=await api('getRewards');
+
+  if(!data.success) throw new Error('โหลดรางวัลไม่สำเร็จ');
+
+  if(!data.rewards.length){
+    box.innerHTML='<p class="muted">ยังไม่มีรางวัลในขณะนี้</p>';
+    return;
+  }
+
+  box.innerHTML='';
+
+  data.rewards.forEach(r=>{
+    const item=document.createElement('div');
+    item.className='reward';
+
+    const info=document.createElement('div');
+    const name=document.createElement('b');
+    name.textContent=r.name;
+
+    const cost=document.createElement('div');
+    cost.className='muted';
+    cost.textContent=r.points+' แต้ม';
+
+    info.append(name,cost);
+
+    const btn=document.createElement('button');
+    btn.textContent='แลกรางวัล';
+    btn.onclick=()=>redeem(r.rewardId);
+
+    item.append(info,btn);
+    box.appendChild(item);
+  });
 }
 
 async function redeem(rewardId){
- if(!confirm('ยืนยันการแลกรางวัลนี้หรือไม่?')) return;
- try{
-   const result=await api('redeem',{lineUserId,rewardId});
-   if(!result.success) throw new Error(result.message);
-   alert('แลกรางวัลสำเร็จ\nรหัสแลก: '+result.redemptionId);
-   await refreshMember();
-   await loadHistory();
- }catch(e){alert(e.message);}
+  if(!confirm('ยืนยันการแลกรางวัลนี้หรือไม่?')) return;
+
+  try{
+    const result=await api('redeem',{lineUserId,rewardId});
+
+    if(!result.success) throw new Error(result.message);
+
+    alert('แลกรางวัลสำเร็จ\nรหัสแลก: '+result.redemptionId);
+
+    await refreshMember();
+    await loadHistory();
+
+  }catch(e){
+    alert(e.message);
+  }
 }
 
 async function refreshMember(){
- const data=await api('getMember',{lineUserId});
- if(data.success) showMember(data.member);
+  const data=await api('getMember',{lineUserId});
+  if(data.success) showMember(data.member);
 }
 
 async function loadHistory(){
- const box=document.getElementById('history');
- const data=await api('getHistory',{lineUserId});
- if(!data.success) throw new Error('โหลดประวัติไม่สำเร็จ');
- const all=[];
- (data.transactions||[]).forEach(t=>{
-   all.push({
-     date:t.date,
-     name:t.description,
-     detail:(t.earned?'+'+t.earned:'')+(t.deducted?' -'+t.deducted:'')+' แต้ม'
-   });
- });
- (data.redemptions||[]).forEach(r=>{
-   all.push({
-     date:r.date,
-     name:'แลกรางวัล: '+r.rewardName,
-     detail:r.points+' แต้ม · '+r.status
-   });
- });
- all.sort((a,b)=>new Date(b.date)-new Date(a.date));
- if(!all.length){
-   box.innerHTML='<p class="muted">ยังไม่มีประวัติ</p>';
-   return;
- }
- box.innerHTML='';
- all.forEach(x=>{
-   const div=document.createElement('div');
-   div.className='history';
-   const title=document.createElement('b');
-   title.textContent=x.name;
-   const detail=document.createElement('div');
-   detail.className='muted';
-   detail.textContent=x.detail+' · '+new Date(x.date).toLocaleDateString('th-TH');
-   div.append(title,detail);
-   box.appendChild(div);
- });
+  const box=document.getElementById('history');
+  const data=await api('getHistory',{lineUserId});
+
+  if(!data.success) throw new Error('โหลดประวัติไม่สำเร็จ');
+
+  const all=[];
+
+  (data.transactions||[]).forEach(t=>{
+    all.push({
+      date:t.date,
+      name:t.description,
+      detail:(t.earned?'+'+t.earned:'')+
+        (t.deducted?' -'+t.deducted:'')+' แต้ม'
+    });
+  });
+
+  (data.redemptions||[]).forEach(r=>{
+    all.push({
+      date:r.date,
+      name:'แลกรางวัล: '+r.rewardName,
+      detail:r.points+' แต้ม · '+r.status
+    });
+  });
+
+  all.sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  if(!all.length){
+    box.innerHTML='<p class="muted">ยังไม่มีประวัติ</p>';
+    return;
+  }
+
+  box.innerHTML='';
+
+  all.forEach(x=>{
+    const div=document.createElement('div');
+    div.className='history';
+
+    const title=document.createElement('b');
+    title.textContent=x.name;
+
+    const detail=document.createElement('div');
+    detail.className='muted';
+    detail.textContent=x.detail+' · '+
+      (x.date?new Date(x.date).toLocaleDateString('th-TH'):'-');
+
+    div.append(title,detail);
+    box.appendChild(div);
+  });
 }
 
 start();
