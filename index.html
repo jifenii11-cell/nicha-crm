@@ -5,7 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NICHA CRM | Member</title>
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script
+  src="https://static.line-scdn.net/liff/edge/2/sdk.js"
+  onload="console.log('NICHA: LIFF SDK LOADED')"
+  onerror="console.error('NICHA: LIFF SDK LOAD FAILED')">
+</script>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f3f8f4;color:#244b39;font-family:Arial,sans-serif}
@@ -410,26 +414,55 @@ function hideStatus(){
   document.getElementById('status').classList.add('hidden');
 }
 
-async function start(){
-  try{
-    await liff.init({liffId:LIFF_ID});
 
-    if(!liff.isLoggedIn()){
-      liff.login();
+async function start(){
+  try {
+    showStatus('กำลังเชื่อมต่อ LINE...');
+
+    // ตรวจสอบว่า LIFF SDK โหลดสำเร็จหรือไม่
+    if (typeof window.liff === 'undefined' || !window.liff) {
+      throw new Error('ไม่พบ LINE LIFF SDK กรุณาตรวจสอบอินเทอร์เน็ต');
+    }
+
+    // เริ่มต้น LIFF
+    await window.liff.init({
+      liffId: LIFF_ID
+    });
+
+    // ตรวจสอบสถานะเข้าสู่ระบบ
+    if (!window.liff.isLoggedIn()) {
+      window.liff.login();
       return;
     }
 
-    const profile=await liff.getProfile();
-    lineUserId=profile.userId;
-    profileName=profile.displayName||'สมาชิก NICHA';
+    // ดึงข้อมูลสมาชิก LINE
+    const profile = await window.liff.getProfile();
 
-    const result=await api('getMember',{lineUserId});
+    if (!profile || !profile.userId) {
+      throw new Error('ไม่สามารถอ่านข้อมูล LINE ได้');
+    }
 
-    if(result.success && result.member){
-      const member=result.member;
+    lineUserId = profile.userId;
+    profileName = profile.displayName || 'สมาชิก NICHA';
 
-      if(!member.phone){
-        showRegistration(member.name||profileName,true);
+    // ตรวจสอบสมาชิกในฐานข้อมูล
+    const result = await api('getMember', {
+      lineUserId: lineUserId
+    });
+
+    if (!result || !result.success) {
+      throw new Error(
+        result && result.message
+          ? result.message
+          : 'ตรวจสอบข้อมูลสมาชิกไม่สำเร็จ'
+      );
+    }
+
+    if (result.member) {
+      const member = result.member;
+
+      if (!member.phone) {
+        showRegistration(member.name || profileName, true);
         return;
       }
 
@@ -437,10 +470,15 @@ async function start(){
       return;
     }
 
-    showRegistration(profileName,false);
+    showRegistration(profileName, false);
 
-  }catch(err){
-    showStatus('เชื่อมต่อไม่สำเร็จ: '+err.message);
+  } catch (err) {
+    console.error('NICHA CRM ERROR:', err);
+
+    showStatus(
+      'เชื่อมต่อไม่สำเร็จ: ' +
+      (err && err.message ? err.message : String(err))
+    );
   }
 }
 
