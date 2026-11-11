@@ -199,31 +199,36 @@ maxlength="10" placeholder="ตัวอย่าง 0812345678">
 <!-- บัตรสมาชิก -->
 <div id="memberArea" class="hidden">
 
+
 <div class="card member">
-<div class="small">NICHA MEMBER CARD</div>
-<h2 id="memberName">สมาชิก</h2>
-<div class="small">แต้มสะสมของคุณ</div>
-<div class="points" id="points">0</div>
-<div class="level" id="level">Bronze</div>
-<p class="small" id="nextLevel"></p>
-<div class="progress"><div class="bar" id="progressBar"></div></div>
-</div>
+  <div class="member-card-top">
+    <div>
+      <div class="member-brand">NICHA</div>
+      <div class="member-subtitle">LUXURY SPA</div>
+    </div>
+    <div class="member-card-label">✦ VIP MEMBER</div>
+  </div>
 
-<div class="card">
-<h3>🎁 แลกรางวัล</h3>
-<div id="rewards">กำลังโหลดรางวัล...</div>
-</div>
+  <div class="member-card-name" id="memberName">สมาชิก</div>
 
-<div class="card">
-<h3>📋 ประวัติแต้ม</h3>
-<div id="history">กำลังโหลดประวัติ...</div>
-</div>
+  <div class="member-tier">
+    <span class="level" id="level">Bronze</span>
+  </div>
 
-<div class="card">
-<h3>👤 ข้อมูลสมาชิก</h3>
-<div id="memberInfo" class="muted"></div>
-</div>
+  <div class="member-points-label">POINT BALANCE</div>
+  <div class="points" id="points">0</div>
+  <div class="member-points-unit">POINTS</div>
 
+  <p class="small" id="nextLevel"></p>
+
+  <div class="progress">
+    <div class="bar" id="progressBar"></div>
+  </div>
+
+  <div class="member-card-footer">
+    <span>NICHA HEALTH MASSAGE</span>
+    <span>VIP PRIVILEGE</span>
+  </div>
 </div>
 </main>
 
