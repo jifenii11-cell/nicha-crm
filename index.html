@@ -13,7 +13,6 @@
 :root{
   --green:#123c29;
   --green2:#1c5638;
-  --green3:#2d7049;
   --gold:#d9b75e;
   --gold2:#f6e5ae;
   --cream:#fff9e9;
@@ -34,7 +33,6 @@ body{
 }
 
 button{font-family:inherit;cursor:pointer}
-
 .hidden{display:none!important}
 
 #status{
@@ -358,7 +356,7 @@ header{
   margin-bottom:2px;
 }
 
-/* REWARDS */
+/* SPECIAL REWARDS */
 .reward-panel{
   background:linear-gradient(145deg,#17482e,#0c2d1d);
   border:1px solid #d9bd70;
@@ -369,44 +367,93 @@ header{
   box-shadow:0 8px 22px #0004;
 }
 
-.reward-panel .section-title{
-  color:#ffe8a9;
-}
-
-.reward{
-  background:#fffaf0;
-  color:#27382a;
-  border:1px solid #e4d2a8;
-  border-radius:14px;
-  padding:14px;
-  margin:10px 0;
+.reward-heading{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:8px;
+  margin-bottom:15px;
+}
+
+.reward-heading-title{
+  font-size:17px;
+  font-weight:bold;
+  color:#ffe7a3;
+}
+
+.view-all-btn{
+  background:transparent;
+  border:0;
+  color:#fff0c8;
+  padding:7px 3px;
+  font-size:13px;
+  white-space:nowrap;
+}
+
+.reward-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:10px;
 }
 
-.reward b{
-  font-size:15px;
+.reward-tile{
+  overflow:hidden;
+  background:linear-gradient(145deg,#fffaf0,#f0dfb9);
+  border-radius:15px;
+  border:1px solid #e4c77d;
+  color:#302b1c;
+  min-width:0;
 }
 
-.reward .muted{
-  color:#8b774b;
-  margin-top:4px;
+.reward-tile-top{
+  min-height:105px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:12px 7px;
+  background:radial-gradient(circle,#fff8df,#ead29a);
 }
 
-.reward button{
-  border:1px solid #c9a653;
-  background:linear-gradient(135deg,#1e5637,#0c2b1c);
-  color:#fff0c4;
-  padding:10px 13px;
-  border-radius:25px;
-  white-space:nowrap;
-  font-size:12px;
+.reward-gift-icon{
+  font-size:34px;
+  margin-bottom:5px;
 }
 
-.reward button:disabled{
-  opacity:.45;
+.reward-tile-name{
+  font-weight:bold;
+  font-size:14px;
+  overflow-wrap:anywhere;
+}
+
+.reward-tile-bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:5px;
+  padding:10px;
+  font-weight:bold;
+  font-size:13px;
+}
+
+.reward-tile-bottom button{
+  border:0;
+  background:#9d8050;
+  color:white;
+  border-radius:50%;
+  width:28px;
+  height:28px;
+  padding:0;
+  font-size:18px;
+  flex-shrink:0;
+}
+
+.reward-empty{
+  color:#f4e6c4;
+  text-align:center;
+  padding:18px 5px;
+  font-size:13px;
 }
 
 /* HISTORY */
@@ -508,6 +555,7 @@ input{
   font-size:13px;
   line-height:1.9;
   overflow-wrap:anywhere;
+  white-space:pre-line;
 }
 
 /* BOTTOM NAV */
@@ -555,6 +603,7 @@ input{
   .avatar{width:85px;height:85px}
   .quick-btn{font-size:14px}
   .points{font-size:48px}
+  .reward-heading-title{font-size:15px}
 }
 </style>
 </head>
@@ -576,9 +625,10 @@ input{
 
 <div id="status">กำลังเริ่มต้นระบบสมาชิก...</div>
 
-<!-- สมัครสมาชิก -->
+<!-- REGISTER -->
 <div id="registerArea" class="card hidden">
   <h3 id="formTitle">สมัครสมาชิก NICHA</h3>
+
   <div class="notice" id="formMessage">
     กรุณากรอกชื่อและเบอร์โทรศัพท์เพื่อสมัครสมาชิก
   </div>
@@ -594,6 +644,7 @@ input{
     onclick="submitRegistration()">
     ยืนยันข้อมูลสมาชิก
   </button>
+
   <p id="formError" class="muted"></p>
 </div>
 
@@ -609,7 +660,7 @@ input{
     </div>
   </section>
 
-  <!-- บัตรสมาชิก -->
+  <!-- MEMBER CARD -->
   <section class="card member">
     <div class="member-card-top">
       <div>
@@ -641,45 +692,57 @@ input{
     </div>
   </section>
 
-  <!-- ปุ่มลัด -->
+  <!-- QUICK BUTTONS -->
   <div class="quick-actions">
     <button class="quick-btn"
-      onclick="document.getElementById('rewardSection').scrollIntoView()">
+      onclick="document.getElementById('rewardSection').scrollIntoView({behavior:'smooth'})">
       <span class="quick-icon">🎁</span>
       แลกรางวัล ›
     </button>
 
     <button class="quick-btn light"
-      onclick="document.getElementById('historySection').scrollIntoView()">
+      onclick="document.getElementById('historySection').scrollIntoView({behavior:'smooth'})">
       <span class="quick-icon">◷</span>
       ดูประวัติแต้ม ›
     </button>
   </div>
 
-  <!-- ของรางวัล -->
+  <!-- SPECIAL REWARDS -->
   <section class="reward-panel" id="rewardSection">
-    <div class="section-title">
-      <span>🎁 ของรางวัลสำหรับคุณ</span>
-      <small>REWARDS</small>
+
+    <div class="reward-heading">
+      <div class="reward-heading-title">
+        🎁 ของรางวัลสุดพิเศษสำหรับคุณ
+      </div>
+
+      <button
+        class="view-all-btn"
+        id="showAllRewardsBtn"
+        onclick="toggleAllRewards()">
+        ดูทั้งหมด ›
+      </button>
     </div>
+
     <div id="rewards">
-      <div class="empty">กำลังโหลดรางวัล...</div>
+      <div class="reward-empty">กำลังโหลดของรางวัล...</div>
     </div>
+
   </section>
 
-  <!-- ประวัติ -->
+  <!-- HISTORY -->
   <section class="card history-card" id="historySection">
     <div class="section-title">
       <span>◷ รายการล่าสุด</span>
       <small>POINT HISTORY</small>
     </div>
+
     <div id="history">
       <div class="empty">กำลังโหลดประวัติ...</div>
     </div>
   </section>
 
-  <!-- ข้อมูลสมาชิก -->
-  <section class="card">
+  <!-- MEMBER INFO -->
+  <section class="card" id="memberInfoSection">
     <div class="section-title">
       <span>👤 ข้อมูลสมาชิก</span>
     </div>
@@ -689,33 +752,40 @@ input{
 </div>
 </main>
 
-<!-- เมนูด้านล่าง -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav hidden" id="bottomNav">
   <a href="#home">
     <span>⌂</span>หน้าหลัก
   </a>
+
   <a href="#rewardSection">
     <span>🎁</span>ของรางวัล
   </a>
+
   <a href="#historySection">
     <span>▤</span>ประวัติ
   </a>
-  <a href="#memberInfo">
+
+  <a href="#memberInfoSection">
     <span>⚙</span>ข้อมูล
   </a>
 </nav>
 
 <script>
-/* ==================================
+
+/* =================================
    NICHA CRM CONNECTION
    คงค่า API และ LIFF เดิม
-================================== */
+================================= */
 
 const API_URL='https://script.google.com/macros/s/AKfycbwoJMHW6PWqh7OHwmyo8_YpJB5LJfVp5ZDYdRTNJstNklfYYRmQc_YDYr1I0Vw3_XTw/exec';
 const LIFF_ID='2012451889-JlA6fHip';
 
 let lineUserId='';
 let profileName='สมาชิก NICHA';
+
+let nichaRewards=[];
+let showAllRewards=false;
 
 /* API */
 function api(action,params={}){
@@ -775,6 +845,7 @@ async function start(){
     }
 
     const profile=await liff.getProfile();
+
     lineUserId=profile.userId;
     profileName=profile.displayName||'สมาชิก NICHA';
 
@@ -862,7 +933,7 @@ async function submitRegistration(){
   }
 }
 
-/* SHOW MEMBER */
+/* ENTER MEMBER */
 async function enterMember(member){
   showMember(member);
 
@@ -872,10 +943,15 @@ async function enterMember(member){
 
   hideStatus();
 
-  await loadRewards();
-  await loadHistory();
+  try{
+    await loadRewards();
+    await loadHistory();
+  }catch(err){
+    console.error(err);
+  }
 }
 
+/* SHOW MEMBER */
 function showMember(m){
   const name=m.name||'สมาชิก NICHA';
 
@@ -920,39 +996,90 @@ function showMember(m){
 /* LOAD REWARDS */
 async function loadRewards(){
   const box=document.getElementById('rewards');
+
+  box.innerHTML='<div class="reward-empty">กำลังโหลดของรางวัล...</div>';
+
   const data=await api('getRewards');
 
-  if(!data.success) throw new Error('โหลดรางวัลไม่สำเร็จ');
-
-  if(!data.rewards.length){
-    box.innerHTML='<div class="empty">ยังไม่มีรางวัลในขณะนี้</div>';
-    return;
+  if(!data.success){
+    throw new Error('โหลดรางวัลไม่สำเร็จ');
   }
+
+  nichaRewards=data.rewards||[];
+  showAllRewards=false;
+
+  renderRewards();
+}
+
+/* RENDER REWARDS */
+function renderRewards(){
+  const box=document.getElementById('rewards');
+  const viewBtn=document.getElementById('showAllRewardsBtn');
 
   box.innerHTML='';
 
-  data.rewards.forEach(r=>{
-    const item=document.createElement('div');
-    item.className='reward';
+  if(!nichaRewards.length){
+    box.innerHTML=
+      '<div class="reward-empty">ยังไม่มีของรางวัลในขณะนี้</div>';
 
-    const info=document.createElement('div');
+    viewBtn.classList.add('hidden');
+    return;
+  }
 
-    const name=document.createElement('b');
-    name.textContent=r.name;
+  viewBtn.classList.toggle('hidden',nichaRewards.length<=3);
 
-    const cost=document.createElement('div');
-    cost.className='muted';
-    cost.textContent=r.points+' แต้ม';
+  viewBtn.textContent=showAllRewards
+    ?'แสดงน้อยลง ↑'
+    :'ดูทั้งหมด ›';
 
-    info.append(name,cost);
+  const rewardsToShow=showAllRewards
+    ?nichaRewards
+    :nichaRewards.slice(0,3);
+
+  const grid=document.createElement('div');
+  grid.className='reward-grid';
+
+  rewardsToShow.forEach(r=>{
+    const tile=document.createElement('div');
+    tile.className='reward-tile';
+
+    const top=document.createElement('div');
+    top.className='reward-tile-top';
+
+    const icon=document.createElement('div');
+    icon.className='reward-gift-icon';
+    icon.textContent='🎁';
+
+    const name=document.createElement('div');
+    name.className='reward-tile-name';
+    name.textContent=r.name||'ของรางวัล NICHA';
+
+    top.append(icon,name);
+
+    const bottom=document.createElement('div');
+    bottom.className='reward-tile-bottom';
+
+    const points=document.createElement('span');
+    points.textContent=(r.points||0)+' แต้ม';
 
     const btn=document.createElement('button');
-    btn.textContent='แลกรางวัล';
+    btn.type='button';
+    btn.textContent='›';
+    btn.title='แลกรางวัล';
     btn.onclick=()=>redeem(r.rewardId);
 
-    item.append(info,btn);
-    box.appendChild(item);
+    bottom.append(points,btn);
+    tile.append(top,bottom);
+    grid.appendChild(tile);
   });
+
+  box.appendChild(grid);
+}
+
+/* SHOW ALL / COLLAPSE */
+function toggleAllRewards(){
+  showAllRewards=!showAllRewards;
+  renderRewards();
 }
 
 /* REDEEM */
@@ -960,9 +1087,14 @@ async function redeem(rewardId){
   if(!confirm('ยืนยันการแลกรางวัลนี้หรือไม่?')) return;
 
   try{
-    const result=await api('redeem',{lineUserId,rewardId});
+    const result=await api('redeem',{
+      lineUserId,
+      rewardId
+    });
 
-    if(!result.success) throw new Error(result.message);
+    if(!result.success){
+      throw new Error(result.message||'แลกรางวัลไม่สำเร็จ');
+    }
 
     alert('แลกรางวัลสำเร็จ\nรหัสแลก: '+result.redemptionId);
 
@@ -977,15 +1109,23 @@ async function redeem(rewardId){
 /* REFRESH MEMBER */
 async function refreshMember(){
   const data=await api('getMember',{lineUserId});
-  if(data.success) showMember(data.member);
+
+  if(data.success && data.member){
+    showMember(data.member);
+  }
 }
 
-/* HISTORY */
+/* LOAD HISTORY */
 async function loadHistory(){
   const box=document.getElementById('history');
+
+  box.innerHTML='<div class="empty">กำลังโหลดประวัติ...</div>';
+
   const data=await api('getHistory',{lineUserId});
 
-  if(!data.success) throw new Error('โหลดประวัติไม่สำเร็จ');
+  if(!data.success){
+    throw new Error('โหลดประวัติไม่สำเร็จ');
+  }
 
   const all=[];
 
@@ -1029,10 +1169,11 @@ async function loadHistory(){
     info.className='history-info';
 
     const title=document.createElement('b');
-    title.textContent=x.name;
+    title.textContent=x.name||'รายการแต้ม';
 
     const detail=document.createElement('div');
     detail.className='muted';
+
     detail.textContent=x.detail+' · '+
       (x.date?new Date(x.date).toLocaleDateString('th-TH'):'-');
 
@@ -1062,7 +1203,7 @@ function logoutMember(){
 
 /* START */
 start();
-</script>
 
+</script>
 </body>
 </html>
