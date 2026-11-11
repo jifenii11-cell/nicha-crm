@@ -1,1 +1,312 @@
 
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NICHA CRM | จัดการของรางวัล</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f7f2;color:#244333;font-family:Arial,sans-serif}
+.container{max-width:850px;margin:25px auto;padding:18px}
+.header{text-align:center;margin-bottom:22px}
+.header h1{color:#28734b;margin-bottom:5px}
+.card{background:white;border-radius:16px;padding:20px;margin-bottom:18px;box-shadow:0 4px 15px #0000000c}
+input,select{width:100%;padding:13px;border:1px solid #cbdccf;border-radius:9px;margin:7px 0 14px;font-size:16px}
+label{font-weight:bold;font-size:14px}
+button{border:0;border-radius:9px;padding:12px 16px;background:#28734b;color:white;font-size:15px;cursor:pointer;margin:4px}
+button.secondary{background:#64766a}
+button.danger{background:#c64b4b}
+button.light{background:#e6f2e9;color:#24613d}
+button:disabled{opacity:.5;cursor:not-allowed}
+.reward{border:1px solid #e0ebe2;border-radius:12px;padding:15px;margin:12px 0}
+.reward h3{margin:0 0 8px}
+.status{font-size:13px;font-weight:bold}
+.active{color:#21834b}
+.inactive{color:#c64b4b}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row button{flex:1}
+.hidden{display:none}
+#message{padding:10px;border-radius:8px;margin:10px 0;display:none}
+.ok{background:#e2f5e8;color:#176b39}
+.error{background:#ffebeb;color:#a52c2c}
+.small{font-size:13px;color:#6d7d71}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>NICHA CRM</h1>
+    <div>ระบบจัดการของรางวัลสำหรับพนักงาน</div>
+  </div>
+
+  <div id="loginCard" class="card">
+    <h2>เข้าสู่ระบบพนักงาน</h2>
+    <label>รหัส PIN 6 หลัก</label>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="กรอกรหัส PIN">
+    <button style="width:100%" onclick="login()">เข้าสู่ระบบ</button>
+    <div id="loginMessage" class="small"></div>
+  </div>
+
+  <div id="adminPanel" class="hidden">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2>จัดการของรางวัล</h2>
+        <button class="secondary" onclick="logout()">ออกจากระบบ</button>
+      </div>
+      <div id="message"></div>
+      <button onclick="newReward()">＋ เพิ่มของรางวัล</button>
+      <button class="light" onclick="loadRewards()">รีเฟรชรายการ</button>
+    </div>
+
+    <div id="formCard" class="card hidden">
+      <h2 id="formTitle">เพิ่มของรางวัล</h2>
+      <input type="hidden" id="rewardId">
+      <label>ชื่อของรางวัล</label>
+      <input id="rewardName" placeholder="เช่น ส่วนลด 50 บาท">
+      <label>แต้มที่ใช้แลก</label>
+      <input id="rewardPoints" type="number" min="1" step="1" placeholder="เช่น 50">
+      <label>สถานะ</label>
+      <select id="rewardStatus">
+        <option value="ใช้งาน">เปิดใช้งาน</option>
+        <option value="ไม่ใช้งาน">ปิดใช้งาน</option>
+      </select>
+      <div class="row">
+        <button onclick="saveReward()">บันทึก</button>
+        <button class="secondary" onclick="closeForm()">ยกเลิก</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>รายการของรางวัลทั้งหมด</h2>
+      <div id="rewardList">กำลังโหลดรายการ...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbwoJMHW6PWqh7OHwmyo8_YpJB5LJfVp5ZDYdRTNJstNklfYYRmQc_YDYr1I0Vw3_XTw/exec';
+
+let staffPin = '';
+let rewards = [];
+
+async function api(action, data={}) {
+  const response = await fetch(API_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify({...data, action})
+  });
+  return await response.json();
+}
+
+function showMessage(message, isError=false) {
+  const box = document.getElementById('message');
+  box.textContent = message;
+  box.className = isError ? 'error' : 'ok';
+  box.style.display = 'block';
+}
+
+async function login() {
+  const pin = document.getElementById('pin').value.trim();
+  const msg = document.getElementById('loginMessage');
+
+  if (!/^\d{6}$/.test(pin)) {
+    msg.textContent = 'กรุณากรอก PIN ให้ครบ 6 หลัก';
+    return;
+  }
+
+  msg.textContent = 'กำลังตรวจสอบ...';
+
+  try {
+    const result = await api('staffLogin', {pin});
+    if (!result.success) {
+      msg.textContent = result.message || 'PIN ไม่ถูกต้อง';
+      return;
+    }
+
+    staffPin = pin;
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    await loadRewards();
+  } catch (error) {
+    msg.textContent = 'เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบการ Deploy';
+  }
+}
+
+function logout() {
+  staffPin = '';
+  rewards = [];
+  document.getElementById('pin').value = '';
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('loginCard').classList.remove('hidden');
+  document.getElementById('loginMessage').textContent = '';
+}
+
+async function loadRewards() {
+  const list = document.getElementById('rewardList');
+  list.textContent = 'กำลังโหลดรายการ...';
+
+  try {
+    const result = await api('getAllRewards', {pin:staffPin});
+    if (!result.success) {
+      list.textContent = result.message || 'โหลดรายการไม่สำเร็จ';
+      return;
+    }
+
+    rewards = result.rewards || [];
+    renderRewards();
+  } catch (error) {
+    list.textContent = 'โหลดรายการไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่อ';
+  }
+}
+
+function renderRewards() {
+  const list = document.getElementById('rewardList');
+
+  if (!rewards.length) {
+    list.innerHTML = '<p>ยังไม่มีของรางวัล</p>';
+    return;
+  }
+
+  list.innerHTML = '';
+
+  rewards.forEach((reward, index) => {
+    const item = document.createElement('div');
+    item.className = 'reward';
+
+    const title = document.createElement('h3');
+    title.textContent = reward.name || 'ไม่มีชื่อรางวัล';
+
+    const points = document.createElement('p');
+    points.textContent = 'ใช้ ' + reward.points + ' แต้ม';
+
+    const status = document.createElement('div');
+    status.className = 'status ' + (reward.status === 'ใช้งาน' ? 'active' : 'inactive');
+    status.textContent = 'สถานะ: ' + (reward.status || 'ไม่ระบุ');
+
+    const edit = document.createElement('button');
+    edit.className = 'light';
+    edit.textContent = 'แก้ไข';
+    edit.onclick = () => editReward(index);
+
+    const toggle = document.createElement('button');
+    toggle.className = 'secondary';
+    toggle.textContent = reward.status === 'ใช้งาน' ? 'ปิดใช้งาน' : 'เปิดใช้งาน';
+    toggle.onclick = () => toggleReward(index);
+
+    const del = document.createElement('button');
+    del.className = 'danger';
+    del.textContent = 'ลบ';
+    del.onclick = () => deleteReward(index);
+
+    item.append(title, points, status, edit, toggle, del);
+    list.appendChild(item);
+  });
+}
+
+function newReward() {
+  document.getElementById('formTitle').textContent = 'เพิ่มของรางวัล';
+  document.getElementById('rewardId').value = '';
+  document.getElementById('rewardName').value = '';
+  document.getElementById('rewardPoints').value = '';
+  document.getElementById('rewardStatus').value = 'ใช้งาน';
+  document.getElementById('formCard').classList.remove('hidden');
+}
+
+function editReward(index) {
+  const reward = rewards[index];
+  document.getElementById('formTitle').textContent = 'แก้ไขของรางวัล';
+  document.getElementById('rewardId').value = reward.rewardId;
+  document.getElementById('rewardName').value = reward.name;
+  document.getElementById('rewardPoints').value = reward.points;
+  document.getElementById('rewardStatus').value = reward.status || 'ใช้งาน';
+  document.getElementById('formCard').classList.remove('hidden');
+}
+
+function closeForm() {
+  document.getElementById('formCard').classList.add('hidden');
+}
+
+async function saveReward() {
+  const rewardId = document.getElementById('rewardId').value;
+  const name = document.getElementById('rewardName').value.trim();
+  const points = Number(document.getElementById('rewardPoints').value);
+  const status = document.getElementById('rewardStatus').value;
+
+  if (!name || !Number.isInteger(points) || points <= 0) {
+    showMessage('กรุณากรอกชื่อรางวัลและแต้มให้ถูกต้อง', true);
+    return;
+  }
+
+  try {
+    const action = rewardId ? 'editReward' : 'addReward';
+    const data = {pin:staffPin, name, points, status};
+    if (rewardId) data.rewardId = rewardId;
+
+    const result = await api(action, data);
+    if (!result.success) {
+      showMessage(result.message || 'บันทึกไม่สำเร็จ', true);
+      return;
+    }
+
+    showMessage('บันทึกของรางวัลเรียบร้อยแล้ว');
+    closeForm();
+    await loadRewards();
+  } catch (error) {
+    showMessage('เกิดข้อผิดพลาดในการบันทึก', true);
+  }
+}
+
+async function toggleReward(index) {
+  const reward = rewards[index];
+  const newStatus = reward.status === 'ใช้งาน' ? 'ไม่ใช้งาน' : 'ใช้งาน';
+
+  if (!confirm('ต้องการ' + (newStatus === 'ใช้งาน' ? 'เปิด' : 'ปิด') + 'ใช้งานรางวัลนี้หรือไม่?')) return;
+
+  try {
+    const result = await api('editReward', {
+      pin:staffPin,
+      rewardId:reward.rewardId,
+      name:reward.name,
+      points:reward.points,
+      status:newStatus
+    });
+
+    if (!result.success) {
+      showMessage(result.message || 'เปลี่ยนสถานะไม่สำเร็จ', true);
+      return;
+    }
+
+    showMessage('เปลี่ยนสถานะเรียบร้อยแล้ว');
+    await loadRewards();
+  } catch (error) {
+    showMessage('เกิดข้อผิดพลาดในการเปลี่ยนสถานะ', true);
+  }
+}
+
+async function deleteReward(index) {
+  const reward = rewards[index];
+
+  if (!confirm('ยืนยันลบรางวัล "' + reward.name + '" หรือไม่?\nหากเคยมีการแลกแล้ว แนะนำให้ปิดใช้งานแทนการลบ')) return;
+
+  try {
+    const result = await api('deleteReward', {
+      pin:staffPin,
+      rewardId:reward.rewardId
+    });
+
+    if (!result.success) {
+      showMessage(result.message || 'ลบไม่สำเร็จ', true);
+      return;
+    }
+
+    showMessage('ลบของรางวัลเรียบร้อยแล้ว');
+    await loadRewards();
+  } catch (error) {
+    showMessage('เกิดข้อผิดพลาดในการลบ', true);
+  }
+}
+</script>
+</body>
+</html>
+
