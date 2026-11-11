@@ -429,24 +429,25 @@ header{
 
 .reward-tile-bottom{
   display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:5px;
+  flex-direction:column;
+  align-items:stretch;
+  gap:7px;
   padding:10px;
   font-weight:bold;
   font-size:13px;
+  text-align:center;
 }
 
-.reward-tile-bottom button{
-  border:0;
-  background:#9d8050;
-  color:white;
-  border-radius:50%;
-  width:28px;
-  height:28px;
-  padding:0;
-  font-size:18px;
-  flex-shrink:0;
+.redeem-btn{
+  width:100%;
+  border:1px solid #d5b35f;
+  border-radius:9px;
+  padding:9px 5px;
+  background:linear-gradient(135deg,#1d5938,#0d3020);
+  color:#fff0c5;
+  font-size:12px;
+  font-weight:bold;
+  white-space:nowrap;
 }
 
 .reward-empty{
@@ -459,6 +460,27 @@ header{
 /* HISTORY */
 .history-card{
   background:linear-gradient(145deg,#fffaf0,#f4e5c5);
+}
+
+.history-heading{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.history-heading .section-title{
+  margin:0;
+}
+
+.history-view-btn{
+  background:transparent;
+  border:0;
+  color:#80642f;
+  font-size:13px;
+  padding:6px 2px;
+  white-space:nowrap;
 }
 
 .history{
@@ -487,6 +509,7 @@ header{
 .history-info{flex:1;min-width:0}
 .history-info b{display:block}
 .history-info .muted{margin-top:4px}
+
 .history-value{
   font-weight:bold;
   color:#26743c;
@@ -731,14 +754,24 @@ input{
 
   <!-- HISTORY -->
   <section class="card history-card" id="historySection">
-    <div class="section-title">
-      <span>◷ รายการล่าสุด</span>
-      <small>POINT HISTORY</small>
+
+    <div class="history-heading">
+      <div class="section-title">
+        <span>◷ รายการล่าสุด</span>
+      </div>
+
+      <button
+        class="history-view-btn"
+        id="historyViewBtn"
+        onclick="toggleAllHistory()">
+        ดูทั้งหมด ›
+      </button>
     </div>
 
     <div id="history">
       <div class="empty">กำลังโหลดประวัติ...</div>
     </div>
+
   </section>
 
   <!-- MEMBER INFO -->
@@ -786,6 +819,7 @@ let profileName='สมาชิก NICHA';
 
 let nichaRewards=[];
 let showAllRewards=false;
+let showAllHistory=false;
 
 /* API */
 function api(action,params={}){
@@ -1064,8 +1098,9 @@ function renderRewards(){
 
     const btn=document.createElement('button');
     btn.type='button';
-    btn.textContent='›';
-    btn.title='แลกรางวัล';
+    btn.textContent='ยืนยันแลก';
+    btn.className='redeem-btn';
+    btn.title='ยืนยันแลกรางวัล';
     btn.onclick=()=>redeem(r.rewardId);
 
     bottom.append(points,btn);
@@ -1076,7 +1111,7 @@ function renderRewards(){
   box.appendChild(grid);
 }
 
-/* SHOW ALL / COLLAPSE */
+/* SHOW ALL REWARDS */
 function toggleAllRewards(){
   showAllRewards=!showAllRewards;
   renderRewards();
@@ -1118,6 +1153,7 @@ async function refreshMember(){
 /* LOAD HISTORY */
 async function loadHistory(){
   const box=document.getElementById('history');
+  const viewBtn=document.getElementById('historyViewBtn');
 
   box.innerHTML='<div class="empty">กำลังโหลดประวัติ...</div>';
 
@@ -1152,12 +1188,23 @@ async function loadHistory(){
 
   if(!all.length){
     box.innerHTML='<div class="empty">ยังไม่มีประวัติแต้ม</div>';
+    viewBtn.classList.add('hidden');
     return;
   }
 
+  viewBtn.classList.toggle('hidden',all.length<=3);
+
+  viewBtn.textContent=showAllHistory
+    ?'แสดงน้อยลง ↑'
+    :'ดูทั้งหมด ›';
+
+  const historyToShow=showAllHistory
+    ?all
+    :all.slice(0,3);
+
   box.innerHTML='';
 
-  all.forEach(x=>{
+  historyToShow.forEach(x=>{
     const div=document.createElement('div');
     div.className='history';
 
@@ -1173,7 +1220,6 @@ async function loadHistory(){
 
     const detail=document.createElement('div');
     detail.className='muted';
-
     detail.textContent=x.detail+' · '+
       (x.date?new Date(x.date).toLocaleDateString('th-TH'):'-');
 
@@ -1186,6 +1232,12 @@ async function loadHistory(){
     div.append(icon,info,value);
     box.appendChild(div);
   });
+}
+
+/* SHOW ALL HISTORY */
+function toggleAllHistory(){
+  showAllHistory=!showAllHistory;
+  loadHistory();
 }
 
 /* LOGOUT */
