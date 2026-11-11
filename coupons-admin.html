@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#173f35">
 <title>NICHA CRM | Coupon Management</title>
 
 <style>
@@ -31,6 +32,7 @@ body{
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 .hidden{display:none!important}
+
 .page{
   max-width:1100px;
   margin:auto;
@@ -110,6 +112,7 @@ textarea{min-height:75px;resize:vertical}
 .btn-red{background:#f8e9e7;color:var(--red)}
 .btn-small{padding:6px 11px;font-size:12px;border-radius:8px}
 .btn-row{display:flex;gap:9px;flex-wrap:wrap}
+
 .status{
   font-size:13px;margin-top:10px;padding:9px 12px;
   border-radius:9px;display:none;
@@ -117,6 +120,7 @@ textarea{min-height:75px;resize:vertical}
 .status.success{display:block;background:#e8f4ec;color:#276443}
 .status.error{display:block;background:#faeae8;color:#a53d38}
 .status.info{display:block;background:#edf2f5;color:#426273}
+
 .member-result{
   background:#f5f7f3;border:1px solid var(--border);
   border-radius:12px;padding:13px;margin-top:12px;
@@ -132,6 +136,7 @@ textarea{min-height:75px;resize:vertical}
 }
 .member-name{font-weight:500;color:var(--green)}
 .member-detail{font-size:12px;color:var(--muted)}
+
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;min-width:700px}
 th,td{
@@ -140,6 +145,7 @@ th,td{
   font-size:13px;vertical-align:middle;
 }
 th{color:var(--green);font-weight:500;background:#f7f8f4}
+
 .badge{
   display:inline-block;border-radius:20px;
   padding:4px 10px;font-size:11px;
@@ -147,7 +153,11 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
 }
 .badge.cancel{background:#f9e8e6;color:#a6443e}
 .badge.expired{background:#f1eee7;color:#82765f}
+.badge.pending{background:#fff3d9;color:#946719}
+.badge.used{background:#e8e8e8;color:#555}
+
 .empty{text-align:center;color:var(--muted);padding:25px}
+
 .login-box{
   max-width:420px;margin:55px auto;
   background:white;border-radius:20px;padding:28px;
@@ -158,8 +168,12 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
 .login-logo .brand{color:var(--green)}
 .login-logo p{font-size:13px;color:var(--muted)}
 .section-note{font-size:12px;color:var(--muted);margin-top:5px}
-.top-actions{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.top-actions{
+  display:flex;justify-content:space-between;
+  align-items:center;gap:10px;flex-wrap:wrap;
+}
 .footer{text-align:center;color:#9aa39d;font-size:11px;margin-top:25px}
+
 @media(max-width:650px){
   .page{padding:14px 11px 35px}
   .header{padding:21px 18px}
@@ -537,6 +551,9 @@ function validateForm() {
   if (!Number.isFinite(value) || value <= 0) {
     throw new Error('กรุณากรอกมูลค่าส่วนลดให้ถูกต้อง');
   }
+  if (type === '%' && value > 100) {
+    throw new Error('ส่วนลดเปอร์เซ็นต์ต้องไม่เกิน 100%');
+  }
   if (!Number.isFinite(minimum) || minimum < 0) {
     throw new Error('ยอดซื้อขั้นต่ำไม่ถูกต้อง');
   }
@@ -562,10 +579,11 @@ function validateForm() {
 
 /* บันทึกหรือแก้ไขคูปอง */
 async function saveCoupon() {
+  const button = document.getElementById('saveBtn');
+
   try {
     const payload = validateForm();
 
-    const button = document.getElementById('saveBtn');
     button.disabled = true;
     button.textContent = 'กำลังบันทึก...';
 
@@ -584,7 +602,6 @@ async function saveCoupon() {
   } catch (error) {
     showStatus('formStatus', error.message, 'error');
   } finally {
-    const button = document.getElementById('saveBtn');
     button.disabled = false;
     button.textContent = editingCouponId ? 'บันทึกการแก้ไข' : 'บันทึกคูปอง';
   }
@@ -632,14 +649,43 @@ function renderCoupons() {
     const status = coupon.status || coupon['สถานะ'] || '';
 
     let badgeClass = '';
+
     if (status === 'ยกเลิก') badgeClass = 'cancel';
     else if (status === 'หมดอายุ') badgeClass = 'expired';
+    else if (status === 'รอยืนยัน') badgeClass = 'pending';
+    else if (status === 'ใช้แล้ว') badgeClass = 'used';
 
     const discount = type === '%'
       ? value + '%'
       : Number(value).toLocaleString('th-TH') + ' บาท';
 
     const safeId = escapeHtml(id);
+
+    let actions = '';
+
+    if (status === 'รอยืนยัน') {
+      actions = `
+        <button class="btn btn-gold btn-small"
+          onclick="confirmCoupon('${safeId}', this)">
+          ยืนยันการใช้
+        </button>
+      `;
+    } else if (status === 'ใช้แล้ว') {
+      actions = `
+        <span style="color:#777;font-size:12px">
+          ยืนยันแล้ว
+        </span>
+      `;
+    } else {
+      actions = `
+        <div class="btn-row">
+          <button class="btn btn-light btn-small"
+            onclick="editCoupon('${safeId}')">แก้ไข</button>
+          <button class="btn btn-red btn-small"
+            onclick="cancelCoupon('${safeId}')">ยกเลิก</button>
+        </div>
+      `;
+    }
 
     return `
       <tr>
@@ -648,18 +694,61 @@ function renderCoupons() {
         <td>${escapeHtml(discount)}</td>
         <td>${Number(minimum).toLocaleString('th-TH')} บาท</td>
         <td>${escapeHtml(expiry)}</td>
-        <td><span class="badge ${badgeClass}">${escapeHtml(status || 'ใช้งาน')}</span></td>
         <td>
-          <div class="btn-row">
-            <button class="btn btn-light btn-small"
-              onclick="editCoupon('${safeId}')">แก้ไข</button>
-            <button class="btn btn-red btn-small"
-              onclick="cancelCoupon('${safeId}')">ยกเลิก</button>
-          </div>
+          <span class="badge ${badgeClass}">
+            ${escapeHtml(status || 'ใช้งาน')}
+          </span>
         </td>
+        <td>${actions}</td>
       </tr>
     `;
   }).join('');
+}
+
+/* ยืนยันการใช้คูปองโดยพนักงาน */
+async function confirmCoupon(id, button) {
+  if (!id) {
+    alert('ไม่พบรหัสคูปอง');
+    return;
+  }
+
+  const confirmed = confirm(
+    'ยืนยันว่าลูกค้าใช้คูปองนี้แล้วใช่หรือไม่?'
+  );
+
+  if (!confirmed) return;
+
+  try {
+    if (button) {
+      button.disabled = true;
+      button.textContent = 'กำลังยืนยัน...';
+    }
+
+    const data = await api('confirmCouponUse', {
+      pin: staffPin,
+      couponId: id
+    });
+
+    if (!data.success) {
+      throw new Error(data.message || 'ยืนยันคูปองไม่สำเร็จ');
+    }
+
+    showStatus(
+      'listStatus',
+      'ยืนยันการใช้คูปองเรียบร้อยแล้ว',
+      'success'
+    );
+
+    await loadCoupons();
+
+  } catch (error) {
+    showStatus('listStatus', error.message, 'error');
+
+    if (button) {
+      button.disabled = false;
+      button.textContent = 'ยืนยันการใช้';
+    }
+  }
 }
 
 /* แก้ไขคูปอง */
