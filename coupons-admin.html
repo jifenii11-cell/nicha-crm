@@ -1,1 +1,385 @@
 
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NICHA CRM | Coupon Management</title>
+<style>
+:root {
+  --green:#123c32;
+  --green2:#1c5948;
+  --gold:#c9a96e;
+  --cream:#f7f4ec;
+  --white:#fff;
+  --red:#a94442;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,"Noto Sans Thai",sans-serif;
+  background:var(--cream);
+  color:#263b34;
+}
+header{
+  background:linear-gradient(135deg,#0e3028,#1b5947);
+  color:white;
+  padding:25px 18px;
+  border-bottom:3px solid var(--gold);
+}
+.header-inner{max-width:1050px;margin:auto}
+.brand{font-size:12px;letter-spacing:3px;color:#e2c58c}
+header h1{font-size:25px;margin:8px 0 4px}
+header p{margin:0;color:#d8e4de;font-size:13px}
+main{max-width:1050px;margin:22px auto;padding:0 14px 40px}
+.card{
+  background:white;
+  border:1px solid #e7dfce;
+  border-radius:16px;
+  padding:19px;
+  margin-bottom:17px;
+  box-shadow:0 5px 18px #173b3010;
+}
+h2{font-size:18px;margin:0 0 16px;color:var(--green)}
+label{display:block;font-size:13px;margin:12px 0 6px;font-weight:bold}
+input,select,textarea{
+  width:100%;
+  padding:12px;
+  border:1px solid #d8d8d0;
+  border-radius:9px;
+  font-size:15px;
+  background:#fff;
+  color:#263b34;
+}
+textarea{min-height:75px;resize:vertical}
+button{
+  border:0;border-radius:9px;padding:12px 17px;
+  cursor:pointer;font-size:14px;font-weight:bold;
+}
+.primary{background:var(--green);color:white}
+.gold{background:var(--gold);color:#263b34}
+.danger{background:#f8e9e7;color:var(--red)}
+.muted{background:#eee;color:#333}
+button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.search-row{display:flex;gap:8px}
+.search-row input{flex:1;min-width:0}
+.member-result{
+  background:#f3f7f3;padding:13px;border-radius:10px;
+  margin-top:12px;display:none;
+}
+.member-result strong{color:var(--green)}
+.status{font-size:13px;margin-top:10px;white-space:pre-wrap}
+.success{color:#16734c}
+.error{color:#b3261e}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+th,td{padding:11px 9px;border-bottom:1px solid #eee;text-align:left}
+th{background:#f3f5f0;color:var(--green)}
+.pill{display:inline-block;padding:5px 9px;border-radius:20px;background:#edf3ee;font-size:11px}
+.pill.cancel{background:#fbe8e6;color:#a94442}
+.pill.expired{background:#eee;color:#666}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions button{padding:7px 10px;font-size:12px}
+.hidden{display:none!important}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:600px){
+ .row{grid-template-columns:1fr}
+ header h1{font-size:21px}
+ .card{padding:15px}
+ .search-row{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="brand">NICHA HEALTH & SPA</div>
+    <h1>Coupon Management</h1>
+    <p>ระบบจัดการคูปองส่วนลดสำหรับสมาชิก</p>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="loginCard">
+    <h2>เข้าสู่ระบบพนักงาน</h2>
+    <label>รหัส PIN พนักงาน</label>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" placeholder="กรอกรหัส PIN 6 หลัก">
+    <button class="primary" style="margin-top:14px;width:100%" onclick="login()">เข้าสู่ระบบ</button>
+    <div id="loginStatus" class="status"></div>
+  </section>
+
+  <div id="adminArea" class="hidden">
+    <section class="card">
+      <h2>ค้นหาสมาชิก</h2>
+      <div class="search-row">
+        <input id="phone" type="tel" placeholder="กรอกเบอร์โทรศัพท์สมาชิก">
+        <button class="primary" onclick="searchMember()">ค้นหา</button>
+      </div>
+      <div id="memberResult" class="member-result"></div>
+      <div id="searchStatus" class="status"></div>
+    </section>
+
+    <section class="card">
+      <h2 id="formTitle">สร้างคูปองให้สมาชิก</h2>
+      <div class="row">
+        <div>
+          <label>ชื่อคูปอง</label>
+          <input id="couponName" placeholder="เช่น ส่วนลดพิเศษ 100 บาท">
+        </div>
+        <div>
+          <label>ประเภทส่วนลด</label>
+          <select id="discountType">
+            <option value="บาท">ลดเป็นจำนวนเงิน (บาท)</option>
+            <option value="%">ลดเป็นเปอร์เซ็นต์ (%)</option>
+          </select>
+        </div>
+        <div>
+          <label>มูลค่าส่วนลด</label>
+          <input id="discountValue" type="number" min="0.01" step="0.01" placeholder="เช่น 100 หรือ 10">
+        </div>
+        <div>
+          <label>ยอดซื้อขั้นต่ำ (บาท)</label>
+          <input id="minimumSpend" type="number" min="0" step="0.01" value="0">
+        </div>
+        <div>
+          <label>วันเริ่มใช้</label>
+          <input id="startDate" type="date">
+        </div>
+        <div>
+          <label>วันหมดอายุ</label>
+          <input id="expiryDate" type="date">
+        </div>
+      </div>
+      <label>เงื่อนไขการใช้คูปอง</label>
+      <textarea id="terms" placeholder="ระบุเงื่อนไขเพิ่มเติม (ถ้ามี)"></textarea>
+      <div class="top-actions" style="margin-top:17px">
+        <button class="primary" id="saveButton" onclick="saveCoupon()">บันทึกคูปอง</button>
+        <button class="muted" onclick="resetForm()">ล้างข้อมูล</button>
+      </div>
+      <div id="formStatus" class="status"></div>
+    </section>
+
+    <section class="card">
+      <div class="top-actions" style="justify-content:space-between;align-items:center">
+        <h2 style="margin:0">รายการคูปองทั้งหมด</h2>
+        <button class="gold" onclick="loadCoupons()">รีเฟรชรายการ</button>
+      </div>
+      <div id="listStatus" class="status"></div>
+      <div class="table-wrap" style="margin-top:14px">
+        <table>
+          <thead>
+            <tr>
+              <th>สมาชิก</th>
+              <th>ชื่อคูปอง</th>
+              <th>ส่วนลด</th>
+              <th>ยอดขั้นต่ำ</th>
+              <th>วันหมดอายุ</th>
+              <th>สถานะ</th>
+              <th>จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="couponRows">
+            <tr><td colspan="7">ยังไม่มีข้อมูล</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
+
+let staffPin = '';
+let selectedMember = null;
+let editingCouponId = '';
+
+function el(id){return document.getElementById(id)}
+function showStatus(id,msg,type=''){
+  el(id).textContent=msg;
+  el(id).className='status '+type;
+}
+async function api(action,params={}){
+  const url=new URL(API_URL);
+  url.searchParams.set('action',action);
+  Object.entries(params).forEach(([k,v])=>{
+    if(v!==undefined && v!==null) url.searchParams.set(k,String(v));
+  });
+  const response=await fetch(url.toString());
+  if(!response.ok) throw new Error('เชื่อมต่อ API ไม่สำเร็จ');
+  const data=await response.json();
+  if(data.success===false) throw new Error(data.message||'เกิดข้อผิดพลาด');
+  return data;
+}
+async function login(){
+  const pin=el('pin').value.trim();
+  if(!/^\d{6}$/.test(pin)){
+    showStatus('loginStatus','กรุณากรอกรหัส PIN 6 หลัก','error');return;
+  }
+  showStatus('loginStatus','กำลังตรวจสอบ...');
+  try{
+    await api('staffLogin',{pin});
+    staffPin=pin;
+    el('loginCard').classList.add('hidden');
+    el('adminArea').classList.remove('hidden');
+    loadCoupons();
+  }catch(e){showStatus('loginStatus',e.message,'error')}
+}
+async function searchMember(){
+  const phone=el('phone').value.trim();
+  if(!phone){showStatus('searchStatus','กรุณากรอกเบอร์โทรศัพท์','error');return}
+  showStatus('searchStatus','กำลังค้นหาสมาชิก...');
+  el('memberResult').style.display='none';
+  try{
+    const d=await api('searchMember',{pin:staffPin,phone});
+    const m=d.member||d.data||d;
+    const lineId=m.lineUserId||m.lineUserID||m['LINE User ID'];
+    const name=m.name||m.memberName||m['ชื่อสมาชิก'];
+    if(!lineId) throw new Error('พบข้อมูล แต่ไม่พบ LINE User ID');
+    selectedMember={lineUserId:lineId,name:name||'สมาชิก'};
+    el('memberResult').innerHTML='<strong>'+escapeHtml(selectedMember.name)+'</strong><br>LINE User ID: '+escapeHtml(lineId);
+    el('memberResult').style.display='block';
+    showStatus('searchStatus','ค้นหาสมาชิกสำเร็จ','success');
+  }catch(e){selectedMember=null;showStatus('searchStatus',e.message,'error')}
+}
+function escapeHtml(s){
+  return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function dateValue(v){
+  if(!v)return '';
+  if(v instanceof Date)return v.toISOString().slice(0,10);
+  const s=String(v);
+  if(/^\d{4}-\d{2}-\d{2}/.test(s))return s.slice(0,10);
+  const d=new Date(s);
+  return isNaN(d)?'':d.toISOString().slice(0,10);
+}
+async function saveCoupon(){
+  if(!selectedMember){showStatus('formStatus','กรุณาค้นหาและเลือกสมาชิกก่อน','error');return}
+  const p={
+    pin:staffPin,
+    lineUserId:selectedMember.lineUserId,
+    memberName:selectedMember.name,
+    couponName:el('couponName').value.trim(),
+    discountType:el('discountType').value,
+    discountValue:el('discountValue').value,
+    minimumSpend:el('minimumSpend').value||0,
+    startDate:el('startDate').value,
+    expiryDate:el('expiryDate').value,
+    terms:el('terms').value.trim()
+  };
+  if(!p.couponName||!p.discountValue||!p.startDate||!p.expiryDate){
+    showStatus('formStatus','กรุณากรอกชื่อคูปอง มูลค่าส่วนลด และวันที่ให้ครบ','error');return;
+  }
+  p.discountValue=Number(p.discountValue);
+  p.minimumSpend=Number(p.minimumSpend);
+  showStatus('formStatus','กำลังบันทึก...');
+  el('saveButton').disabled=true;
+  try{
+    if(editingCouponId){
+      p.couponId=editingCouponId;
+      await api('editCoupon',p);
+      showStatus('formStatus','แก้ไขคูปองสำเร็จ','success');
+    }else{
+      await api('createCoupon',p);
+      showStatus('formStatus','สร้างคูปองสำเร็จ','success');
+    }
+    resetForm(false);
+    await loadCoupons();
+  }catch(e){showStatus('formStatus',e.message,'error')}
+  finally{el('saveButton').disabled=false}
+}
+function resetForm(clearStatus=true){
+  editingCouponId='';
+  el('formTitle').textContent='สร้างคูปองให้สมาชิก';
+  el('saveButton').textContent='บันทึกคูปอง';
+  ['couponName','discountValue','startDate','expiryDate','terms'].forEach(id=>el(id).value='');
+  el('discountType').value='บาท';
+  el('minimumSpend').value='0';
+  if(clearStatus)showStatus('formStatus','');
+}
+async function loadCoupons(){
+  showStatus('listStatus','กำลังโหลดคูปอง...');
+  try{
+    const d=await api('getAllCoupons',{pin:staffPin});
+    const rows=d.coupons||d.data||[];
+    renderCoupons(Array.isArray(rows)?rows:[]);
+    showStatus('listStatus','โหลดข้อมูลสำเร็จ '+rows.length+' รายการ','success');
+  }catch(e){showStatus('listStatus',e.message,'error')}
+}
+function renderCoupons(rows){
+  const body=el('couponRows');
+  if(!rows.length){
+    body.innerHTML='<tr><td colspan="7">ยังไม่มีคูปอง</td></tr>';return;
+  }
+  body.innerHTML=rows.map(c=>{
+    const id=c.couponId||c['Coupon ID']||'';
+    const name=c.memberName||c['ชื่อสมาชิก']||'สมาชิก';
+    const coupon=c.couponName||c['ชื่อคูปอง']||'-';
+    const type=c.discountType||c['ประเภทส่วนลด']||'บาท';
+    const value=c.discountValue??c['มูลค่าส่วนลด']??'';
+    const min=c.minimumSpend??c['ยอดซื้อขั้นต่ำ']??0;
+    const expiry=dateValue(c.expiryDate||c['วันหมดอายุ']);
+    const status=c.status||c['สถานะ']||'ใช้งาน';
+    const label=type==='%'?value+'%':'฿'+value;
+    const pill=status==='ยกเลิก'?'cancel':status==='หมดอายุ'?'expired':'';
+    return `<tr>
+      <td>${escapeHtml(name)}</td>
+      <td>${escapeHtml(coupon)}</td>
+      <td>${escapeHtml(label)}</td>
+      <td>฿${escapeHtml(min)}</td>
+      <td>${escapeHtml(expiry||'-')}</td>
+      <td><span class="pill ${pill}">${escapeHtml(status)}</span></td>
+      <td><div class="actions">
+        <button class="gold" onclick="editCoupon('${escapeHtml(id)}')">แก้ไข</button>
+        <button class="danger" onclick="cancelCoupon('${escapeHtml(id)}')">ยกเลิก</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+async function getCouponRows(){
+  const d=await api('getAllCoupons',{pin:staffPin});
+  return d.coupons||d.data||[];
+}
+async function editCoupon(id){
+  try{
+    const rows=await getCouponRows();
+    const c=rows.find(x=>String(x.couponId||x['Coupon ID'])===String(id));
+    if(!c)throw new Error('ไม่พบคูปองนี้');
+    editingCouponId=id;
+    selectedMember={
+      lineUserId:c.lineUserId||c['LINE User ID'],
+      name:c.memberName||c['ชื่อสมาชิก']
+    };
+    el('memberResult').innerHTML='<strong>'+escapeHtml(selectedMember.name)+'</strong><br>เลือกคูปองเพื่อแก้ไข';
+    el('memberResult').style.display='block';
+    el('couponName').value=c.couponName||c['ชื่อคูปอง']||'';
+    el('discountType').value=c.discountType||c['ประเภทส่วนลด']||'บาท';
+    el('discountValue').value=c.discountValue??c['มูลค่าส่วนลด']??'';
+    el('minimumSpend').value=c.minimumSpend??c['ยอดซื้อขั้นต่ำ']??0;
+    el('startDate').value=dateValue(c.startDate||c['วันเริ่มต้น']);
+    el('expiryDate').value=dateValue(c.expiryDate||c['วันหมดอายุ']);
+    el('terms').value=c.terms||c['เงื่อนไข']||'';
+    el('formTitle').textContent='แก้ไขคูปอง';
+    el('saveButton').textContent='บันทึกการแก้ไข';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){showStatus('formStatus',e.message,'error')}
+}
+async function cancelCoupon(id){
+  if(!confirm('ต้องการยกเลิกคูปองนี้ใช่หรือไม่?'))return;
+  try{
+    await api('cancelCoupon',{pin:staffPin,couponId:id});
+    showStatus('listStatus','ยกเลิกคูปองสำเร็จ','success');
+    await loadCoupons();
+  }catch(e){showStatus('listStatus',e.message,'error')}
+}
+function initDates(){
+  const today=new Date();
+  const local=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+  el('startDate').value=local;
+}
+initDates();
+</script>
+</body>
+</html>
+
