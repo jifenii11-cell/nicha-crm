@@ -912,7 +912,6 @@ async function loadCoupons(forceRefresh=false){
   if(couponsLoaded&&!forceRefresh)return;
 
   const box=document.getElementById('couponsList');
-
   box.innerHTML='<div class="loader">กำลังโหลดคูปองของคุณ...</div>';
 
   try{
@@ -950,6 +949,13 @@ async function loadCoupons(forceRefresh=false){
       const condition=c.condition||'ไม่มีเงื่อนไขเพิ่มเติม';
       const status=c.status||'ใช้งาน';
 
+      // รหัสคูปองที่ส่งกลับจาก Backend
+      const couponId=
+        c.couponId||
+        c.id||
+        c['Coupon ID']||
+        '';
+
       const discount=type==='%'?
         'ส่วนลด '+value+'%':
         'ส่วนลด '+money(value)+' บาท';
@@ -960,6 +966,10 @@ async function loadCoupons(forceRefresh=false){
         statusColor='#a84e45';
       }else if(status==='ยังไม่เริ่ม'){
         statusColor='#9a7842';
+      }else if(status==='รอยืนยัน'){
+        statusColor='#b17b25';
+      }else if(status==='ใช้แล้ว'){
+        statusColor='#78827b';
       }
 
       const card=document.createElement('div');
@@ -1010,6 +1020,45 @@ async function loadCoupons(forceRefresh=false){
         statusTextEl
       );
 
+      // ปุ่มขอใช้คูปอง แสดงเฉพาะสถานะใช้งาน
+      if(status==='ใช้งาน'){
+        const requestBtn=document.createElement('button');
+        requestBtn.className='btn full';
+        requestBtn.style.marginTop='14px';
+        requestBtn.textContent='ขอใช้คูปอง';
+        requestBtn.disabled=!couponId;
+
+        requestBtn.addEventListener('click',()=>{
+          requestCoupon(couponId,requestBtn);
+        });
+
+        card.appendChild(requestBtn);
+
+      }else if(status==='รอยืนยัน'){
+        const waiting=document.createElement('div');
+        waiting.className='notice';
+        waiting.style.marginTop='12px';
+        waiting.style.padding='11px';
+        waiting.style.borderRadius='10px';
+        waiting.style.background='#fff5df';
+        waiting.style.color='#9a6b1d';
+        waiting.style.textAlign='center';
+        waiting.textContent='⏳ รอพนักงานยืนยันการใช้คูปอง';
+        card.appendChild(waiting);
+
+      }else if(status==='ใช้แล้ว'){
+        const used=document.createElement('div');
+        used.className='notice';
+        used.style.marginTop='12px';
+        used.style.padding='11px';
+        used.style.borderRadius='10px';
+        used.style.background='#edf1ed';
+        used.style.color='#52635a';
+        used.style.textAlign='center';
+        used.textContent='✓ คูปองนี้ใช้แล้ว';
+        card.appendChild(used);
+      }
+
       box.appendChild(card);
     });
 
@@ -1028,6 +1077,46 @@ async function loadCoupons(forceRefresh=false){
     retry.onclick=()=>loadCoupons(true);
 
     box.append(message,retry);
+  }
+}
+
+/* =========================================
+   REQUEST COUPON USE
+========================================= */
+
+async function requestCoupon(couponId,btn){
+  if(!couponId){
+    showToast('ไม่พบรหัสคูปอง กรุณาติดต่อพนักงาน');
+    return;
+  }
+
+  if(!confirm('ยืนยันขอใช้คูปองนี้ใช่หรือไม่?')){
+    return;
+  }
+
+  btn.disabled=true;
+  btn.textContent='กำลังส่งคำขอ...';
+
+  try{
+    const data=await jsonp('requestCouponUse',{
+      lineUserId,
+      couponId
+    });
+
+    if(!data||!data.success){
+      throw new Error(data?.message||'ส่งคำขอใช้คูปองไม่สำเร็จ');
+    }
+
+    showToast('ส่งคำขอแล้ว กรุณารอพนักงานยืนยัน');
+
+    // โหลดสถานะใหม่จากฐานข้อมูล
+    couponsLoaded=false;
+    await loadCoupons(true);
+
+  }catch(e){
+    showToast(e.message);
+    btn.disabled=false;
+    btn.textContent='ขอใช้คูปอง';
   }
 }
 
