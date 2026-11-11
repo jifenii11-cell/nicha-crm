@@ -4,104 +4,720 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NICHA CRM | Member</title>
+<title>NICHA CRM | Premium Massage & Spa</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f3f8f4;color:#244b39;font-family:Arial,sans-serif}
-header{background:#176b4b;color:white;text-align:center;padding:28px 15px;border-radius:0 0 25px 25px}
-header h1{margin:0;font-size:25px;letter-spacing:2px}
-header p{margin:8px 0 0;font-size:13px}
-main{max-width:480px;margin:auto;padding:18px}
-.card{background:white;border-radius:18px;padding:20px;margin-bottom:15px;box-shadow:0 3px 14px #173f2610}
-.member{background:linear-gradient(135deg,#176b4b,#369b70);color:white}
-.small{font-size:13px;opacity:.85}
-.points{font-size:42px;font-weight:bold;margin:8px 0}
-.level{display:inline-block;background:#ffffff30;padding:7px 15px;border-radius:20px;font-size:13px}
-h3{margin:0 0 14px;color:#176b4b}
-.progress{height:9px;background:#e3eee7;border-radius:10px;overflow:hidden;margin:12px 0}
-.bar{height:100%;background:#40a879;width:0%;transition:.3s}
-button{border:0;border-radius:12px;padding:12px 16px;background:#176b4b;color:white;font-size:14px;cursor:pointer}
-button:disabled{opacity:.5}
-.reward{border:1px solid #e5eee8;border-radius:12px;padding:13px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.reward button{white-space:nowrap}
-.history{padding:12px 0;border-bottom:1px solid #edf1ee;font-size:13px}
-.muted{color:#7b9185;font-size:12px}
-input{width:100%;padding:13px;border:1px solid #d7e5dc;border-radius:10px;margin:8px 0;font-size:15px}
+
+:root{
+  --green:#123c29;
+  --green2:#1c5638;
+  --green3:#2d7049;
+  --gold:#d9b75e;
+  --gold2:#f6e5ae;
+  --cream:#fff9e9;
+  --ink:#263b2c;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  color:var(--ink);
+  font-family:"Noto Sans Thai",Arial,sans-serif;
+  background:
+    radial-gradient(ellipse at 15% 10%,#71834d55,transparent 35%),
+    linear-gradient(145deg,#172c1d,#53643c 45%,#d9c995 100%);
+  background-attachment:fixed;
+  min-height:100vh;
+}
+
+button{font-family:inherit;cursor:pointer}
+
 .hidden{display:none!important}
-#status{text-align:center;padding:18px;color:#176b4b;font-size:14px}
-.full{width:100%;margin-top:10px}
-.notice{background:#edf7f0;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px}
+
+#status{
+  text-align:center;
+  padding:18px;
+  color:#fff4d2;
+  font-size:14px;
+}
+
+main{
+  width:100%;
+  max-width:520px;
+  margin:auto;
+  padding:15px 15px 105px;
+}
+
+/* HEADER */
+header{
+  max-width:520px;
+  margin:auto;
+  padding:25px 18px 20px;
+  color:var(--gold2);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.lotus{
+  font-size:48px;
+  color:#f1d27d;
+  line-height:1;
+  text-shadow:0 2px 12px #d7b34b88;
+}
+
+.brand-name{
+  font-family:Georgia,serif;
+  font-size:27px;
+  font-weight:bold;
+  letter-spacing:2px;
+}
+
+.brand-sub{
+  font-size:11px;
+  letter-spacing:2px;
+  color:#f2df9f;
+}
+
+.logout{
+  background:#102d20;
+  color:#fff0bf;
+  border:1px solid var(--gold);
+  border-radius:30px;
+  padding:9px 13px;
+  font-size:12px;
+  white-space:nowrap;
+}
+
+/* PROFILE */
+.profile{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  color:white;
+  padding:12px 5px 25px;
+}
+
+.avatar{
+  width:105px;
+  height:105px;
+  flex-shrink:0;
+  border-radius:50%;
+  border:4px solid #f3d477;
+  background:linear-gradient(145deg,#fff2c9,#b58a38);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:47px;
+  box-shadow:0 5px 20px #0005;
+}
+
+.greeting{
+  font-size:17px;
+  color:#fff1c9;
+}
+
+.profile-name{
+  font-size:24px;
+  font-weight:bold;
+  line-height:1.4;
+  overflow-wrap:anywhere;
+}
+
+.vip-pill{
+  display:inline-block;
+  border:1px solid #f2d47e;
+  border-radius:30px;
+  padding:5px 13px;
+  margin-top:7px;
+  color:#ffe6a0;
+  background:#183b28;
+  font-weight:bold;
+  font-size:13px;
+}
+
+/* GENERAL CARD */
+.card{
+  border-radius:22px;
+  margin-bottom:17px;
+  padding:19px;
+  background:linear-gradient(145deg,#fffdf5,#f7eacb);
+  border:1px solid #e5cb83;
+  box-shadow:0 8px 22px #17281735;
+}
+
+.section-title{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin:0 0 14px;
+  color:var(--green);
+  font-size:19px;
+  font-weight:bold;
+}
+
+.section-title small{
+  color:#8d7441;
+  font-size:12px;
+  font-weight:normal;
+}
+
+/* MEMBER CARD */
+.member{
+  position:relative;
+  overflow:hidden;
+  padding:24px;
+  min-height:270px;
+  border:2px solid #f0d27a;
+  color:#fff6df;
+  background:
+    radial-gradient(circle at 90% 10%,#54794d 0%,transparent 38%),
+    linear-gradient(135deg,#102b1e,#1c5638 58%,#0c2419);
+  box-shadow:0 12px 30px #071b1280;
+}
+
+.member:before{
+  content:"";
+  position:absolute;
+  width:230px;
+  height:230px;
+  border:1px solid #e8d08a55;
+  border-radius:50%;
+  right:-100px;
+  bottom:-100px;
+  box-shadow:0 0 0 18px #e8d08a0d,0 0 0 38px #e8d08a0a;
+}
+
+.member:after{
+  content:"✧";
+  position:absolute;
+  right:25px;
+  top:75px;
+  font-size:100px;
+  color:#e6d18b20;
+}
+
+.member-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  z-index:1;
+}
+
+.member-brand{
+  font-family:Georgia,serif;
+  font-size:25px;
+  letter-spacing:3px;
+  color:#f4d98d;
+}
+
+.member-subtitle{
+  font-size:10px;
+  letter-spacing:2px;
+  color:#e8d7a9;
+}
+
+.member-card-label{
+  color:#f6dfa0;
+  border:1px solid #d9b75e;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:11px;
+}
+
+.member-card-name{
+  position:relative;
+  z-index:1;
+  font-size:23px;
+  font-weight:bold;
+  margin-top:25px;
+  overflow-wrap:anywhere;
+}
+
+.member-tier{
+  position:relative;
+  z-index:1;
+  margin:10px 0 18px;
+}
+
+.level{
+  display:inline-block;
+  background:linear-gradient(135deg,#f8e7ae,#c69b43);
+  color:#263b2c;
+  padding:6px 17px;
+  border-radius:30px;
+  font-weight:bold;
+  font-size:13px;
+}
+
+.member-points-label{
+  position:relative;
+  z-index:1;
+  color:#e8d8ae;
+  font-size:12px;
+  letter-spacing:2px;
+}
+
+.points{
+  position:relative;
+  z-index:1;
+  color:#f5d987;
+  font-size:55px;
+  line-height:1.15;
+  font-weight:bold;
+  margin:3px 0;
+}
+
+.member-points-unit{
+  position:relative;
+  z-index:1;
+  color:#e8d8ae;
+  font-size:10px;
+  letter-spacing:3px;
+}
+
+#nextLevel{
+  position:relative;
+  z-index:1;
+  color:#f5e9c9;
+  font-size:12px;
+  margin:12px 0 5px;
+}
+
+.progress{
+  position:relative;
+  z-index:1;
+  height:7px;
+  background:#ffffff30;
+  border-radius:20px;
+  overflow:hidden;
+  margin:10px 0;
+}
+
+.bar{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#c49a43,#fff0b8);
+  transition:width .4s;
+}
+
+.member-card-footer{
+  position:relative;
+  z-index:1;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding-top:13px;
+  margin-top:13px;
+  border-top:1px solid #d9bd7850;
+  color:#d8c89f;
+  font-size:9px;
+  letter-spacing:1px;
+}
+
+/* QUICK BUTTONS */
+.quick-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin:18px 0;
+}
+
+.quick-btn{
+  min-height:72px;
+  border-radius:45px;
+  border:2px solid #e8cc79;
+  background:linear-gradient(145deg,#174b30,#092819);
+  color:#fff2ce;
+  font-size:17px;
+  font-weight:bold;
+  box-shadow:0 5px 13px #0004;
+  padding:10px 8px;
+}
+
+.quick-btn.light{
+  background:linear-gradient(145deg,#fff9e8,#ead8ad);
+  color:#263b2c;
+}
+
+.quick-icon{
+  display:block;
+  font-size:25px;
+  margin-bottom:2px;
+}
+
+/* REWARDS */
+.reward-panel{
+  background:linear-gradient(145deg,#17482e,#0c2d1d);
+  border:1px solid #d9bd70;
+  border-radius:22px;
+  padding:17px;
+  margin-bottom:18px;
+  color:#fff2cf;
+  box-shadow:0 8px 22px #0004;
+}
+
+.reward-panel .section-title{
+  color:#ffe8a9;
+}
+
+.reward{
+  background:#fffaf0;
+  color:#27382a;
+  border:1px solid #e4d2a8;
+  border-radius:14px;
+  padding:14px;
+  margin:10px 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.reward b{
+  font-size:15px;
+}
+
+.reward .muted{
+  color:#8b774b;
+  margin-top:4px;
+}
+
+.reward button{
+  border:1px solid #c9a653;
+  background:linear-gradient(135deg,#1e5637,#0c2b1c);
+  color:#fff0c4;
+  padding:10px 13px;
+  border-radius:25px;
+  white-space:nowrap;
+  font-size:12px;
+}
+
+.reward button:disabled{
+  opacity:.45;
+}
+
+/* HISTORY */
+.history-card{
+  background:linear-gradient(145deg,#fffaf0,#f4e5c5);
+}
+
+.history{
+  padding:14px 4px;
+  border-bottom:1px solid #e6d7b8;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.history:last-child{border-bottom:0}
+
+.history-icon{
+  width:42px;
+  height:42px;
+  flex-shrink:0;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#f3e4bf;
+  font-size:21px;
+}
+
+.history-info{flex:1;min-width:0}
+.history-info b{display:block}
+.history-info .muted{margin-top:4px}
+.history-value{
+  font-weight:bold;
+  color:#26743c;
+  white-space:nowrap;
+}
+
+/* REGISTER */
+#registerArea{
+  background:#fffaf0;
+  color:var(--ink);
+}
+
+h3{
+  margin:0 0 14px;
+  color:var(--green);
+}
+
+label{
+  display:block;
+  font-size:13px;
+  margin-top:10px;
+}
+
+input{
+  width:100%;
+  padding:13px;
+  border:1px solid #d9c99f;
+  border-radius:11px;
+  margin:7px 0;
+  font-size:15px;
+  background:#fffefa;
+}
+
+.notice{
+  background:#f4efdf;
+  padding:12px;
+  border-radius:10px;
+  font-size:13px;
+  margin-bottom:12px;
+}
+
+.full{
+  width:100%;
+  margin-top:10px;
+}
+
+.primary-btn{
+  background:linear-gradient(135deg,#24583a,#102e20);
+  color:#ffedc0;
+  border:1px solid #c8a967;
+  border-radius:12px;
+  padding:13px 16px;
+  font-size:14px;
+  font-weight:bold;
+}
+
+.muted{
+  color:#8b8b77;
+  font-size:12px;
+}
+
+#formError{color:#b52c2c}
+
+/* MEMBER INFO */
+.info-card{
+  font-size:13px;
+  line-height:1.9;
+  overflow-wrap:anywhere;
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  z-index:20;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:520px;
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:10px 5px calc(10px + env(safe-area-inset-bottom));
+  background:linear-gradient(135deg,#0d2c1c,#174b30);
+  border-top:2px solid #d7b85e;
+  box-shadow:0 -6px 20px #0004;
+}
+
+.bottom-nav a{
+  text-decoration:none;
+  text-align:center;
+  color:#f4e5b8;
+  font-size:11px;
+  padding:3px;
+}
+
+.bottom-nav a span{
+  display:block;
+  font-size:23px;
+  margin-bottom:3px;
+}
+
+.empty{
+  text-align:center;
+  padding:18px;
+  color:#8b8068;
+  font-size:13px;
+}
+
+@media(max-width:380px){
+  .brand-name{font-size:22px}
+  .lotus{font-size:39px}
+  .profile-name{font-size:20px}
+  .avatar{width:85px;height:85px}
+  .quick-btn{font-size:14px}
+  .points{font-size:48px}
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>NICHA CRM</h1>
-<p>MEMBER REWARDS PROGRAM</p>
+  <div class="brand">
+    <div class="lotus">❀</div>
+    <div>
+      <div class="brand-name">NICHA CRM</div>
+      <div class="brand-sub">Premium Massage & Spa</div>
+    </div>
+  </div>
+  <button class="logout" onclick="logoutMember()">↪ ออกจากระบบ</button>
 </header>
 
 <main>
+
 <div id="status">กำลังเริ่มต้นระบบสมาชิก...</div>
 
-<!-- สมัครสมาชิก / เพิ่มเบอร์โทร -->
+<!-- สมัครสมาชิก -->
 <div id="registerArea" class="card hidden">
-<h3 id="formTitle">สมัครสมาชิก NICHA</h3>
-<div class="notice" id="formMessage">
-กรุณากรอกชื่อและเบอร์โทรศัพท์เพื่อสมัครสมาชิก
+  <h3 id="formTitle">สมัครสมาชิก NICHA</h3>
+  <div class="notice" id="formMessage">
+    กรุณากรอกชื่อและเบอร์โทรศัพท์เพื่อสมัครสมาชิก
+  </div>
+
+  <label>ชื่อสมาชิก</label>
+  <input id="inputName" type="text" placeholder="กรอกชื่อของคุณ">
+
+  <label>เบอร์โทรศัพท์</label>
+  <input id="inputPhone" type="tel" inputmode="numeric"
+    maxlength="10" placeholder="ตัวอย่าง 0812345678">
+
+  <button class="primary-btn full" id="registerBtn"
+    onclick="submitRegistration()">
+    ยืนยันข้อมูลสมาชิก
+  </button>
+  <p id="formError" class="muted"></p>
 </div>
 
-<label>ชื่อสมาชิก</label>
-<input id="inputName" type="text" placeholder="กรอกชื่อของคุณ">
-
-<label>เบอร์โทรศัพท์</label>
-<input id="inputPhone" type="tel" inputmode="numeric"
-maxlength="10" placeholder="ตัวอย่าง 0812345678">
-
-<button class="full" id="registerBtn" onclick="submitRegistration()">
-ยืนยันข้อมูลสมาชิก
-</button>
-<p id="formError" class="muted"></p>
-</div>
-
-<!-- บัตรสมาชิก -->
+<!-- MEMBER AREA -->
 <div id="memberArea" class="hidden">
 
-<div class="card member">
-<div class="small">NICHA MEMBER CARD</div>
-<h2 id="memberName">สมาชิก</h2>
-<div class="small">แต้มสะสมของคุณ</div>
-<div class="points" id="points">0</div>
-<div class="level" id="level">Bronze</div>
-<p class="small" id="nextLevel"></p>
-<div class="progress"><div class="bar" id="progressBar"></div></div>
-</div>
+  <section class="profile" id="home">
+    <div class="avatar">🌸</div>
+    <div>
+      <div class="greeting">สวัสดีค่ะ ♡</div>
+      <div class="profile-name" id="welcomeName">สมาชิก NICHA</div>
+      <div class="vip-pill">♛ สมาชิกคนพิเศษ</div>
+    </div>
+  </section>
 
-<div class="card">
-<h3>🎁 แลกรางวัล</h3>
-<div id="rewards">กำลังโหลดรางวัล...</div>
-</div>
+  <!-- บัตรสมาชิก -->
+  <section class="card member">
+    <div class="member-card-top">
+      <div>
+        <div class="member-brand">NICHA</div>
+        <div class="member-subtitle">LUXURY SPA MEMBER</div>
+      </div>
+      <div class="member-card-label">✦ MEMBER CARD</div>
+    </div>
 
-<div class="card">
-<h3>📋 ประวัติแต้ม</h3>
-<div id="history">กำลังโหลดประวัติ...</div>
-</div>
+    <div class="member-card-name" id="memberName">สมาชิก</div>
 
-<div class="card">
-<h3>👤 ข้อมูลสมาชิก</h3>
-<div id="memberInfo" class="muted"></div>
-</div>
+    <div class="member-tier">
+      <span class="level" id="level">Bronze</span>
+    </div>
+
+    <div class="member-points-label">POINT BALANCE</div>
+    <div class="points" id="points">0</div>
+    <div class="member-points-unit">POINTS</div>
+
+    <p id="nextLevel"></p>
+
+    <div class="progress">
+      <div class="bar" id="progressBar"></div>
+    </div>
+
+    <div class="member-card-footer">
+      <span>NICHA HEALTH MASSAGE</span>
+      <span>VIP PRIVILEGE</span>
+    </div>
+  </section>
+
+  <!-- ปุ่มลัด -->
+  <div class="quick-actions">
+    <button class="quick-btn"
+      onclick="document.getElementById('rewardSection').scrollIntoView()">
+      <span class="quick-icon">🎁</span>
+      แลกรางวัล ›
+    </button>
+
+    <button class="quick-btn light"
+      onclick="document.getElementById('historySection').scrollIntoView()">
+      <span class="quick-icon">◷</span>
+      ดูประวัติแต้ม ›
+    </button>
+  </div>
+
+  <!-- ของรางวัล -->
+  <section class="reward-panel" id="rewardSection">
+    <div class="section-title">
+      <span>🎁 ของรางวัลสำหรับคุณ</span>
+      <small>REWARDS</small>
+    </div>
+    <div id="rewards">
+      <div class="empty">กำลังโหลดรางวัล...</div>
+    </div>
+  </section>
+
+  <!-- ประวัติ -->
+  <section class="card history-card" id="historySection">
+    <div class="section-title">
+      <span>◷ รายการล่าสุด</span>
+      <small>POINT HISTORY</small>
+    </div>
+    <div id="history">
+      <div class="empty">กำลังโหลดประวัติ...</div>
+    </div>
+  </section>
+
+  <!-- ข้อมูลสมาชิก -->
+  <section class="card">
+    <div class="section-title">
+      <span>👤 ข้อมูลสมาชิก</span>
+    </div>
+    <div id="memberInfo" class="info-card"></div>
+  </section>
 
 </div>
 </main>
 
+<!-- เมนูด้านล่าง -->
+<nav class="bottom-nav hidden" id="bottomNav">
+  <a href="#home">
+    <span>⌂</span>หน้าหลัก
+  </a>
+  <a href="#rewardSection">
+    <span>🎁</span>ของรางวัล
+  </a>
+  <a href="#historySection">
+    <span>▤</span>ประวัติ
+  </a>
+  <a href="#memberInfo">
+    <span>⚙</span>ข้อมูล
+  </a>
+</nav>
+
 <script>
+/* ==================================
+   NICHA CRM CONNECTION
+   คงค่า API และ LIFF เดิม
+================================== */
+
 const API_URL='https://script.google.com/macros/s/AKfycbwoJMHW6PWqh7OHwmyo8_YpJB5LJfVp5ZDYdRTNJstNklfYYRmQc_YDYr1I0Vw3_XTw/exec';
 const LIFF_ID='2012451889-JlA6fHip';
 
 let lineUserId='';
 let profileName='สมาชิก NICHA';
 
+/* API */
 function api(action,params={}){
   return new Promise((resolve,reject)=>{
     const callback='nichaCallback'+Date.now()+Math.floor(Math.random()*1000);
@@ -133,6 +749,7 @@ function api(action,params={}){
   });
 }
 
+/* STATUS */
 function showStatus(message){
   const el=document.getElementById('status');
   el.innerText=message;
@@ -143,8 +760,13 @@ function hideStatus(){
   document.getElementById('status').classList.add('hidden');
 }
 
+/* START LIFF */
 async function start(){
   try{
+    if(!window.liff){
+      throw new Error('ไม่พบ LINE LIFF SDK');
+    }
+
     await liff.init({liffId:LIFF_ID});
 
     if(!liff.isLoggedIn()){
@@ -177,10 +799,12 @@ async function start(){
   }
 }
 
+/* REGISTER */
 function showRegistration(name,isExisting){
   hideStatus();
 
   document.getElementById('memberArea').classList.add('hidden');
+  document.getElementById('bottomNav').classList.add('hidden');
   document.getElementById('registerArea').classList.remove('hidden');
 
   document.getElementById('inputName').value=name||profileName;
@@ -238,11 +862,13 @@ async function submitRegistration(){
   }
 }
 
+/* SHOW MEMBER */
 async function enterMember(member){
   showMember(member);
 
   document.getElementById('registerArea').classList.add('hidden');
   document.getElementById('memberArea').classList.remove('hidden');
+  document.getElementById('bottomNav').classList.remove('hidden');
 
   hideStatus();
 
@@ -251,7 +877,10 @@ async function enterMember(member){
 }
 
 function showMember(m){
-  document.getElementById('memberName').innerText=m.name||'สมาชิก NICHA';
+  const name=m.name||'สมาชิก NICHA';
+
+  document.getElementById('memberName').innerText=name;
+  document.getElementById('welcomeName').innerText=name;
   document.getElementById('points').innerText=m.points||0;
   document.getElementById('level').innerText=m.level||'Bronze';
 
@@ -261,10 +890,23 @@ function showMember(m){
     :'คุณอยู่ระดับสูงสุดแล้ว';
 
   document.getElementById('memberInfo').innerText=
-    'ชื่อ: '+(m.name||'-')+' | เบอร์โทร: '+(m.phone||'-');
+    'ชื่อสมาชิก: '+(m.name||'-')+
+    '\nเบอร์โทรศัพท์: '+(m.phone||'-');
 
-  const limits={'Bronze':100,'Silver':300,'Gold':600,'Platinum VIP':600};
-  const current={'Bronze':0,'Silver':100,'Gold':300,'Platinum VIP':600};
+  const limits={
+    'Bronze':100,
+    'Silver':300,
+    'Gold':600,
+    'Platinum VIP':600
+  };
+
+  const current={
+    'Bronze':0,
+    'Silver':100,
+    'Gold':300,
+    'Platinum VIP':600
+  };
+
   const max=limits[m.level]||600;
   const min=current[m.level]||0;
 
@@ -275,6 +917,7 @@ function showMember(m){
   document.getElementById('progressBar').style.width=percent+'%';
 }
 
+/* LOAD REWARDS */
 async function loadRewards(){
   const box=document.getElementById('rewards');
   const data=await api('getRewards');
@@ -282,7 +925,7 @@ async function loadRewards(){
   if(!data.success) throw new Error('โหลดรางวัลไม่สำเร็จ');
 
   if(!data.rewards.length){
-    box.innerHTML='<p class="muted">ยังไม่มีรางวัลในขณะนี้</p>';
+    box.innerHTML='<div class="empty">ยังไม่มีรางวัลในขณะนี้</div>';
     return;
   }
 
@@ -293,6 +936,7 @@ async function loadRewards(){
     item.className='reward';
 
     const info=document.createElement('div');
+
     const name=document.createElement('b');
     name.textContent=r.name;
 
@@ -311,6 +955,7 @@ async function loadRewards(){
   });
 }
 
+/* REDEEM */
 async function redeem(rewardId){
   if(!confirm('ยืนยันการแลกรางวัลนี้หรือไม่?')) return;
 
@@ -329,11 +974,13 @@ async function redeem(rewardId){
   }
 }
 
+/* REFRESH MEMBER */
 async function refreshMember(){
   const data=await api('getMember',{lineUserId});
   if(data.success) showMember(data.member);
 }
 
+/* HISTORY */
 async function loadHistory(){
   const box=document.getElementById('history');
   const data=await api('getHistory',{lineUserId});
@@ -347,7 +994,8 @@ async function loadHistory(){
       date:t.date,
       name:t.description,
       detail:(t.earned?'+'+t.earned:'')+
-        (t.deducted?' -'+t.deducted:'')+' แต้ม'
+        (t.deducted?' -'+t.deducted:'')+' แต้ม',
+      type:'earn'
     });
   });
 
@@ -355,14 +1003,15 @@ async function loadHistory(){
     all.push({
       date:r.date,
       name:'แลกรางวัล: '+r.rewardName,
-      detail:r.points+' แต้ม · '+r.status
+      detail:r.points+' แต้ม · '+r.status,
+      type:'redeem'
     });
   });
 
   all.sort((a,b)=>new Date(b.date)-new Date(a.date));
 
   if(!all.length){
-    box.innerHTML='<p class="muted">ยังไม่มีประวัติ</p>';
+    box.innerHTML='<div class="empty">ยังไม่มีประวัติแต้ม</div>';
     return;
   }
 
@@ -372,6 +1021,13 @@ async function loadHistory(){
     const div=document.createElement('div');
     div.className='history';
 
+    const icon=document.createElement('div');
+    icon.className='history-icon';
+    icon.textContent=x.type==='redeem'?'🎁':'⭐';
+
+    const info=document.createElement('div');
+    info.className='history-info';
+
     const title=document.createElement('b');
     title.textContent=x.name;
 
@@ -380,12 +1036,33 @@ async function loadHistory(){
     detail.textContent=x.detail+' · '+
       (x.date?new Date(x.date).toLocaleDateString('th-TH'):'-');
 
-    div.append(title,detail);
+    info.append(title,detail);
+
+    const value=document.createElement('div');
+    value.className='history-value';
+    value.textContent=x.type==='redeem'?'ใช้แต้ม':'รับแต้ม';
+
+    div.append(icon,info,value);
     box.appendChild(div);
   });
 }
 
+/* LOGOUT */
+function logoutMember(){
+  if(!confirm('ต้องการออกจากระบบสมาชิกหรือไม่?')) return;
+
+  try{
+    if(window.liff && liff.isLoggedIn()){
+      liff.logout();
+    }
+  }catch(e){}
+
+  window.location.reload();
+}
+
+/* START */
 start();
 </script>
+
 </body>
 </html>
