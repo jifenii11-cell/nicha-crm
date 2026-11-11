@@ -1,238 +1,44 @@
 
-<!DOCTYPE html>
-<html lang="th">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NICHA CRM | Member</title>
-<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-<style>
-*{box-sizing:border-box}
-body{margin:0;background:#f3f8f4;color:#244b39;font-family:Arial,sans-serif}
-header{background:#176b4b;color:white;text-align:center;padding:28px 15px;border-radius:0 0 25px 25px}
-header h1{margin:0;font-size:25px;letter-spacing:2px}
-header p{margin:8px 0 0;font-size:13px}
-main{max-width:480px;margin:auto;padding:18px}
-.card{background:white;border-radius:18px;padding:20px;margin-bottom:15px;box-shadow:0 3px 14px #173f2610}
-.member{background:linear-gradient(135deg,#176b4b,#369b70);color:white}
-.small{font-size:13px;opacity:.85}
-.points{font-size:42px;font-weight:bold;margin:8px 0}
-.level{display:inline-block;background:#ffffff30;padding:7px 15px;border-radius:20px;font-size:13px}
-h3{margin:0 0 14px;color:#176b4b}
-.progress{height:9px;background:#e3eee7;border-radius:10px;overflow:hidden;margin:12px 0}
-.bar{height:100%;background:#40a879;width:0%;transition:.3s}
-button{border:0;border-radius:12px;padding:12px 16px;background:#176b4b;color:white;font-size:14px;cursor:pointer}
-button:disabled{opacity:.5}
-.reward{border:1px solid #e5eee8;border-radius:12px;padding:13px;margin:10px 0;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.reward button{white-space:nowrap}
-.history{padding:12px 0;border-bottom:1px solid #edf1ee;font-size:13px}
-.muted{color:#7b9185;font-size:12px}
-#status{text-align:center;padding:18px;color:#176b4b;font-size:14px}
-input{width:100%;padding:12px;border:1px solid #d7e5dc;border-radius:10px;margin:8px 0;font-size:15px}
-.hidden{display:none}
-</style>
-</head>
-<body>
-<header>
-<h1>NICHA CRM</h1>
-<p>MEMBER REWARDS PROGRAM</p>
-</header>
+/** สมัครสมาชิกและอัปเดตข้อมูลสมาชิกเดิม */
+function registerMember(p) {
+  checkHeaders();
 
-<main>
-<div id="status">กำลังเริ่มต้นระบบสมาชิก...</div>
+  if (!p.lineUserId) throw new Error('ไม่พบ LINE User ID');
+  if (!p.name) throw new Error('กรุณาระบุชื่อสมาชิก');
 
-<div id="memberArea" class="hidden">
-<div class="card member">
-<div class="small">NICHA MEMBER CARD</div>
-<h2 id="memberName">สมาชิก</h2>
-<div class="small">แต้มสะสมของคุณ</div>
-<div class="points" id="points">0</div>
-<div class="level" id="level">Bronze</div>
-<p class="small" id="nextLevel"></p>
-<div class="progress"><div class="bar" id="progressBar"></div></div>
-</div>
+  const phone = String(p.phone || '').replace(/\D/g, '');
 
-<div class="card">
-<h3>🎁 แลกรางวัล</h3>
-<div id="rewards">กำลังโหลดรางวัล...</div>
-</div>
+  if (!/^0[0-9]{9}$/.test(phone)) {
+    throw new Error('กรุณากรอกเบอร์โทรศัพท์ 10 หลัก');
+  }
 
-<div class="card">
-<h3>📋 ประวัติแต้ม</h3>
-<div id="history">กำลังโหลดประวัติ...</div>
-</div>
+  const existing = findMemberRow(p.lineUserId);
+  const sheet = getSheet('Members');
 
-<div class="card">
-<h3>👤 ข้อมูลสมาชิก</h3>
-<div id="memberInfo" class="muted"></div>
-</div>
-</div>
-</main>
+  if (existing) {
+    // อัปเดตข้อมูลสมาชิกเดิม
+    sheet.getRange(existing._row, 2).setValue(p.name);
+    sheet.getRange(existing._row, 3).setValue(phone);
 
-<script>
-const API_URL='https://script.google.com/macros/s/AKfycbwoJMHW6PWqh7OHwmyo8_YpJB5LJfVp5ZDYdRTNJstNklfYYRmQc_YDYr1I0Vw3_XTw/exec';
-const LIFF_ID='2012451889-JlA6fHip';
-
-let lineUserId='';
-
-function api(action,params={}){
-  return new Promise((resolve,reject)=>{
-    const callback='nichaCallback'+Date.now()+Math.floor(Math.random()*1000);
-    const script=document.createElement('script');
-    const query=new URLSearchParams({action,...params,callback});
-    window[callback]=data=>{
-      resolve(data);
-      delete window[callback];
-      script.remove();
+    return {
+      success: true,
+      message: 'อัปเดตข้อมูลสมาชิกสำเร็จ',
+      member: getMember(p.lineUserId).member
     };
-    script.onerror=()=>{
-      reject(new Error('เชื่อมต่อ API ไม่สำเร็จ'));
-      delete window[callback];
-      script.remove();
-    };
-    script.src=API_URL+'?'+query.toString();
-    document.body.appendChild(script);
-    setTimeout(()=>{
-      if(window[callback]){
-        delete window[callback];
-        script.remove();
-        reject(new Error('ระบบตอบกลับช้า กรุณาลองใหม่'));
-      }
-    },15000);
-  });
+  }
+
+  sheet.appendRow([
+    p.lineUserId,
+    p.name,
+    phone,
+    new Date(),
+    0,
+    'Bronze'
+  ]);
+
+  return {
+    success: true,
+    message: 'สมัครสมาชิกสำเร็จ',
+    member: getMember(p.lineUserId).member
+  };
 }
-
-async function start(){
- try{
-   await liff.init({liffId:LIFF_ID});
-   if(!liff.isLoggedIn()){
-     liff.login();
-     return;
-   }
-   const profile=await liff.getProfile();
-   lineUserId=profile.userId;
-
-   let result=await api('getMember',{lineUserId});
-   if(!result.success){
-     const name=profile.displayName||'สมาชิก NICHA';
-     result=await api('register',{
-       lineUserId,
-       name
-     });
-   }
-
-   if(!result.success) throw new Error(result.message||'โหลดสมาชิกไม่สำเร็จ');
-
-   showMember(result.member);
-   await loadRewards();
-   await loadHistory();
-   document.getElementById('status').classList.add('hidden');
-   document.getElementById('memberArea').classList.remove('hidden');
- }catch(err){
-   document.getElementById('status').innerText=
-     'เชื่อมต่อไม่สำเร็จ: '+err.message;
- }
-}
-
-function showMember(m){
- document.getElementById('memberName').innerText=m.name||'สมาชิก NICHA';
- document.getElementById('points').innerText=m.points||0;
- document.getElementById('level').innerText=m.level||'Bronze';
- document.getElementById('nextLevel').innerText=
-   m.nextLevel?'อีก '+m.pointsToNextLevel+' แต้ม สู่ระดับ '+m.nextLevel:'คุณอยู่ระดับสูงสุดแล้ว';
- document.getElementById('memberInfo').innerText=
-   'ชื่อ: '+(m.name||'-')+' | เบอร์โทร: '+(m.phone||'ยังไม่ได้ระบุ');
- const limits={'Bronze':100,'Silver':300,'Gold':600,'Platinum VIP':600};
- const current={'Bronze':0,'Silver':100,'Gold':300,'Platinum VIP':600};
- const max=limits[m.level]||600;
- const min=current[m.level]||0;
- const percent=m.level==='Platinum VIP'?100:
-   Math.min(100,Math.max(0,((m.points-min)/(max-min))*100));
- document.getElementById('progressBar').style.width=percent+'%';
-}
-
-async function loadRewards(){
- const box=document.getElementById('rewards');
- const data=await api('getRewards');
- if(!data.success) throw new Error('โหลดรางวัลไม่สำเร็จ');
- if(!data.rewards.length){
-   box.innerHTML='<p class="muted">ยังไม่มีรางวัลในขณะนี้</p>';
-   return;
- }
- box.innerHTML='';
- data.rewards.forEach(r=>{
-   const item=document.createElement('div');
-   item.className='reward';
-   const info=document.createElement('div');
-   const name=document.createElement('b');
-   name.textContent=r.name;
-   const cost=document.createElement('div');
-   cost.className='muted';
-   cost.textContent=r.points+' แต้ม';
-   info.append(name,cost);
-   const btn=document.createElement('button');
-   btn.textContent='แลกรางวัล';
-   btn.onclick=()=>redeem(r.rewardId);
-   item.append(info,btn);
-   box.appendChild(item);
- });
-}
-
-async function redeem(rewardId){
- if(!confirm('ยืนยันการแลกรางวัลนี้หรือไม่?')) return;
- try{
-   const result=await api('redeem',{lineUserId,rewardId});
-   if(!result.success) throw new Error(result.message);
-   alert('แลกรางวัลสำเร็จ\nรหัสแลก: '+result.redemptionId);
-   await refreshMember();
-   await loadHistory();
- }catch(e){alert(e.message);}
-}
-
-async function refreshMember(){
- const data=await api('getMember',{lineUserId});
- if(data.success) showMember(data.member);
-}
-
-async function loadHistory(){
- const box=document.getElementById('history');
- const data=await api('getHistory',{lineUserId});
- if(!data.success) throw new Error('โหลดประวัติไม่สำเร็จ');
- const all=[];
- (data.transactions||[]).forEach(t=>{
-   all.push({
-     date:t.date,
-     name:t.description,
-     detail:(t.earned?'+'+t.earned:'')+(t.deducted?' -'+t.deducted:'')+' แต้ม'
-   });
- });
- (data.redemptions||[]).forEach(r=>{
-   all.push({
-     date:r.date,
-     name:'แลกรางวัล: '+r.rewardName,
-     detail:r.points+' แต้ม · '+r.status
-   });
- });
- all.sort((a,b)=>new Date(b.date)-new Date(a.date));
- if(!all.length){
-   box.innerHTML='<p class="muted">ยังไม่มีประวัติ</p>';
-   return;
- }
- box.innerHTML='';
- all.forEach(x=>{
-   const div=document.createElement('div');
-   div.className='history';
-   const title=document.createElement('b');
-   title.textContent=x.name;
-   const detail=document.createElement('div');
-   detail.className='muted';
-   detail.textContent=x.detail+' · '+new Date(x.date).toLocaleDateString('th-TH');
-   div.append(title,detail);
-   box.appendChild(div);
- });
-}
-
-start();
-</script>
-</body>
-</html>
