@@ -6,474 +6,187 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>NICHA CRM</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-
 <style>
 *{box-sizing:border-box}
 body{
   margin:0;
-  font-family:Arial,sans-serif;
-  background:#faf6f3;
-  color:#59463f;
-  padding-bottom:85px;
+  font-family:Arial,"Noto Sans Thai",sans-serif;
+  background:#f3f7f3;
+  color:#263b30;
 }
-header{
-  background:#fff;
-  padding:18px 20px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  box-shadow:0 2px 10px #00000008;
+.container{max-width:480px;margin:auto;padding:18px}
+.header{
+  background:linear-gradient(135deg,#174d38,#287653);
+  color:white;padding:25px 22px 28px;
+  border-radius:0 0 25px 25px;
+  margin:-18px -18px 20px;
 }
-.logo{color:#bd7894;font-size:22px;font-weight:bold;letter-spacing:1px}
-.sublogo{font-size:11px;color:#967b78;margin-top:3px}
-.container{max-width:520px;margin:auto;padding:16px}
-.welcome{
-  background:linear-gradient(135deg,#e9bdc9,#c77f9c);
-  border-radius:22px;
-  padding:22px;
-  color:white;
-  box-shadow:0 8px 20px #bd789433;
+.brand{font-size:13px;letter-spacing:2px;opacity:.85}
+.header h1{font-size:25px;margin:9px 0 4px}
+.header p{font-size:13px;margin:0;opacity:.85}
+.status{
+  display:inline-flex;align-items:center;gap:7px;
+  background:#ffffff20;border:1px solid #ffffff40;
+  border-radius:30px;padding:7px 12px;
+  font-size:12px;margin-top:17px
 }
-.welcome small{opacity:.9}
-.welcome h2{margin:8px 0;font-size:23px}
-.member-level{
-  display:inline-block;
-  background:#ffffff35;
-  padding:6px 13px;
-  border-radius:20px;
-  font-size:12px;
+.dot{width:7px;height:7px;border-radius:50%;background:#f6d77a}
+.section-title{font-size:16px;font-weight:bold;margin:22px 0 12px}
+.card{
+  background:white;border-radius:18px;padding:18px;
+  box-shadow:0 4px 18px #183d2510;margin-bottom:14px;
+}
+.member-top{display:flex;justify-content:space-between;align-items:center}
+.member-label{font-size:12px;color:#789083}
+.member-name{font-size:19px;font-weight:bold;margin-top:5px}
+.level{
+  background:#e6f2e9;color:#28734e;padding:7px 12px;
+  border-radius:20px;font-size:12px;font-weight:bold
 }
 .points{
-  background:#fff;
-  color:#9f637c;
-  border-radius:18px;
-  margin-top:18px;
-  padding:17px;
+  background:linear-gradient(135deg,#e8f4eb,#f5faf5);
+  border-radius:15px;padding:17px;margin-top:17px;
+  display:flex;justify-content:space-between;align-items:center
 }
-.points-label{font-size:13px;color:#927d7a}
-.points-number{font-size:38px;font-weight:bold;margin:5px 0}
-.points-rule{font-size:12px;color:#a18e88}
-.section-title{
-  font-size:17px;
-  font-weight:bold;
-  margin:24px 0 12px;
+.points small{font-size:12px;color:#64806d}
+.points strong{font-size:30px;color:#246b48}
+.progress-title{display:flex;justify-content:space-between;
+  font-size:12px;color:#718276;margin:15px 0 8px}
+.progress{height:8px;background:#e7eee8;border-radius:20px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:#3c9564;border-radius:20px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.menu{
+  background:white;border-radius:16px;padding:17px 12px;
+  text-align:center;box-shadow:0 4px 18px #183d2508
 }
-.menu-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:12px;
+.menu-icon{font-size:25px;margin-bottom:8px}
+.menu strong{display:block;font-size:13px}
+.menu small{font-size:11px;color:#839087}
+.notice{
+  background:#fff9e9;border:1px solid #f1e6c4;
+  border-radius:14px;padding:14px;font-size:12px;
+  line-height:1.7;color:#76633b
 }
-.menu-card{
-  background:white;
-  border-radius:16px;
-  padding:17px 10px;
-  text-align:center;
-  box-shadow:0 3px 12px #00000007;
-}
-.menu-icon{font-size:27px;margin-bottom:8px}
-.menu-card strong{font-size:13px}
-.menu-card small{display:block;color:#a18e88;margin-top:5px}
-.progress-card,.white-card{
-  background:white;
-  border-radius:17px;
-  padding:17px;
-  margin-top:13px;
-  box-shadow:0 3px 12px #00000007;
-}
-.progress-track{
-  height:9px;
-  background:#f5e8eb;
-  border-radius:20px;
-  margin:12px 0 7px;
-  overflow:hidden;
-}
-.progress-fill{
-  height:100%;
-  width:0%;
-  background:#c77f9c;
-  border-radius:20px;
-}
-.reward,.history-item{
-  background:#fff;
-  border-radius:15px;
-  padding:15px;
-  margin-bottom:10px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  box-shadow:0 2px 10px #00000008;
-}
-.reward-name{font-weight:bold;font-size:14px}
-.reward-points{color:#b66f8c;font-size:13px;margin-top:5px}
-.history-item{align-items:flex-start}
-.history-date{font-size:11px;color:#a18e88;margin-top:5px}
-.history-value{text-align:right;font-weight:bold;color:#b66f8c}
-.profile-row{
-  padding:13px 0;
-  border-bottom:1px solid #f2e9e6;
-  font-size:14px;
-}
-.profile-row span{float:right;color:#a8798d}
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:white;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  padding:10px 4px calc(10px + env(safe-area-inset-bottom));
-  box-shadow:0 -3px 15px #0000000c;
-  z-index:10;
-}
-.nav-btn{
-  border:0;
-  background:none;
-  color:#a69a96;
-  font-size:11px;
-  cursor:pointer;
-}
-.nav-btn .ico{display:block;font-size:21px;margin-bottom:4px}
-.nav-btn.active{color:#bd7894;font-weight:bold}
-.page{display:none}
-.page.active{display:block}
-.status{
-  text-align:center;
-  padding:14px;
-  font-size:13px;
-  color:#9d7586;
-}
-.empty{text-align:center;color:#aa9993;padding:25px;font-size:13px}
-.footer{text-align:center;color:#b3a29b;font-size:10px;margin:25px 0}
+.footer{text-align:center;color:#9aa79e;font-size:11px;padding:22px 0}
+#message{font-size:12px;line-height:1.6;color:#668071;margin-top:10px}
 </style>
 </head>
-
 <body>
+<div class="container">
+  <header class="header">
+    <div class="brand">NICHA WELLNESS</div>
+    <h1>NICHA CRM</h1>
+    <p>ระบบสมาชิกสะสมแต้ม ณิชานวดเพื่อสุขภาพ</p>
+    <div class="status"><span class="dot"></span><span id="lineStatus">กำลังตรวจสอบการเชื่อมต่อ LINE</span></div>
+  </header>
 
-<header>
-  <div>
-    <div class="logo">NICHA CRM</div>
-    <div class="sublogo">ณิชานวดเพื่อสุขภาพ</div>
+  <div class="section-title">บัตรสมาชิกของฉัน</div>
+  <section class="card">
+    <div class="member-top">
+      <div>
+        <div class="member-label">ยินดีต้อนรับ</div>
+        <div class="member-name" id="memberName">สมาชิก NICHA</div>
+      </div>
+      <div class="level" id="memberLevel">BRONZE</div>
+    </div>
+
+    <div class="points">
+      <div>
+        <small>แต้มสะสมทั้งหมด</small><br>
+        <strong id="memberPoints">—</strong>
+      </div>
+      <div style="font-size:34px">🌿</div>
+    </div>
+
+    <div class="progress-title">
+      <span id="nextLevelText">ความคืบหน้าสู่ระดับถัดไป</span>
+      <span id="progressText">—</span>
+    </div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+    <div id="message">กำลังเตรียมเชื่อมต่อข้อมูลสมาชิก</div>
+  </section>
+
+  <div class="section-title">เมนูสมาชิก</div>
+  <div class="grid">
+    <div class="menu">
+      <div class="menu-icon">🎁</div>
+      <strong>แลกรางวัล</strong>
+      <small>เลือกของรางวัลด้วยแต้ม</small>
+    </div>
+    <div class="menu">
+      <div class="menu-icon">⭐</div>
+      <strong>ประวัติแต้ม</strong>
+      <small>ตรวจสอบแต้มเข้า-ออก</small>
+    </div>
+    <div class="menu">
+      <div class="menu-icon">🎟️</div>
+      <strong>คูปองของฉัน</strong>
+      <small>สิทธิพิเศษสำหรับสมาชิก</small>
+    </div>
+    <div class="menu">
+      <div class="menu-icon">💚</div>
+      <strong>สิทธิประโยชน์</strong>
+      <small>ระดับสมาชิกและโปรโมชั่น</small>
+    </div>
   </div>
-  <div style="font-size:23px">🌸</div>
-</header>
 
-<div id="status" class="status">กำลังเชื่อมต่อสมาชิก...</div>
-
-<main class="container" id="app" style="display:none">
-
-  <section class="page active" id="home">
-    <div class="welcome">
-      <small>ยินดีต้อนรับสมาชิก</small>
-      <h2 id="memberName">สมาชิก NICHA</h2>
-      <span class="member-level" id="memberLevel">สมาชิกทั่วไป</span>
-
-      <div class="points">
-        <div class="points-label">แต้มสะสมของคุณ</div>
-        <div class="points-number"><span id="memberPoints">0</span> <small style="font-size:15px">แต้ม</small></div>
-        <div class="points-rule">ทุกยอดชำระ 100 บาท รับ 1 แต้ม</div>
-      </div>
-    </div>
-
-    <div class="section-title">เมนูสมาชิก</div>
-    <div class="menu-grid">
-      <div class="menu-card" onclick="showPage('rewards')">
-        <div class="menu-icon">🎁</div>
-        <strong>สิทธิพิเศษ</strong>
-        <small>แลกรางวัลของคุณ</small>
-      </div>
-      <div class="menu-card" onclick="showPage('history')">
-        <div class="menu-icon">⭐</div>
-        <strong>ประวัติแต้ม</strong>
-        <small>ดูรายการย้อนหลัง</small>
-      </div>
-    </div>
-
-    <div class="section-title">ระดับสมาชิก</div>
-    <div class="progress-card">
-      <strong id="levelText">สมาชิกทั่วไป</strong>
-      <div class="progress-track">
-        <div class="progress-fill" id="levelProgress"></div>
-      </div>
-      <small id="levelHint" style="color:#a18e88">ขอบคุณที่เป็นสมาชิกณิชาค่ะ</small>
-    </div>
-
-    <div class="section-title">ของรางวัลสำหรับคุณ</div>
-    <div id="homeRewards"></div>
-  </section>
-
-  <section class="page" id="rewards">
-    <div class="section-title">🎁 สิทธิพิเศษและของรางวัล</div>
-    <p style="font-size:12px;color:#a18e88">ใช้แต้มสะสมแลกรางวัลจากณิชานวดเพื่อสุขภาพ</p>
-    <div id="rewardList"></div>
-  </section>
-
-  <section class="page" id="history">
-    <div class="section-title">⭐ ประวัติการสะสมแต้ม</div>
-    <div id="historyList"></div>
-
-    <div class="section-title">🎁 ประวัติการแลกรางวัล</div>
-    <div id="redemptionList"></div>
-  </section>
-
-  <section class="page" id="profile">
-    <div class="section-title">👤 ข้อมูลสมาชิก</div>
-    <div class="white-card">
-      <div class="profile-row">ชื่อสมาชิก <span id="profileName">-</span></div>
-      <div class="profile-row">เบอร์โทรศัพท์ <span id="profilePhone">ยังไม่ได้ระบุ</span></div>
-      <div class="profile-row">ระดับสมาชิก <span id="profileLevel">-</span></div>
-      <div class="profile-row">แต้มสะสม <span id="profilePoints">0 แต้ม</span></div>
-      <div class="profile-row">วันที่สมัคร <span id="profileJoined">-</span></div>
+  <div class="section-title">ระดับสมาชิก NICHA</div>
+  <section class="card">
+    <p style="font-size:13px;margin:0 0 12px">สะสมแต้มเพื่อเลื่อนระดับและรับสิทธิพิเศษ</p>
+    <div style="font-size:13px;line-height:2">
+      🥉 Bronze : 0–99 แต้ม<br>
+      🥈 Silver : 100–299 แต้ม<br>
+      🥇 Gold : 300–599 แต้ม<br>
+      💎 Platinum VIP : 600 แต้มขึ้นไป
     </div>
   </section>
+
+  <div class="notice">
+    🌿 ขอบคุณที่ไว้วางใจใช้บริการณิชานวดเพื่อสุขภาพ<br>
+    ทุกการใช้บริการคือความสุขและความใส่ใจที่เรามอบให้คุณ
+  </div>
 
   <div class="footer">NICHA CRM · ณิชานวดเพื่อสุขภาพ</div>
-</main>
-
-<nav class="bottom-nav">
-  <button class="nav-btn active" onclick="showPage('home',this)">
-    <span class="ico">🏠</span>หน้าหลัก
-  </button>
-  <button class="nav-btn" onclick="showPage('rewards',this)">
-    <span class="ico">🎁</span>สิทธิพิเศษ
-  </button>
-  <button class="nav-btn" onclick="showPage('history',this)">
-    <span class="ico">⭐</span>ประวัติ
-  </button>
-  <button class="nav-btn" onclick="showPage('profile',this)">
-    <span class="ico">👤</span>โปรไฟล์
-  </button>
-</nav>
+</div>
 
 <script>
-const LIFF_ID = '2012451889-JlA6fHip';
+/* ตั้งค่า LIFF ID จริงในขั้นตอนถัดไป */
+const LIFF_ID = "ใส่_LIFF_ID_จริง";
 
-const API_URL = 'https://script.google.com/macros/s/AKfycbxdlZTW77_ebm7yIsxjIQ8rlCK3lD3PgGY8EzaunfIuL9vVPlSkwR8wBo-SzsbbAXsi2A/exec';
+async function startNichaCRM(){
+  const status = document.getElementById("lineStatus");
+  const message = document.getElementById("message");
 
-function apiCall(action,idToken){
-  return new Promise((resolve,reject)=>{
-    const callbackName='nichaCallback_'+Date.now();
-
-    const script=document.createElement('script');
-    const params=new URLSearchParams({
-      action:action,
-      idToken:idToken,
-      callback:callbackName
-    });
-
-    const timer=setTimeout(()=>{
-      delete window[callbackName];
-      script.remove();
-      reject(new Error('หมดเวลารอข้อมูลจากฐานข้อมูล'));
-    },25000);
-
-    window[callbackName]=(data)=>{
-      clearTimeout(timer);
-      delete window[callbackName];
-      script.remove();
-
-      if(data && data.success) resolve(data);
-      else reject(new Error(data.message || 'ไม่สามารถอ่านข้อมูลสมาชิกได้'));
-    };
-
-    script.onerror=()=>{
-      clearTimeout(timer);
-      delete window[callbackName];
-      script.remove();
-      reject(new Error('ติดต่อฐานข้อมูลไม่สำเร็จ'));
-    };
-
-    script.src=API_URL+'?'+params.toString();
-    document.body.appendChild(script);
-  });
-}
-
-function showPage(page,button){
-  document.querySelectorAll('.page').forEach(el=>{
-    el.classList.remove('active');
-  });
-
-  document.getElementById(page).classList.add('active');
-
-  document.querySelectorAll('.nav-btn').forEach(el=>{
-    el.classList.remove('active');
-  });
-
-  if(button) button.classList.add('active');
-  else {
-    const index={home:0,rewards:1,history:2,profile:3}[page];
-    document.querySelectorAll('.nav-btn')[index].classList.add('active');
-  }
-
-  window.scrollTo(0,0);
-}
-
-function safeText(value){
-  return String(value == null ? '' : value);
-}
-
-function renderDashboard(data){
-  const m=data.member;
-
-  document.getElementById('memberName').textContent=m.name;
-  document.getElementById('memberLevel').textContent=m.level;
-  document.getElementById('memberPoints').textContent=m.points.toLocaleString('th-TH');
-
-  document.getElementById('levelText').textContent=m.level;
-  document.getElementById('profileName').textContent=m.name;
-  document.getElementById('profilePhone').textContent=m.phone || 'ยังไม่ได้ระบุ';
-  document.getElementById('profileLevel').textContent=m.level;
-  document.getElementById('profilePoints').textContent=m.points+' แต้ม';
-  document.getElementById('profileJoined').textContent=m.joined || '-';
-
-  document.getElementById('levelProgress').style.width='0%';
-  document.getElementById('levelHint').textContent='ขอบคุณที่เป็นสมาชิกณิชาค่ะ';
-
-  renderRewards(data.rewards || []);
-  renderHistory(data.history || []);
-  renderRedemptions(data.redemptions || []);
-
-  document.getElementById('status').style.display='none';
-  document.getElementById('app').style.display='block';
-}
-
-function renderRewards(items){
-  const list=document.getElementById('rewardList');
-  const home=document.getElementById('homeRewards');
-
-  list.innerHTML='';
-  home.innerHTML='';
-
-  if(!items.length){
-    list.innerHTML='<div class="empty">ยังไม่มีรายการของรางวัลในขณะนี้</div>';
-    home.innerHTML='<div class="empty">รอติดตามของรางวัลเร็ว ๆ นี้ค่ะ 🌸</div>';
+  if(!LIFF_ID || LIFF_ID === "ใส่_LIFF_ID_จริง"){
+    status.textContent = "รอตั้งค่า LINE LIFF";
+    message.textContent = "หน้าเว็บพร้อมแล้ว รอตั้งค่า LIFF และเชื่อมต่อฐานข้อมูลในขั้นตอนถัดไป";
     return;
   }
-
-  items.forEach(item=>{
-    const card=document.createElement('div');
-    card.className='reward';
-
-    const info=document.createElement('div');
-    const name=document.createElement('div');
-    name.className='reward-name';
-    name.textContent='🎁 '+item.name;
-
-    const points=document.createElement('div');
-    points.className='reward-points';
-    points.textContent='ใช้ '+item.points+' แต้ม';
-
-    info.append(name,points);
-
-    const status=document.createElement('small');
-    status.textContent=item.status || 'พร้อมให้แลก';
-    status.style.color='#b66f8c';
-
-    card.append(info,status);
-    list.appendChild(card);
-
-    const mini=document.createElement('div');
-    mini.className='reward';
-    mini.textContent='🎁 '+item.name+' · '+item.points+' แต้ม';
-    home.appendChild(mini);
-  });
-}
-
-function renderHistory(items){
-  const list=document.getElementById('historyList');
-  list.innerHTML='';
-
-  if(!items.length){
-    list.innerHTML='<div class="empty">ยังไม่มีประวัติการสะสมแต้มค่ะ</div>';
-    return;
-  }
-
-  items.forEach(item=>{
-    const card=document.createElement('div');
-    card.className='history-item';
-
-    const left=document.createElement('div');
-    const name=document.createElement('strong');
-    name.textContent=item.item || 'รายการใช้บริการ';
-
-    const date=document.createElement('div');
-    date.className='history-date';
-    date.textContent=item.date || '';
-
-    left.append(name,date);
-
-    const right=document.createElement('div');
-    right.className='history-value';
-    right.textContent=(Number(item.earned)>0?'+':'')+
-      (Number(item.earned)||0)+' แต้ม';
-
-    card.append(left,right);
-    list.appendChild(card);
-  });
-}
-
-function renderRedemptions(items){
-  const list=document.getElementById('redemptionList');
-  list.innerHTML='';
-
-  if(!items.length){
-    list.innerHTML='<div class="empty">ยังไม่มีประวัติการแลกรางวัลค่ะ</div>';
-    return;
-  }
-
-  items.forEach(item=>{
-    const card=document.createElement('div');
-    card.className='history-item';
-
-    const left=document.createElement('div');
-    const name=document.createElement('strong');
-    name.textContent='🎁 '+item.reward;
-
-    const date=document.createElement('div');
-    date.className='history-date';
-    date.textContent=item.date || '';
-
-    left.append(name,date);
-
-    const right=document.createElement('div');
-    right.className='history-value';
-    right.textContent='-'+(Number(item.points)||0)+' แต้ม';
-
-    card.append(left,right);
-    list.appendChild(card);
-  });
-}
-
-async function start(){
-  const status=document.getElementById('status');
 
   try{
-    await liff.init({liffId:LIFF_ID});
+    await liff.init({ liffId: LIFF_ID });
 
     if(!liff.isLoggedIn()){
-      status.textContent='กำลังเข้าสู่ระบบ LINE...';
+      status.textContent = "กรุณาเข้าสู่ระบบ LINE";
       liff.login();
       return;
     }
 
-    status.textContent='กำลังโหลดข้อมูลสมาชิก...';
+    const profile = await liff.getProfile();
+    document.getElementById("memberName").textContent =
+      profile.displayName || "สมาชิก NICHA";
 
-    const idToken=liff.getIDToken();
-
-    if(!idToken){
-      throw new Error('ไม่พบ ID Token กรุณาเปิดผ่าน LINE ใหม่');
-    }
-
-    const data=await apiCall('dashboard',idToken);
-    renderDashboard(data);
-
+    status.textContent = "เชื่อมต่อ LINE แล้ว";
+    message.textContent =
+      "ยืนยันตัวตน LINE สำเร็จ ขั้นตอนถัดไปจะเชื่อมข้อมูลสมาชิกจากฐานข้อมูล NICHA CRM";
   }catch(error){
-    status.textContent='เกิดข้อผิดพลาด: '+error.message;
+    status.textContent = "เชื่อมต่อ LINE ไม่สำเร็จ";
+    message.textContent = "กรุณาตรวจสอบ LIFF ID และการตั้งค่า LINE Login";
+    console.error(error);
   }
 }
 
-start();
+startNichaCRM();
 </script>
 </body>
 </html>
