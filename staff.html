@@ -1,1 +1,342 @@
 
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NICHA CRM | Staff</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f7f2;color:#244b38}
+.wrap{max-width:520px;margin:auto;padding:20px}
+.card{background:white;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 4px 18px #0000000c}
+h2{text-align:center;color:#286344;margin-top:8px}
+h3{margin-top:0}
+input,button,select{width:100%;padding:14px;margin:7px 0;border-radius:10px;font-size:16px}
+input,select{border:1px solid #cbdccf;background:#fff}
+button{border:0;background:#32734e;color:white;font-weight:bold;cursor:pointer}
+button.secondary{background:#e5efe8;color:#286344}
+button.danger{background:#a94b4b}
+.small{font-size:13px;color:#718477}
+.points{font-size:38px;font-weight:bold;color:#287448;text-align:center}
+.hidden{display:none}
+.result{padding:13px;border:1px solid #d9e8dc;border-radius:12px;margin:9px 0}
+.result button{margin-bottom:0}
+.status{text-align:center;font-size:14px;color:#a14c36;white-space:pre-wrap}
+.row{display:flex;gap:8px}
+.row button{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="card">
+<h2>NICHA CRM</h2>
+<p style="text-align:center">ระบบจัดการสมาชิกสำหรับพนักงาน</p>
+</div>
+
+<div id="loginBox" class="card">
+<h3>เข้าสู่ระบบพนักงาน</h3>
+<input id="pin" type="password" inputmode="numeric"
+maxlength="6" placeholder="กรอก PIN 6 หลัก">
+<button onclick="login()">เข้าสู่ระบบ</button>
+<div id="loginStatus" class="status"></div>
+</div>
+
+<div id="staffBox" class="hidden">
+<div class="card">
+<h3>ค้นหาสมาชิก</h3>
+<input id="phone" type="tel" inputmode="numeric"
+placeholder="กรอกเบอร์โทรศัพท์สมาชิก">
+<button onclick="searchMember()">ค้นหาสมาชิก</button>
+<div id="searchStatus" class="status"></div>
+<div id="results"></div>
+</div>
+
+<div id="memberBox" class="card hidden">
+<h3>ข้อมูลสมาชิก</h3>
+<p id="memberName"></p>
+<p id="memberPhone"></p>
+<p id="memberLevel"></p>
+<div class="points"><span id="memberPoints">0</span></div>
+<p class="small" style="text-align:center">แต้มคงเหลือ</p>
+
+<hr>
+<h3>เพิ่มแต้มจากยอดใช้บริการ</h3>
+<input id="amount" type="number" min="1"
+placeholder="ยอดใช้บริการ (บาท)">
+<input id="item" type="text"
+placeholder="รายการบริการ เช่น นวดไทย 60 นาที">
+<button onclick="addPoints()">บันทึกเพิ่มแต้ม</button>
+
+<hr>
+<h3>หักแต้มสมาชิก</h3>
+<input id="deduct" type="number" min="1"
+placeholder="จำนวนแต้มที่ต้องการหัก">
+<button class="danger" onclick="deductPoints()">ยืนยันหักแต้ม</button>
+
+<div id="actionStatus" class="status"></div>
+</div>
+
+<div class="card">
+<button class="secondary" onclick="logout()">ออกจากระบบ</button>
+</div>
+</div>
+
+</div>
+
+<script>
+const API_URL =
+'https://script.google.com/macros/s/AKfycbwoJMHW6PWqh7OHwmyo8_YpJB5LJfVp5ZDYdRTNJstNklfYYRmQc_YDYr1I0Vw3_XTw/exec';
+
+let staffPin = '';
+let currentMember = null;
+
+function api(action, params = {}) {
+  return new Promise((resolve, reject) => {
+    const callbackName =
+      'nichaCallback' + Date.now() + Math.floor(Math.random()*1000);
+
+    const script = document.createElement('script');
+    const query = new URLSearchParams({
+      action,
+      ...params,
+      callback: callbackName
+    });
+
+    const timer = setTimeout(() => {
+      cleanup();
+      reject(new Error('หมดเวลารอการเชื่อมต่อ'));
+    }, 20000);
+
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[callbackName];
+      script.remove();
+    }
+
+    window[callbackName] = data => {
+      cleanup();
+      resolve(data);
+    };
+
+    script.onerror = () => {
+      cleanup();
+      reject(new Error('เชื่อมต่อระบบไม่สำเร็จ'));
+    };
+
+    script.src = API_URL + '?' + query.toString();
+    document.body.appendChild(script);
+  });
+}
+
+async function login() {
+  const pin = document.getElementById('pin').value.trim();
+  const status = document.getElementById('loginStatus');
+
+  if (!/^[0-9]{6}$/.test(pin)) {
+    status.textContent = 'กรุณากรอก PIN 6 หลัก';
+    return;
+  }
+
+  status.textContent = 'กำลังตรวจสอบ...';
+
+  try {
+    const result = await api('staffLogin', {pin});
+
+    if (!result.success) {
+      throw new Error(result.message || 'PIN ไม่ถูกต้อง');
+    }
+
+    staffPin = pin;
+    document.getElementById('loginBox').classList.add('hidden');
+    document.getElementById('staffBox').classList.remove('hidden');
+    status.textContent = '';
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+async function searchMember() {
+  const phone = document.getElementById('phone').value.trim();
+  const status = document.getElementById('searchStatus');
+  const resultsBox = document.getElementById('results');
+
+  document.getElementById('memberBox').classList.add('hidden');
+  resultsBox.innerHTML = '';
+
+  if (phone.replace(/\D/g,'').length < 4) {
+    status.textContent = 'กรุณากรอกเบอร์โทรอย่างน้อย 4 หลัก';
+    return;
+  }
+
+  status.textContent = 'กำลังค้นหา...';
+
+  try {
+    const result = await api('searchMember', {
+      pin: staffPin,
+      phone
+    });
+
+    if (!result.success) {
+      throw new Error(result.message || 'ค้นหาไม่สำเร็จ');
+    }
+
+    if (!result.members || result.members.length === 0) {
+      status.textContent = 'ไม่พบข้อมูลสมาชิก';
+      return;
+    }
+
+    status.textContent = 'พบสมาชิก ' + result.count + ' รายการ';
+
+    result.members.forEach(member => {
+      const div = document.createElement('div');
+      div.className = 'result';
+
+      const name = document.createElement('strong');
+      name.textContent = member.name || 'ไม่ระบุชื่อ';
+
+      const detail = document.createElement('p');
+      detail.textContent =
+        'เบอร์โทร: ' + (member.phone || '-') +
+        ' | แต้ม: ' + (member.points || 0);
+
+      const btn = document.createElement('button');
+      btn.textContent = 'เลือกรายนี้';
+      btn.onclick = () => selectMember(member);
+
+      div.append(name, detail, btn);
+      resultsBox.appendChild(div);
+    });
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+function selectMember(member) {
+  currentMember = member;
+
+  document.getElementById('memberName').textContent =
+    'ชื่อ: ' + (member.name || '-');
+
+  document.getElementById('memberPhone').textContent =
+    'เบอร์โทร: ' + (member.phone || '-');
+
+  document.getElementById('memberLevel').textContent =
+    'ระดับสมาชิก: ' + (member.level || 'Bronze');
+
+  document.getElementById('memberPoints').textContent =
+    Number(member.points) || 0;
+
+  document.getElementById('actionStatus').textContent = '';
+  document.getElementById('memberBox').classList.remove('hidden');
+}
+
+async function addPoints() {
+  if (!currentMember) return;
+
+  const amount = Number(document.getElementById('amount').value);
+  const item = document.getElementById('item').value.trim();
+  const status = document.getElementById('actionStatus');
+
+  if (!amount || amount < 1) {
+    status.textContent = 'กรุณากรอกยอดใช้บริการ';
+    return;
+  }
+
+  if (!confirm('ยืนยันเพิ่มแต้มจากยอด ' + amount + ' บาท ใช่หรือไม่?')) return;
+
+  status.textContent = 'กำลังบันทึก...';
+
+  try {
+    const result = await api('addPoints', {
+      pin: staffPin,
+      lineUserId: currentMember.lineUserId,
+      amount: String(amount),
+      item
+    });
+
+    if (!result.success) {
+      throw new Error(result.message || 'เพิ่มแต้มไม่สำเร็จ');
+    }
+
+    status.textContent = result.message || 'เพิ่มแต้มสำเร็จ';
+    document.getElementById('amount').value = '';
+    document.getElementById('item').value = '';
+    await refreshMember();
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+async function deductPoints() {
+  if (!currentMember) return;
+
+  const points = Number(document.getElementById('deduct').value);
+  const status = document.getElementById('actionStatus');
+
+  if (!Number.isInteger(points) || points < 1) {
+    status.textContent = 'กรุณากรอกจำนวนแต้มที่ต้องการหัก';
+    return;
+  }
+
+  if (points > Number(currentMember.points || 0)) {
+    status.textContent = 'แต้มของสมาชิกไม่เพียงพอ';
+    return;
+  }
+
+  if (!confirm('ยืนยันหัก ' + points + ' แต้ม ใช่หรือไม่?')) return;
+
+  status.textContent = 'กำลังบันทึก...';
+
+  try {
+    const result = await api('deductPoints', {
+      pin: staffPin,
+      lineUserId: currentMember.lineUserId,
+      points: String(points)
+    });
+
+    if (!result.success) {
+      throw new Error(result.message || 'หักแต้มไม่สำเร็จ');
+    }
+
+    status.textContent = result.message || 'หักแต้มสำเร็จ';
+    document.getElementById('deduct').value = '';
+    await refreshMember();
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+async function refreshMember() {
+  const result = await api('getMember', {
+    lineUserId: currentMember.lineUserId
+  });
+
+  if (result.success && result.member) {
+    currentMember.points = Number(result.member.points) || 0;
+    currentMember.level = result.member.level || currentMember.level;
+
+    document.getElementById('memberPoints').textContent =
+      currentMember.points;
+
+    document.getElementById('memberLevel').textContent =
+      'ระดับสมาชิก: ' + currentMember.level;
+  }
+}
+
+function logout() {
+  staffPin = '';
+  currentMember = null;
+
+  document.getElementById('pin').value = '';
+  document.getElementById('phone').value = '';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('memberBox').classList.add('hidden');
+  document.getElementById('staffBox').classList.add('hidden');
+  document.getElementById('loginBox').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
+
