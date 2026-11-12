@@ -37,7 +37,7 @@ button{
   border:0;border-radius:10px;padding:13px 16px;
   font-size:14px;font-weight:bold;cursor:pointer;
 }
-button:disabled{opacity:.5}
+button:disabled{opacity:.5;cursor:not-allowed}
 .primary{background:#123d32;color:white;width:100%;margin-top:14px}
 .menu{
   display:grid;
@@ -94,7 +94,7 @@ button:disabled{opacity:.5}
     <p>STAFF CENTER · ศูนย์จัดการระบบพนักงาน</p>
   </div>
 
-  <!-- LOGIN -->
+  <!-- LOGIN จุดเดียว -->
   <section id="loginPanel" class="card">
     <h2>เข้าสู่ระบบพนักงาน</h2>
     <label for="centerPin">รหัส PIN พนักงาน 6 หลัก</label>
@@ -167,7 +167,9 @@ button:disabled{opacity:.5}
         <button class="back" onclick="backToMenu()">
           ← กลับหน้ารวม
         </button>
+
         <strong id="pageTitle">NICHA CRM</strong>
+
         <button class="logout" onclick="logoutCenter()">
           ออกจากระบบ
         </button>
@@ -196,45 +198,32 @@ const API_URL =
 const BASE_URL =
 'https://jifenii11-cell.github.io/nicha-crm/';
 
+const SESSION_KEY = 'NICHA_STAFF_PIN';
+
 let staffPIN = '';
 let currentPage = '';
-let frameLoaded = {};
-let frameCreated = {};
 
 const PAGE_INFO = {
   'staff.html': {
-    title:'บันทึกบริการ / เพิ่มแต้ม',
-    pinId:'pinInput',
-    loginPanelId:'loginSection'
+    title:'บันทึกบริการ / เพิ่มแต้ม'
   },
   'rewards-admin.html': {
-    title:'จัดการรางวัลแลกแต้ม',
-    pinId:'pin',
-    loginPanelId:'loginCard'
+    title:'จัดการรางวัลแลกแต้ม'
   },
   'privileges-admin.html': {
-    title:'จัดการสิทธิพิเศษสมาชิก',
-    pinId:'staffPin',
-    loginPanelId:'loginPanel'
+    title:'จัดการสิทธิพิเศษสมาชิก'
   },
   'visits-admin.html': {
-    title:'จัดการรางวัลสะสมครั้ง',
-    pinId:'pin',
-    loginPanelId:'loginCard'
+    title:'จัดการรางวัลสะสมครั้ง'
   },
   'visits-staff.html': {
-    title:'จัดการสะสมครั้งสำหรับพนักงาน',
-    pinId:'pinInput',
-    loginPanelId:'loginSection'
+    title:'จัดการสะสมครั้งสำหรับพนักงาน'
   },
   'coupons-admin.html': {
-    title:'จัดการคูปอง',
-    pinId:'loginPin',
-    loginPanelId:'loginArea'
+    title:'จัดการคูปอง'
   },
   'coupon-history.html': {
-    title:'ประวัติการใช้คูปอง',
-    noLogin:true
+    title:'ประวัติการใช้คูปอง'
   }
 };
 
@@ -290,8 +279,14 @@ async function loginCenter() {
 
     staffPIN = pin;
 
+    // ใช้ session เดียวกันกับ iframe ที่อยู่บนโดเมนเดียวกัน
+    sessionStorage.setItem(SESSION_KEY,pin);
+
     document.getElementById('loginPanel').classList.add('hidden');
     document.getElementById('dashboard').classList.remove('hidden');
+
+    document.getElementById('centerPin').value = '';
+    showMessage('loginMessage','');
 
   } catch(error) {
     showMessage('loginMessage',error.message || 'เข้าสู่ระบบไม่สำเร็จ');
@@ -302,7 +297,7 @@ async function loginCenter() {
 }
 
 function openPage(file) {
-  if(!staffPIN) {
+  if(!staffPIN || sessionStorage.getItem(SESSION_KEY) !== staffPIN) {
     alert('กรุณาเข้าสู่ระบบก่อน');
     return;
   }
@@ -315,87 +310,24 @@ function openPage(file) {
   document.getElementById('menuPanel').classList.add('hidden');
   document.getElementById('pagePanel').classList.remove('hidden');
   document.getElementById('pageTitle').textContent = info.title;
+  document.getElementById('frameStatus').textContent = 'กำลังเปิดระบบ...';
 
   document.querySelectorAll('.menu button').forEach(btn => {
     btn.classList.toggle('active',btn.dataset.page === file);
   });
 
   const frame = document.getElementById('appFrame');
+  const targetURL = BASE_URL + file;
 
-  if(!frameCreated[file]) {
-    frameCreated[file] = true;
-
-    frame.onload = async function() {
-      frameLoaded[file] = true;
-      await prepareFrame(file);
-    };
-
-    frame.src = BASE_URL + file;
-  } else {
-    document.getElementById('frameStatus').textContent = '';
-    if(frameLoaded[file]) {
-      prepareFrame(file);
-    }
-  }
-}
-
-async function prepareFrame(file) {
-  const frame = document.getElementById('appFrame');
-  const info = PAGE_INFO[file];
-
-  try {
-    const win = frame.contentWindow;
-    const doc = frame.contentDocument;
-
-    if(!win || !doc) {
-      throw new Error('ไม่สามารถเปิดหน้าเดิมได้');
-    }
-
-    if(info.noLogin) {
-      document.getElementById('frameStatus').textContent =
-        'เปิดหน้าประวัติคูปองแล้ว';
-      return;
-    }
-
-    const loginPanel = doc.getElementById(info.loginPanelId);
-
-    if(!loginPanel) {
-      document.getElementById('frameStatus').textContent =
-        'ไม่พบช่องเข้าสู่ระบบของหน้านี้';
-      return;
-    }
-
-    // หากหน้าเดิมเข้าสู่ระบบอยู่แล้ว ไม่ต้องล็อกอินใหม่
-    if(loginPanel.classList.contains('hidden')) {
-      document.getElementById('frameStatus').textContent =
-        'เข้าสู่ระบบหน้านี้แล้ว';
-      return;
-    }
-
-    const pinInput = doc.getElementById(info.pinId);
-
-    if(!pinInput || typeof win.login !== 'function') {
-      document.getElementById('frameStatus').textContent =
-        'ไม่พบฟังก์ชันเข้าสู่ระบบ กรุณาตรวจสอบหน้าเดิม';
-      return;
-    }
-
-    pinInput.value = staffPIN;
+  // โหลดหน้าใหม่เมื่อเปลี่ยนเมนู เพื่อให้หน้าอ่าน session PIN ล่าสุด
+  frame.onload = function() {
+    if(currentPage !== file) return;
 
     document.getElementById('frameStatus').textContent =
-      'กำลังเชื่อมต่อระบบพนักงาน...';
+      'เปิดหน้า ' + info.title + ' แล้ว';
+  };
 
-    await win.login();
-
-    document.getElementById('frameStatus').textContent =
-      loginPanel.classList.contains('hidden')
-        ? 'พร้อมใช้งานแล้ว'
-        : 'กรุณาตรวจสอบการเข้าสู่ระบบของหน้านี้';
-
-  } catch(error) {
-    document.getElementById('frameStatus').textContent =
-      'เกิดข้อผิดพลาด: ' + error.message;
-  }
+  frame.src = targetURL;
 }
 
 function backToMenu() {
@@ -406,27 +338,36 @@ function backToMenu() {
     btn.classList.remove('active');
   });
 
-  // ไม่ปิด iframe เพื่อรักษาข้อมูลและสถานะของหน้าเดิม
   currentPage = '';
 }
+
+// ให้หน้าใน iframe เรียกกลับหน้ารวมได้
+window.backToMenu = backToMenu;
 
 function logoutCenter() {
   if(!confirm('ต้องการออกจากระบบพนักงานหรือไม่?')) return;
 
   staffPIN = '';
   currentPage = '';
-  frameCreated = {};
-  frameLoaded = {};
+
+  // ล้าง PIN กลาง
+  sessionStorage.removeItem(SESSION_KEY);
 
   const frame = document.getElementById('appFrame');
   frame.onload = null;
   frame.src = 'about:blank';
 
+  document.getElementById('frameStatus').textContent = '';
   document.getElementById('centerPin').value = '';
+
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('pagePanel').classList.add('hidden');
   document.getElementById('menuPanel').classList.remove('hidden');
   document.getElementById('loginPanel').classList.remove('hidden');
+
+  document.querySelectorAll('.menu button').forEach(btn => {
+    btn.classList.remove('active');
+  });
 
   showMessage('loginMessage','');
 }
