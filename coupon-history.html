@@ -3,93 +3,328 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#173f35">
-<title>NICHA CRM | Coupon History</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#123d32">
+<title>NICHA CRM | ประวัติการใช้คูปอง</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap');
-:root{--green:#173f35;--green2:#285c4b;--gold:#c6a15b;--cream:#f8f6ef;--text:#26352f;--muted:#78847d;--border:#e8e5dc}
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--text);font-family:'Kanit',sans-serif;font-weight:300}
-button,input{font:inherit}
-.page{max-width:1100px;margin:auto;padding:22px 14px 45px}
-.header{background:linear-gradient(135deg,#173f35,#285c4b);color:white;border-radius:20px;padding:25px;margin-bottom:20px}
-.brand{font-family:'Playfair Display',serif;font-size:27px;letter-spacing:2px;color:#e3c783}
-.subtitle{font-size:13px;color:#d7e1db;margin-top:5px}
-.header-line{height:1px;background:#ffffff35;margin:17px 0}
-.header-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
-.card{background:white;border:1px solid var(--border);border-radius:17px;padding:21px;margin-bottom:18px;box-shadow:0 5px 20px #243b2e08}
-.title{font-size:19px;font-weight:500;color:var(--green);margin:0 0 8px}
-.gold-line{width:42px;height:3px;background:var(--gold);border-radius:4px;margin:12px 0 18px}
-.btn{border:0;border-radius:10px;padding:10px 16px;cursor:pointer}
-.btn-green{background:var(--green);color:white}
-.btn-light{background:#edf2ee;color:var(--green)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-input{width:100%;border:1px solid #dedfd8;border-radius:10px;padding:11px 12px;outline:none}
-input:focus{border-color:var(--gold)}
-.field{max-width:350px;margin-bottom:12px}
-label{display:block;font-size:13px;margin-bottom:6px;color:#59665f}
-.status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;font-size:13px}
-.status.show{display:block}
-.status.error{background:#faeae8;color:#a53d38}
-.status.success{background:#e8f4ec;color:#276443}
-.status.info{background:#edf2f5;color:#426273}
-.summary{font-size:13px;color:var(--muted);margin-bottom:14px}
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
-th{color:var(--green);font-weight:500;background:#f7f8f4;white-space:nowrap}
-.badge{display:inline-block;border-radius:20px;padding:4px 10px;font-size:11px;background:#e8f3eb;color:#286044;white-space:nowrap}
-.badge.pending{background:#fff3d9;color:#946719}
-.badge.used{background:#e8e8e8;color:#555}
-.empty{text-align:center;color:var(--muted);padding:28px}
-.login{max-width:420px;margin:50px auto}
-.login .brand{color:var(--green);text-align:center}
-.login p{text-align:center;color:var(--muted);font-size:13px}
-.footer{text-align:center;color:#9aa39d;font-size:11px;margin-top:25px}
-@media(max-width:600px){.page{padding:13px 10px 35px}.header{padding:20px}.card{padding:16px}.brand{font-size:24px}}
+
+:root{
+  --green:#123d32;
+  --green2:#1d5948;
+  --gold:#c8a45d;
+  --gold2:#ead5a0;
+  --bg:#f5f7f3;
+  --text:#263b32;
+  --muted:#829087;
+  --white:#fff;
+  --border:#e8ece7;
+}
+
+body{
+  margin:0;
+  font-family:'Kanit',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+.header{
+  background:linear-gradient(135deg,#0e3028,#1d5948);
+  color:white;
+  padding:28px 20px 36px;
+  border-radius:0 0 28px 28px;
+  box-shadow:0 8px 25px rgba(18,61,50,.15);
+}
+
+.header-inner{
+  max-width:1100px;
+  margin:auto;
+}
+
+.brand{
+  color:var(--gold2);
+  font-family:'Playfair Display',serif;
+  font-size:14px;
+  letter-spacing:3px;
+}
+
+.header h1{
+  font-size:25px;
+  font-weight:500;
+  margin:8px 0 4px;
+}
+
+.header p{
+  margin:0;
+  color:#d4e1d9;
+  font-size:13px;
+  font-weight:300;
+}
+
+.container{
+  max-width:1100px;
+  margin:-18px auto 40px;
+  padding:0 16px;
+}
+
+.card{
+  background:white;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 8px 30px rgba(20,55,40,.06);
+  border:1px solid rgba(200,164,93,.15);
+}
+
+.toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.toolbar h2{
+  font-size:18px;
+  font-weight:500;
+  margin:0;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+button{
+  border:0;
+  border-radius:12px;
+  padding:10px 16px;
+  font-family:'Kanit',sans-serif;
+  font-size:13px;
+  cursor:pointer;
+  transition:.2s;
+}
+
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
+}
+
+.btn-back{
+  background:#edf2ee;
+  color:var(--green);
+}
+
+.btn-refresh{
+  background:var(--green);
+  color:white;
+}
+
+button:hover:not(:disabled){
+  transform:translateY(-1px);
+  opacity:.9;
+}
+
+.summary{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.summary-box{
+  background:linear-gradient(135deg,#f8f5eb,#fffdf8);
+  border:1px solid #eee4ca;
+  padding:16px;
+  border-radius:16px;
+}
+
+.summary-label{
+  color:#8d8064;
+  font-size:12px;
+}
+
+.summary-value{
+  color:var(--green);
+  font-size:25px;
+  font-weight:600;
+  margin-top:3px;
+}
+
+.search-wrap{
+  margin-bottom:16px;
+}
+
+.search-wrap input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px 15px;
+  font-family:'Kanit',sans-serif;
+  font-size:14px;
+  outline:none;
+  background:#fcfdfb;
+}
+
+.search-wrap input:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(200,164,93,.12);
+}
+
+.table-wrap{
+  overflow-x:auto;
+  border:1px solid var(--border);
+  border-radius:14px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:850px;
+}
+
+th{
+  background:#f4f7f3;
+  color:var(--green);
+  font-size:12px;
+  font-weight:500;
+  padding:14px 12px;
+  text-align:left;
+  white-space:nowrap;
+}
+
+td{
+  padding:14px 12px;
+  border-top:1px solid #edf0ec;
+  font-size:13px;
+  vertical-align:middle;
+}
+
+tbody tr:hover{
+  background:#fcfdfb;
+}
+
+.sub{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  margin-top:3px;
+  word-break:break-all;
+}
+
+.status{
+  display:inline-block;
+  border-radius:30px;
+  padding:5px 11px;
+  font-size:11px;
+  white-space:nowrap;
+}
+
+.status-pending{
+  background:#fff4d9;
+  color:#9a6a13;
+}
+
+.status-used{
+  background:#e4f3e9;
+  color:#237345;
+}
+
+.status-other{
+  background:#eef0f2;
+  color:#59636b;
+}
+
+.loading,.empty,.error{
+  padding:35px 15px;
+  text-align:center;
+  color:var(--muted);
+  font-size:14px;
+}
+
+.error{
+  color:#b63c3c;
+}
+
+.footer{
+  text-align:center;
+  color:#9aa49d;
+  font-size:11px;
+  padding:20px;
+}
+
+@media(max-width:600px){
+  .header{padding:24px 18px 34px}
+  .header h1{font-size:22px}
+  .card{padding:16px}
+  .toolbar{align-items:flex-start}
+  .toolbar h2{width:100%}
+  .actions{width:100%}
+  .actions button{flex:1}
+  .summary-value{font-size:22px}
+}
 </style>
 </head>
+
 <body>
 
-<div class="page">
-  <header class="header">
+<header class="header">
+  <div class="header-inner">
     <div class="brand">NICHA CRM</div>
-    <div class="subtitle">COUPON HISTORY</div>
-    <div class="header-line"></div>
-    <div class="header-bottom">
-      <span>ประวัติการใช้คูปองของสมาชิก</span>
-      <a href="coupons-admin.html" style="text-decoration:none">
-        <button class="btn btn-light">← กลับหน้าจัดการคูปอง</button>
-      </a>
-    </div>
-  </header>
+    <h1>ประวัติการใช้คูปอง</h1>
+    <p>Coupon Usage History · ระบบจัดการสมาชิก ณิชานวดเพื่อสุขภาพ</p>
+  </div>
+</header>
 
-  <section class="card login" id="loginBox">
-    <div class="brand">NICHA CRM</div>
-    <p>ยืนยันตัวตนพนักงานเพื่อดูประวัติ</p>
-    <div class="field">
-      <label>รหัส PIN พนักงาน 6 หลัก</label>
-      <input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="กรอกรหัส PIN">
-    </div>
-    <button class="btn btn-green" id="loginBtn" onclick="loadHistory()">เข้าสู่ระบบและดูประวัติ</button>
-    <div id="loginStatus" class="status"></div>
-  </section>
+<main class="container">
+  <section class="card">
 
-  <section class="card" id="historyBox" style="display:none">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-      <h2 class="title">ประวัติการใช้คูปอง</h2>
-      <button class="btn btn-green" onclick="loadHistory()">รีเฟรชประวัติ</button>
+    <div class="toolbar">
+      <h2>รายการประวัติทั้งหมด</h2>
+
+      <div class="actions">
+        <button class="btn-back" onclick="goBack()">
+          ← กลับหน้าจัดการคูปอง
+        </button>
+
+        <button class="btn-refresh" id="refreshBtn" onclick="loadHistory()">
+          ↻ รีเฟรชรายการ
+        </button>
+      </div>
     </div>
-    <div class="gold-line"></div>
-    <div class="summary" id="summary">กำลังโหลดข้อมูล...</div>
-    <div id="historyStatus" class="status"></div>
+
+    <div class="summary">
+      <div class="summary-box">
+        <div class="summary-label">ประวัติทั้งหมด</div>
+        <div class="summary-value" id="totalCount">0</div>
+      </div>
+
+      <div class="summary-box">
+        <div class="summary-label">ยืนยันใช้คูปองแล้ว</div>
+        <div class="summary-value" id="usedCount">0</div>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <input
+        type="search"
+        id="searchInput"
+        placeholder="ค้นหาชื่อสมาชิก ชื่อคูปอง หรือรหัสคูปอง..."
+        oninput="renderHistory()"
+      >
+    </div>
+
     <div class="table-wrap">
       <table>
         <thead>
           <tr>
-            <th>วันและเวลา</th>
-            <th>ชื่อสมาชิก</th>
+            <th>วันที่และเวลา</th>
+            <th>สมาชิก</th>
             <th>ชื่อคูปอง</th>
             <th>รายการ</th>
             <th>สถานะเดิม</th>
@@ -97,114 +332,198 @@ th{color:var(--green);font-weight:500;background:#f7f8f4;white-space:nowrap}
             <th>ผู้ดำเนินการ</th>
           </tr>
         </thead>
-        <tbody id="historyTable">
-          <tr><td colspan="7" class="empty">ยังไม่มีข้อมูล</td></tr>
+
+        <tbody id="historyBody">
+          <tr>
+            <td colspan="7" class="loading">
+              กำลังโหลดประวัติ...
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
-  </section>
 
-  <div class="footer">NICHA CRM • COUPON HISTORY</div>
+  </section>
+</main>
+
+<div class="footer">
+  NICHA CRM · Premium Member Management
 </div>
 
 <script>
-const API_URL='https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
-let staffPin='';
+const API_URL =
+'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
-async function api(action,payload={}){
-  const response=await fetch(API_URL,{
-    method:'POST',
-    headers:{'Content-Type':'text/plain;charset=utf-8'},
-    body:JSON.stringify({action,...payload})
-  });
-  const text=await response.text();
-  let data;
-  try{data=JSON.parse(text)}
-  catch(e){throw new Error('เซิร์ฟเวอร์ส่งข้อมูลกลับมาไม่ถูกต้อง')}
-  if(!response.ok)throw new Error(data.message||'เชื่อมต่อไม่สำเร็จ');
-  if(data.success===false)throw new Error(data.message||'เกิดข้อผิดพลาด');
-  return data;
-}
+let historyData = [];
 
-function showStatus(id,message,type='info'){
-  const el=document.getElementById(id);
-  el.textContent=message;
-  el.className='status show '+type;
-}
-
-function escapeHtml(value){
-  return String(value??'').replace(/[&<>"']/g,char=>({
-    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+function escapeHTML(value){
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
   })[char]);
 }
 
-function formatDateTime(value){
-  if(!value)return'-';
-  const date=new Date(value);
-  if(Number.isNaN(date.getTime()))return String(value);
+function formatDate(value){
+  if(!value) return '-';
+
+  const date = new Date(value);
+
+  if(isNaN(date.getTime())) {
+    return escapeHTML(value);
+  }
+
   return date.toLocaleString('th-TH',{
-    year:'numeric',month:'2-digit',day:'2-digit',
-    hour:'2-digit',minute:'2-digit'
+    day:'2-digit',
+    month:'short',
+    year:'numeric',
+    hour:'2-digit',
+    minute:'2-digit'
   });
 }
 
-async function loadHistory(){
-  const pin=document.getElementById('pinInput').value.trim();
-  if(!staffPin&&!/^\d{6}$/.test(pin)){
-    showStatus('loginStatus','กรุณากรอกรหัส PIN 6 หลัก','error');
-    return;
-  }
-  if(!staffPin)staffPin=pin;
+function getStatusClass(status){
+  const value = String(status || '').trim();
 
-  const button=document.getElementById('loginBtn');
-  button.disabled=true;
-  button.textContent='กำลังโหลด...';
+  if(value === 'รอยืนยัน') return 'status-pending';
+  if(value === 'ใช้แล้ว') return 'status-used';
+
+  return 'status-other';
+}
+
+function statusHTML(status){
+  const value = status || '-';
+
+  return `<span class="status ${getStatusClass(value)}">
+    ${escapeHTML(value)}
+  </span>`;
+}
+
+async function loadHistory(){
+  const body = document.getElementById('historyBody');
+  const button = document.getElementById('refreshBtn');
+
+  body.innerHTML = `
+    <tr>
+      <td colspan="7" class="loading">กำลังโหลดประวัติ...</td>
+    </tr>`;
+
+  button.disabled = true;
+  button.textContent = 'กำลังโหลด...';
 
   try{
-    const data=await api('getCouponHistory',{pin:staffPin});
-    const history=Array.isArray(data.history)?data.history:[];
-    document.getElementById('loginBox').style.display='none';
-    document.getElementById('historyBox').style.display='block';
-    document.getElementById('summary').textContent=
-      'ประวัติทั้งหมด '+(data.count??history.length)+' รายการ';
+    const response = await fetch(API_URL,{
+      method:'POST',
+      headers:{
+        'Content-Type':'text/plain;charset=utf-8'
+      },
+      body:JSON.stringify({
+        action:'getCouponHistory'
+      })
+    });
 
-    const tbody=document.getElementById('historyTable');
-    if(!history.length){
-      tbody.innerHTML='<tr><td colspan="7" class="empty">ยังไม่มีประวัติการใช้คูปอง</td></tr>';
-    }else{
-      tbody.innerHTML=history.map(item=>`
-        <tr>
-          <td>${escapeHtml(formatDateTime(item.date))}</td>
-          <td>${escapeHtml(item.memberName||'-')}</td>
-          <td>${escapeHtml(item.couponName||'-')}</td>
-          <td>${escapeHtml(item.action||'-')}</td>
-          <td>${escapeHtml(item.oldStatus||'-')}</td>
-          <td>
-            <span class="badge ${item.newStatus==='ใช้แล้ว'?'used':item.newStatus==='รอยืนยัน'?'pending':''}">
-              ${escapeHtml(item.newStatus||'-')}
-            </span>
-          </td>
-          <td>${escapeHtml(item.actor||'-')}</td>
-        </tr>
-      `).join('');
+    if(!response.ok){
+      throw new Error('เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ');
     }
-    document.getElementById('historyStatus').className='status';
+
+    const data = await response.json();
+
+    if(!data.success){
+      throw new Error(data.message || 'ไม่สามารถโหลดประวัติได้');
+    }
+
+    historyData = Array.isArray(data.history)
+      ? data.history
+      : [];
+
+    document.getElementById('totalCount').textContent =
+      historyData.length.toLocaleString('th-TH');
+
+    document.getElementById('usedCount').textContent =
+      historyData.filter(item =>
+        String(item.newStatus || '').trim() === 'ใช้แล้ว'
+      ).length.toLocaleString('th-TH');
+
+    renderHistory();
+
   }catch(error){
-    if(!staffPin){
-      staffPin='';
-      showStatus('loginStatus',error.message,'error');
-    }else{
-      showStatus('historyStatus',error.message,'error');
-    }
+    body.innerHTML = `
+      <tr>
+        <td colspan="7" class="error">
+          ${escapeHTML(error.message || 'เกิดข้อผิดพลาด')}
+          <br><br>
+          กรุณากดปุ่มรีเฟรชเพื่อลองอีกครั้ง
+        </td>
+      </tr>`;
   }finally{
-    button.disabled=false;
-    button.textContent='เข้าสู่ระบบและดูประวัติ';
+    button.disabled = false;
+    button.textContent = '↻ รีเฟรชรายการ';
   }
 }
 
-document.getElementById('pinInput').addEventListener('keydown',event=>{
-  if(event.key==='Enter')loadHistory();
-});
+function renderHistory(){
+  const body = document.getElementById('historyBody');
+  const keyword = document.getElementById('searchInput')
+    .value.trim().toLowerCase();
+
+  const filtered = historyData.filter(item => {
+    const text = [
+      item.couponId,
+      item.lineUserId,
+      item.memberName,
+      item.couponName,
+      item.action,
+      item.oldStatus,
+      item.newStatus,
+      item.actor
+    ].join(' ').toLowerCase();
+
+    return text.includes(keyword);
+  });
+
+  if(filtered.length === 0){
+    body.innerHTML = `
+      <tr>
+        <td colspan="7" class="empty">
+          ไม่พบประวัติการใช้คูปอง
+        </td>
+      </tr>`;
+    return;
+  }
+
+  body.innerHTML = filtered.map(item => `
+    <tr>
+      <td>${formatDate(item.date)}</td>
+
+      <td>
+        ${escapeHTML(item.memberName || '-')}
+        <span class="sub">${escapeHTML(item.lineUserId || '')}</span>
+      </td>
+
+      <td>
+        ${escapeHTML(item.couponName || '-')}
+        <span class="sub">${escapeHTML(item.couponId || '')}</span>
+      </td>
+
+      <td>${escapeHTML(item.action || '-')}</td>
+
+      <td>${statusHTML(item.oldStatus)}</td>
+
+      <td>${statusHTML(item.newStatus)}</td>
+
+      <td>${escapeHTML(item.actor || '-')}</td>
+    </tr>
+  `).join('');
+}
+
+function goBack(){
+  window.location.href = 'coupons-admin.html';
+}
+
+loadHistory();
 </script>
+
 </body>
 </html>
