@@ -251,35 +251,15 @@ button:disabled{
     <p>ระบบจัดการสะสมครั้งสำหรับพนักงาน</p>
   </div>
 
-  <!-- LOGIN -->
-  <section id="loginSection" class="card">
-    <h2>เข้าสู่ระบบพนักงาน</h2>
-
-    <div class="field">
-      <label>รหัส PIN พนักงาน</label>
-      <input
-        id="pinInput"
-        type="password"
-        inputmode="numeric"
-        maxlength="6"
-        placeholder="กรอกรหัส PIN"
-      >
-    </div>
-
-    <button class="btn" id="loginBtn" onclick="login()">
-      เข้าสู่ระบบ
-    </button>
-
-    <div id="loginMessage" class="message"></div>
-  </section>
-
   <!-- STAFF AREA -->
   <section id="staffSection" class="hidden">
 
     <div class="card">
       <div class="section-title">
         <h2>ค้นหาสมาชิก</h2>
-        <button class="btn-light" onclick="logout()">ออกจากระบบ</button>
+        <button class="btn-light" onclick="backToCenter()">
+          กลับหน้ารวม
+        </button>
       </div>
 
       <div class="field">
@@ -369,10 +349,49 @@ button:disabled{
 const API_URL =
 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
+const SESSION_KEY = 'NICHA_STAFF_PIN';
+
 let staffPin = '';
 let currentMember = null;
 let currentVisits = 0;
 let visitRewards = [];
+
+/* =========================
+   INITIALIZE SESSION
+========================= */
+
+function initializePage() {
+  staffPin = sessionStorage.getItem(SESSION_KEY) || '';
+
+  if (!/^\d{6}$/.test(staffPin)) {
+    window.top.location.href = 'staff-center.html';
+    return;
+  }
+
+  document.getElementById('staffSection').classList.remove('hidden');
+
+  showMessage(
+    'searchMessage',
+    'เข้าสู่ระบบแล้ว กรุณาค้นหาสมาชิก',
+    'success'
+  );
+}
+
+/* =========================
+   BACK TO CENTER
+========================= */
+
+function backToCenter() {
+  if (
+    window.parent &&
+    window.parent !== window &&
+    typeof window.parent.backToMenu === 'function'
+  ) {
+    window.parent.backToMenu();
+  } else {
+    window.location.href = 'staff-center.html';
+  }
+}
 
 /* =========================
    API
@@ -452,62 +471,6 @@ function escapeHTML(value) {
 }
 
 /* =========================
-   LOGIN
-========================= */
-
-async function login() {
-  const pin = document.getElementById('pinInput').value.trim();
-
-  hideMessage('loginMessage');
-
-  if (!pin) {
-    showMessage('loginMessage', 'กรุณากรอกรหัส PIN');
-    return;
-  }
-
-  setLoading('loginBtn', true, 'กำลังตรวจสอบ...');
-
-  try {
-    const result = await api('staffLogin', {
-      pin: pin
-    });
-
-    if (result.success === false) {
-      throw new Error(result.message || 'PIN ไม่ถูกต้อง');
-    }
-
-    staffPin = pin;
-
-    document.getElementById('loginSection').classList.add('hidden');
-    document.getElementById('staffSection').classList.remove('hidden');
-
-    showMessage('searchMessage', 'เข้าสู่ระบบสำเร็จ กรุณาค้นหาสมาชิก', 'success');
-
-  } catch (error) {
-    showMessage('loginMessage', error.message || 'เข้าสู่ระบบไม่สำเร็จ');
-  } finally {
-    setLoading('loginBtn', false);
-  }
-}
-
-function logout() {
-  staffPin = '';
-  currentMember = null;
-  currentVisits = 0;
-  visitRewards = [];
-
-  document.getElementById('pinInput').value = '';
-  document.getElementById('phoneInput').value = '';
-
-  document.getElementById('staffSection').classList.add('hidden');
-  document.getElementById('loginSection').classList.remove('hidden');
-  document.getElementById('memberSection').classList.add('hidden');
-
-  hideMessage('loginMessage');
-  hideMessage('searchMessage');
-}
-
-/* =========================
    SEARCH MEMBER
 ========================= */
 
@@ -528,23 +491,6 @@ async function searchMember() {
       pin: staffPin,
       phone: phone
     });
-
-    /*
-      BACKEND V9 ส่งข้อมูลกลับมาในรูปแบบ:
-      {
-        success: true,
-        members: [
-          {
-            lineUserId: "...",
-            name: "...",
-            phone: "...",
-            points: 0,
-            level: "..."
-          }
-        ],
-        count: 1
-      }
-    */
 
     if (!result.success) {
       throw new Error(result.message || 'ค้นหาสมาชิกไม่สำเร็จ');
@@ -627,7 +573,6 @@ async function loadMemberData() {
       currentVisits;
 
     await loadRewards();
-
     await loadHistory();
 
   } catch (error) {
@@ -846,7 +791,6 @@ async function loadHistory() {
 
     box.innerHTML = '';
 
-    // Backend ส่งประวัติใหม่ไปเก่าอยู่แล้ว
     history.forEach(item => {
       const date = formatDate(item.date);
 
@@ -910,13 +854,15 @@ function formatDate(value) {
    ENTER KEY
 ========================= */
 
-document.getElementById('pinInput').addEventListener('keydown', event => {
-  if (event.key === 'Enter') login();
-});
-
 document.getElementById('phoneInput').addEventListener('keydown', event => {
   if (event.key === 'Enter') searchMember();
 });
+
+/* =========================
+   START
+========================= */
+
+initializePage();
 </script>
 
 </body>
