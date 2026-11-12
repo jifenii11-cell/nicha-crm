@@ -10,320 +10,303 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
 
-:root {
+:root{
   --green:#123d32;
-  --green2:#1c5748;
-  --gold:#c6a15b;
-  --bg:#f4f6f2;
+  --green2:#1d5948;
+  --gold:#c6a45c;
+  --bg:#f4f6f3;
   --white:#fff;
   --text:#26352f;
-  --muted:#78847e;
-  --border:#e2e8e2;
-  --red:#c0392b;
+  --muted:#7b8982;
+  --red:#bd4545;
+  --border:#e4eae5;
 }
 
-* { box-sizing:border-box; }
+*{box-sizing:border-box}
 
-body {
+body{
   margin:0;
   background:var(--bg);
   color:var(--text);
   font-family:'Kanit',sans-serif;
 }
 
-button,input,textarea,select {
+button,input,textarea,select{
   font-family:inherit;
-  font-size:14px;
 }
 
-.header {
-  background:linear-gradient(135deg,var(--green),var(--green2));
+.header{
+  background:linear-gradient(135deg,var(--green),#245b48);
   color:white;
-  padding:24px 18px;
+  padding:25px 18px 30px;
+  border-radius:0 0 25px 25px;
 }
 
-.header-inner {
-  max-width:900px;
+.header-inner{
+  max-width:850px;
   margin:auto;
 }
 
-.brand {
-  color:#e7d2a5;
+.brand{
+  color:#e3c77e;
   font-size:12px;
   letter-spacing:2px;
 }
 
-.header h1 {
+.header h1{
   margin:5px 0;
   font-size:23px;
   font-weight:600;
 }
 
-.header p {
+.header p{
   margin:0;
   color:#d4e1d9;
   font-size:13px;
 }
 
-.container {
-  max-width:900px;
+.container{
+  max-width:850px;
   margin:20px auto;
-  padding:0 14px 40px;
+  padding:0 15px 40px;
 }
 
-.top-actions {
-  display:flex;
-  gap:9px;
-  flex-wrap:wrap;
-  margin-bottom:16px;
-}
-
-.btn {
-  border:0;
-  border-radius:10px;
-  padding:10px 15px;
-  cursor:pointer;
-  font-weight:500;
-}
-
-.btn-primary {
-  background:var(--green);
-  color:white;
-}
-
-.btn-gold {
-  background:var(--gold);
-  color:#fff;
-}
-
-.btn-light {
+.panel{
   background:white;
-  color:var(--green);
-  border:1px solid var(--border);
-}
-
-.btn-danger {
-  background:#fff0ee;
-  color:var(--red);
-}
-
-.btn:disabled {
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-.panel {
-  background:white;
-  border:1px solid var(--border);
-  border-radius:16px;
+  border-radius:17px;
   padding:18px;
   margin-bottom:16px;
-  box-shadow:0 4px 16px rgba(0,0,0,.035);
+  box-shadow:0 4px 18px #183d3210;
 }
 
-.panel-title {
+.panel-title{
   font-size:17px;
   font-weight:600;
-  color:var(--green);
-  margin:0 0 15px;
+  margin-bottom:14px;
 }
 
-.form-grid {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:13px;
+.field{
+  margin-bottom:13px;
 }
 
-.field {
-  display:flex;
-  flex-direction:column;
-  gap:5px;
-}
-
-.field.full {
-  grid-column:1/-1;
-}
-
-label {
+.field label{
+  display:block;
   font-size:13px;
   font-weight:500;
+  margin-bottom:6px;
 }
 
-input,textarea,select {
+input,textarea,select{
   width:100%;
+  padding:11px 12px;
   border:1px solid var(--border);
-  border-radius:9px;
-  padding:11px;
-  outline:none;
-  background:white;
+  border-radius:10px;
+  font-size:14px;
+  background:#fff;
   color:var(--text);
+  outline:none;
 }
 
-input:focus,textarea:focus,select:focus {
-  border-color:var(--green2);
+input:focus,textarea:focus,select:focus{
+  border-color:var(--gold);
 }
 
-textarea {
+textarea{
   min-height:75px;
   resize:vertical;
 }
 
-.levels {
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-.level-option {
+.levels{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+.level-option{
   display:flex;
   align-items:center;
-  gap:6px;
+  gap:8px;
+  background:#f7f9f7;
   border:1px solid var(--border);
   border-radius:9px;
-  padding:8px 10px;
+  padding:9px;
   font-size:13px;
-  cursor:pointer;
 }
 
-.level-option input {
+.level-option input{
   width:auto;
   accent-color:var(--green);
 }
 
-.form-buttons {
+.btn{
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  font-size:14px;
+  font-weight:500;
+  cursor:pointer;
+}
+
+.btn-primary{
+  background:var(--green);
+  color:white;
+}
+
+.btn-gold{
+  background:var(--gold);
+  color:#fff;
+}
+
+.btn-light{
+  background:#edf2ee;
+  color:var(--green);
+}
+
+.btn-danger{
+  background:#fff0f0;
+  color:var(--red);
+}
+
+.btn-block{
+  width:100%;
+}
+
+.btn:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.toolbar{
   display:flex;
   gap:9px;
   flex-wrap:wrap;
-  margin-top:17px;
-}
-
-.stats {
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-bottom:16px;
-}
-
-.stat {
-  background:white;
-  padding:13px;
-  border:1px solid var(--border);
-  border-radius:13px;
-}
-
-.stat small {
-  color:var(--muted);
-  font-size:12px;
-}
-
-.stat strong {
-  display:block;
-  color:var(--green);
-  font-size:23px;
-}
-
-.search {
   margin-bottom:14px;
 }
 
-.privilege-card {
+.toolbar .btn{
+  flex:1;
+}
+
+.privilege-card{
   border:1px solid var(--border);
   border-radius:13px;
   padding:15px;
-  margin-bottom:11px;
-  background:#fff;
+  margin-bottom:12px;
+  background:white;
 }
 
-.card-top {
+.card-top{
   display:flex;
   justify-content:space-between;
   align-items:flex-start;
   gap:10px;
 }
 
-.card-name {
+.privilege-name{
   font-size:16px;
   font-weight:600;
   color:var(--green);
 }
 
-.card-description {
+.privilege-desc{
+  color:#68766e;
   font-size:13px;
-  color:#65736b;
-  margin:7px 0;
+  margin:8px 0;
   white-space:pre-wrap;
 }
 
-.meta {
+.meta{
   font-size:12px;
   color:var(--muted);
-  line-height:1.9;
+  line-height:1.8;
 }
 
-.pill {
+.status{
   display:inline-block;
-  border-radius:30px;
-  padding:3px 10px;
+  padding:4px 9px;
+  border-radius:20px;
   font-size:11px;
-  background:#e7f3eb;
-  color:#287047;
+  white-space:nowrap;
 }
 
-.pill.off {
-  background:#fcebea;
-  color:#b33c32;
+.status-active{
+  background:#e7f5eb;
+  color:#267044;
 }
 
-.card-actions {
+.status-inactive{
+  background:#fceaea;
+  color:#b33e3e;
+}
+
+.card-actions{
   display:flex;
-  gap:7px;
-  flex-wrap:wrap;
+  gap:8px;
   margin-top:12px;
 }
 
-.card-actions button {
-  padding:7px 12px;
-  font-size:12px;
+.card-actions button{
+  flex:1;
 }
 
-.empty {
+.empty{
   text-align:center;
   padding:30px 10px;
   color:var(--muted);
+  font-size:14px;
 }
 
-.message {
-  display:none;
+.hidden{display:none!important}
+
+.message{
   padding:11px 13px;
   border-radius:10px;
-  margin-bottom:14px;
   font-size:13px;
+  margin-bottom:13px;
 }
 
-.message.success {
-  display:block;
-  background:#e8f5eb;
-  color:#246b3c;
+.message.error{
+  background:#fff0f0;
+  color:#a33;
 }
 
-.message.error {
-  display:block;
-  background:#fff0ee;
-  color:#a93226;
+.message.success{
+  background:#e9f6ed;
+  color:#267044;
 }
 
-.loading {
+.pin-note{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:8px;
+}
+
+.form-actions{
+  display:flex;
+  gap:9px;
+}
+
+.form-actions button{
+  flex:1;
+}
+
+.loading{
   text-align:center;
   padding:20px;
   color:var(--muted);
+  font-size:13px;
 }
 
-@media(max-width:600px) {
-  .form-grid { grid-template-columns:1fr; }
-  .field.full { grid-column:auto; }
-  .stats { gap:7px; }
-  .stat { padding:10px; }
-  .stat strong { font-size:20px; }
+@media(max-width:520px){
+  .row{grid-template-columns:1fr}
+  .header h1{font-size:21px}
+  .panel{padding:15px}
 }
 </style>
 </head>
@@ -332,89 +315,108 @@ textarea {
 
 <header class="header">
   <div class="header-inner">
-    <div class="brand">NICHA CRM</div>
-    <h1>จัดการสิทธิพิเศษสมาชิก</h1>
-    <p>MEMBER PRIVILEGES MANAGEMENT</p>
+    <div class="brand">NICHA HEALTH MASSAGE</div>
+    <h1>✨ จัดการสิทธิพิเศษสมาชิก</h1>
+    <p>ระบบบริหารสิทธิประโยชน์ตามระดับสมาชิก</p>
   </div>
 </header>
 
 <main class="container">
 
-  <div id="message" class="message"></div>
+  <!-- PIN -->
+  <section class="panel" id="loginPanel">
+    <div class="panel-title">🔐 เข้าสู่ระบบพนักงาน</div>
 
-  <div class="top-actions">
-    <button class="btn btn-light" onclick="loadPrivileges()">
-      ↻ รีเฟรชข้อมูล
-    </button>
-    <button class="btn btn-light" onclick="changePin()">
-      🔐 เปลี่ยน PIN
-    </button>
-  </div>
+    <div class="field">
+      <label>รหัส PIN พนักงาน</label>
+      <input
+        type="password"
+        id="staffPin"
+        placeholder="กรอกรหัส PIN"
+        inputmode="numeric"
+      >
+    </div>
 
-  <section class="stats">
-    <div class="stat">
-      <small>สิทธิพิเศษทั้งหมด</small>
-      <strong id="totalCount">0</strong>
-    </div>
-    <div class="stat">
-      <small>กำลังใช้งาน</small>
-      <strong id="activeCount">0</strong>
-    </div>
-    <div class="stat">
-      <small>ปิดใช้งาน</small>
-      <strong id="inactiveCount">0</strong>
+    <button class="btn btn-primary btn-block" id="loginBtn" onclick="login()">
+      เข้าสู่ระบบ
+    </button>
+
+    <div class="pin-note">
+      กรุณากรอกรหัส PIN พนักงานเพื่อจัดการสิทธิพิเศษ
     </div>
   </section>
 
-  <section class="panel" id="formPanel">
-    <h2 class="panel-title" id="formTitle">
-      ✨ เพิ่มสิทธิพิเศษใหม่
-    </h2>
+  <!-- MAIN -->
+  <section id="mainPanel" class="hidden">
 
-    <input type="hidden" id="privilegeId">
+    <div class="panel">
+      <div class="panel-title">📋 รายการสิทธิพิเศษ</div>
 
-    <div class="form-grid">
+      <div class="toolbar">
+        <button class="btn btn-gold" onclick="newPrivilege()">
+          + เพิ่มสิทธิพิเศษ
+        </button>
+        <button class="btn btn-light" onclick="loadPrivileges()">
+          ↻ รีเฟรช
+        </button>
+      </div>
 
-      <div class="field full">
+      <div id="listMessage"></div>
+      <div id="privilegeList" class="loading">
+        กำลังโหลดข้อมูล...
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="panel hidden" id="formPanel">
+      <div class="panel-title" id="formTitle">
+        เพิ่มสิทธิพิเศษใหม่
+      </div>
+
+      <div id="formMessage"></div>
+
+      <input type="hidden" id="privilegeId">
+
+      <div class="field">
         <label>ชื่อสิทธิพิเศษ *</label>
-        <input id="name" placeholder="เช่น ส่วนลดนวดน้ำมัน 10%">
+        <input id="privilegeName" placeholder="เช่น ส่วนลดนวด 10%">
       </div>
 
-      <div class="field full">
+      <div class="field">
         <label>รายละเอียด</label>
-        <textarea id="description"
-          placeholder="อธิบายรายละเอียดสิทธิพิเศษ"></textarea>
+        <textarea id="privilegeDescription"
+          placeholder="รายละเอียดสิทธิพิเศษ"></textarea>
       </div>
 
-      <div class="field full">
+      <div class="field">
         <label>ระดับสมาชิกที่ได้รับสิทธิ์ *</label>
         <div class="levels">
           <label class="level-option">
-            <input type="checkbox" name="levels" value="ทุกระดับ">
+            <input type="checkbox" name="level" value="ทุกระดับ">
             ทุกระดับ
           </label>
           <label class="level-option">
-            <input type="checkbox" name="levels" value="Bronze">
-            Bronze
+            <input type="checkbox" name="level" value="Bronze">
+            BRONZE
           </label>
           <label class="level-option">
-            <input type="checkbox" name="levels" value="Silver">
-            Silver
+            <input type="checkbox" name="level" value="Silver">
+            SILVER
           </label>
           <label class="level-option">
-            <input type="checkbox" name="levels" value="Gold">
-            Gold
+            <input type="checkbox" name="level" value="Gold">
+            GOLD
           </label>
           <label class="level-option">
-            <input type="checkbox" name="levels" value="Platinum VIP">
-            Platinum VIP
+            <input type="checkbox" name="level" value="Platinum VIP">
+            PLATINUM VIP
           </label>
         </div>
       </div>
 
       <div class="field">
         <label>ประเภทสิทธิ์</label>
-        <select id="type">
+        <select id="privilegeType">
           <option value="ส่วนลด">ส่วนลด</option>
           <option value="บริการฟรี">บริการฟรี</option>
           <option value="ของขวัญ">ของขวัญ</option>
@@ -425,124 +427,97 @@ textarea {
 
       <div class="field">
         <label>มูลค่า / เงื่อนไข</label>
-        <input id="value" placeholder="เช่น ลด 100 บาท">
+        <input id="privilegeValue"
+          placeholder="เช่น ลด 10% หรือ นวดฟรี 30 นาที">
       </div>
 
-      <div class="field">
-        <label>วันเริ่มต้น (ไม่บังคับ)</label>
-        <input id="startDate" type="date">
+      <div class="row">
+        <div class="field">
+          <label>วันเริ่มต้น</label>
+          <input type="date" id="startDate">
+        </div>
+
+        <div class="field">
+          <label>วันสิ้นสุด</label>
+          <input type="date" id="endDate">
+        </div>
       </div>
 
-      <div class="field">
-        <label>วันสิ้นสุด (ไม่บังคับ)</label>
-        <input id="endDate" type="date">
+      <div class="row">
+        <div class="field">
+          <label>สถานะ</label>
+          <select id="privilegeStatus">
+            <option value="ใช้งาน">ใช้งาน</option>
+            <option value="ปิดใช้งาน">ปิดใช้งาน</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>ลำดับการแสดงผล</label>
+          <input type="number" id="privilegeSort" value="1" min="0">
+        </div>
       </div>
 
-      <div class="field">
-        <label>สถานะ</label>
-        <select id="status">
-          <option value="ใช้งาน">เปิดใช้งาน</option>
-          <option value="ปิดใช้งาน">ปิดใช้งาน</option>
-        </select>
+      <div class="form-actions">
+        <button class="btn btn-primary" id="saveBtn" onclick="savePrivilege()">
+          บันทึกข้อมูล
+        </button>
+        <button class="btn btn-light" onclick="closeForm()">
+          ยกเลิก
+        </button>
       </div>
-
-      <div class="field">
-        <label>ลำดับการแสดงผล</label>
-        <input id="sort" type="number" value="0">
-      </div>
-
     </div>
 
-    <div class="form-buttons">
-      <button class="btn btn-primary" id="saveButton"
-        onclick="savePrivilege()">
-        บันทึกสิทธิพิเศษ
-      </button>
+    <button class="btn btn-light btn-block" onclick="logout()">
+      ออกจากระบบพนักงาน
+    </button>
 
-      <button class="btn btn-light" onclick="resetForm()">
-        ล้างข้อมูล
-      </button>
-    </div>
   </section>
-
-  <section class="panel">
-    <h2 class="panel-title">📋 รายการสิทธิพิเศษ</h2>
-
-    <input class="search" id="searchInput"
-      placeholder="ค้นหาชื่อสิทธิพิเศษ..."
-      oninput="renderPrivileges()">
-
-    <div id="privilegeList">
-      <div class="loading">กำลังโหลดข้อมูล...</div>
-    </div>
-  </section>
-
 </main>
 
 <script>
 const API_URL =
 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
-let STAFF_PIN_VALUE = '';
+let staffPin = '';
 let privileges = [];
-let requestNumber = 0;
 
-function escapeHTML(value) {
-  return String(value == null ? '' : value)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
-}
+function jsonp(action, params = {}) {
+  return new Promise((resolve, reject) => {
+    const callbackName =
+      'nichaCallback_' + Date.now() + '_' +
+      Math.random().toString(36).slice(2);
 
-function showMessage(message, type) {
-  const el = document.getElementById('message');
-  el.className = 'message ' + type;
-  el.textContent = message;
-
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function api(action, params = {}) {
-  return new Promise((resolve,reject) => {
-    const callback = 'nichaCallback' + (++requestNumber);
     const script = document.createElement('script');
     const query = new URLSearchParams({
       action,
       ...params,
-      callback
+      callback: callbackName
     });
 
-    const timeout = setTimeout(() => {
-      cleanup();
-      reject(new Error('หมดเวลาการเชื่อมต่อ กรุณาลองใหม่'));
-    },20000);
+    let finished = false;
 
-    function cleanup() {
-      clearTimeout(timeout);
-      delete window[callback];
+    const timer = setTimeout(() => {
+      finish();
+      reject(new Error('เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่'));
+    }, 20000);
+
+    function finish() {
+      if (finished) return;
+      finished = true;
+      clearTimeout(timer);
+      delete window[callbackName];
       script.remove();
     }
 
-    window[callback] = function(result) {
-      cleanup();
-
-      if (!result || result.success !== true) {
-        reject(new Error(
-          result && result.message
-            ? result.message
-            : 'เกิดข้อผิดพลาดจากระบบ'
-        ));
-        return;
-      }
-
-      resolve(result);
+    window[callbackName] = data => {
+      finish();
+      resolve(data);
     };
 
-    script.onerror = function() {
-      cleanup();
-      reject(new Error('ไม่สามารถเชื่อมต่อ NICHA CRM API ได้'));
+    script.onerror = () => {
+      finish();
+      reject(new Error('ไม่สามารถเชื่อมต่อ Google Apps Script ได้'));
     };
 
     script.src = API_URL + '?' + query.toString();
@@ -550,356 +525,360 @@ function api(action, params = {}) {
   });
 }
 
-function askPin() {
-  if (STAFF_PIN_VALUE) return true;
-
-  const pin = prompt('กรุณากรอก PIN พนักงาน');
-
-  if (pin === null || !pin.trim()) return false;
-
-  STAFF_PIN_VALUE = pin.trim();
-  return true;
+function showMessage(id, message, type = 'error') {
+  const el = document.getElementById(id);
+  el.innerHTML = message
+    ? `<div class="message ${type}">${escapeHTML(message)}</div>`
+    : '';
 }
 
-function changePin() {
-  STAFF_PIN_VALUE = '';
-  askPin();
+function escapeHTML(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[char]);
+}
+
+async function login() {
+  const pin = document.getElementById('staffPin').value.trim();
+
+  if (!pin) {
+    alert('กรุณากรอกรหัส PIN พนักงาน');
+    return;
+  }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังตรวจสอบ...';
+
+  try {
+    const result = await jsonp('getAllPrivileges', {pin});
+
+    if (!result || result.success !== true) {
+      throw new Error(result?.message || 'ไม่สามารถเข้าสู่ระบบได้');
+    }
+
+    staffPin = pin;
+    document.getElementById('loginPanel').classList.add('hidden');
+    document.getElementById('mainPanel').classList.remove('hidden');
+
+    renderPrivileges(result.privileges || result.data || []);
+
+  } catch (error) {
+    alert(error.message || 'เกิดข้อผิดพลาด');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'เข้าสู่ระบบ';
+  }
 }
 
 async function loadPrivileges() {
-  if (!askPin()) return;
-
   const list = document.getElementById('privilegeList');
   list.innerHTML = '<div class="loading">กำลังโหลดข้อมูล...</div>';
 
   try {
-    const result = await api('getAllPrivileges', {
-      pin: STAFF_PIN_VALUE
-    });
+    const result = await jsonp('getAllPrivileges', {pin: staffPin});
 
-    privileges = result.privileges || [];
-    renderPrivileges();
-
-  } catch (error) {
-    list.innerHTML = '<div class="empty">โหลดข้อมูลไม่สำเร็จ</div>';
-
-    if (error.message.includes('PIN')) {
-      STAFF_PIN_VALUE = '';
+    if (!result || result.success !== true) {
+      throw new Error(result?.message || 'โหลดข้อมูลไม่สำเร็จ');
     }
 
-    showMessage(error.message,'error');
+    renderPrivileges(result.privileges || result.data || []);
+
+  } catch (error) {
+    list.innerHTML = '';
+    showMessage('listMessage', error.message);
   }
 }
 
-function updateStats() {
-  document.getElementById('totalCount').textContent =
-    privileges.length;
+function renderPrivileges(items) {
+  privileges = Array.isArray(items) ? items : [];
 
-  document.getElementById('activeCount').textContent =
-    privileges.filter(x => x.status === 'ใช้งาน').length;
-
-  document.getElementById('inactiveCount').textContent =
-    privileges.filter(x => x.status !== 'ใช้งาน').length;
-}
-
-function formatDate(value) {
-  if (!value) return 'ไม่กำหนด';
-
-  const d = new Date(value);
-
-  if (isNaN(d.getTime())) return String(value);
-
-  return d.toLocaleDateString('th-TH',{
-    day:'numeric',
-    month:'short',
-    year:'numeric',
-    timeZone:'Asia/Bangkok'
-  });
-}
-
-function renderPrivileges() {
-  updateStats();
-
-  const keyword = document.getElementById('searchInput')
-    .value.trim().toLowerCase();
-
-  const filtered = privileges.filter(item =>
-    String(item.name || '').toLowerCase().includes(keyword) ||
-    String(item.description || '').toLowerCase().includes(keyword)
-  );
+  showMessage('listMessage', '');
 
   const list = document.getElementById('privilegeList');
 
-  if (!filtered.length) {
+  if (!privileges.length) {
     list.innerHTML =
-      '<div class="empty">ยังไม่มีสิทธิพิเศษ หรือไม่พบรายการที่ค้นหา</div>';
+      '<div class="empty">ยังไม่มีรายการสิทธิพิเศษ<br>กดปุ่ม “เพิ่มสิทธิพิเศษ” เพื่อเริ่มต้น</div>';
     return;
   }
 
-  list.innerHTML = filtered.map(item => {
-    const levels = String(item.levels || '').split(',').join(', ');
+  list.innerHTML = privileges.map((p, index) => {
+    const id = p.privilegeId || '';
+    const levels = Array.isArray(p.levels)
+      ? p.levels.join(', ')
+      : (p.levels || '');
+
+    const active = p.status === 'ใช้งาน';
 
     return `
       <div class="privilege-card">
         <div class="card-top">
-          <div>
-            <div class="card-name">${escapeHTML(item.name)}</div>
-            <div class="card-description">
-              ${escapeHTML(item.description || 'ไม่มีรายละเอียด')}
-            </div>
+          <div class="privilege-name">
+            ${escapeHTML(p.name || 'ไม่มีชื่อสิทธิพิเศษ')}
           </div>
-
-          <span class="pill ${item.status === 'ใช้งาน' ? '' : 'off'}">
-            ${escapeHTML(item.status)}
+          <span class="status ${active ? 'status-active' : 'status-inactive'}">
+            ${escapeHTML(p.status || 'ไม่ระบุสถานะ')}
           </span>
         </div>
 
+        <div class="privilege-desc">
+          ${escapeHTML(p.description || 'ไม่มีรายละเอียด')}
+        </div>
+
         <div class="meta">
-          <div>รหัส: ${escapeHTML(item.privilegeId)}</div>
-          <div>ระดับสมาชิก: ${escapeHTML(levels)}</div>
-          <div>ประเภท: ${escapeHTML(item.type)}</div>
-          <div>มูลค่า/เงื่อนไข: ${escapeHTML(item.value || '-')}</div>
-          <div>เริ่ม: ${escapeHTML(formatDate(item.startDate))}</div>
-          <div>สิ้นสุด: ${escapeHTML(formatDate(item.endDate))}</div>
-          <div>ลำดับ: ${escapeHTML(item.sort)}</div>
+          <div>🎖 ระดับสมาชิก: ${escapeHTML(levels || '-')}</div>
+          <div>ประเภท: ${escapeHTML(p.type || '-')}</div>
+          <div>มูลค่า / เงื่อนไข: ${escapeHTML(p.value || '-')}</div>
+          <div>วันเริ่มต้น: ${escapeHTML(p.startDate || '-')}</div>
+          <div>วันสิ้นสุด: ${escapeHTML(p.endDate || '-')}</div>
+          <div>ลำดับ: ${escapeHTML(p.sort ?? '-')}</div>
         </div>
 
         <div class="card-actions">
-          <button class="btn btn-gold"
-            onclick="editPrivilege('${escapeHTML(item.privilegeId)}')">
-            แก้ไข
-          </button>
-
           <button class="btn btn-light"
-            onclick="togglePrivilege('${escapeHTML(item.privilegeId)}')">
-            ${item.status === 'ใช้งาน' ? 'ปิดใช้งาน' : 'เปิดใช้งาน'}
-          </button>
-
+            onclick="editPrivilege(${index})">✏️ แก้ไข</button>
           <button class="btn btn-danger"
-            onclick="removePrivilege('${escapeHTML(item.privilegeId)}')">
-            ลบ
-          </button>
+            onclick="removePrivilege('${escapeHTML(id)}')">ลบ</button>
         </div>
       </div>
     `;
   }).join('');
 }
 
-function getSelectedLevels() {
-  return Array.from(
-    document.querySelectorAll('input[name="levels"]:checked')
-  ).map(el => el.value);
-}
-
-function setSelectedLevels(levels) {
-  const selected = String(levels || '').split(',').map(x => x.trim());
-
-  document.querySelectorAll('input[name="levels"]').forEach(el => {
-    el.checked = selected.includes(el.value);
+function newPrivilege() {
+  clearForm();
+  document.getElementById('formTitle').textContent =
+    'เพิ่มสิทธิพิเศษใหม่';
+  document.getElementById('formPanel').classList.remove('hidden');
+  document.getElementById('formPanel').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
   });
 }
 
-function resetForm() {
+function clearForm() {
   document.getElementById('privilegeId').value = '';
-  document.getElementById('name').value = '';
-  document.getElementById('description').value = '';
-  document.getElementById('type').value = 'ส่วนลด';
-  document.getElementById('value').value = '';
+  document.getElementById('privilegeName').value = '';
+  document.getElementById('privilegeDescription').value = '';
+  document.getElementById('privilegeType').value = 'ส่วนลด';
+  document.getElementById('privilegeValue').value = '';
   document.getElementById('startDate').value = '';
   document.getElementById('endDate').value = '';
-  document.getElementById('status').value = 'ใช้งาน';
-  document.getElementById('sort').value = '0';
+  document.getElementById('privilegeStatus').value = 'ใช้งาน';
+  document.getElementById('privilegeSort').value = '1';
 
-  document.querySelectorAll('input[name="levels"]')
+  document.querySelectorAll('input[name="level"]')
     .forEach(el => el.checked = false);
 
-  document.getElementById('formTitle').textContent =
-    '✨ เพิ่มสิทธิพิเศษใหม่';
-
-  document.getElementById('saveButton').textContent =
-    'บันทึกสิทธิพิเศษ';
+  showMessage('formMessage', '');
 }
 
-function editPrivilege(id) {
-  const item = privileges.find(x =>
-    String(x.privilegeId) === String(id)
-  );
+function editPrivilege(index) {
+  const p = privileges[index];
+  if (!p) return;
 
-  if (!item) return;
-
-  document.getElementById('privilegeId').value = item.privilegeId;
-  document.getElementById('name').value = item.name || '';
-  document.getElementById('description').value =
-    item.description || '';
-
-  document.getElementById('type').value =
-    item.type || 'ทั่วไป';
-
-  document.getElementById('value').value = item.value || '';
-  document.getElementById('startDate').value =
-    toInputDate(item.startDate);
-
-  document.getElementById('endDate').value =
-    toInputDate(item.endDate);
-
-  document.getElementById('status').value =
-    item.status || 'ใช้งาน';
-
-  document.getElementById('sort').value = item.sort || 0;
-
-  setSelectedLevels(item.levels);
+  clearForm();
 
   document.getElementById('formTitle').textContent =
-    '✏️ แก้ไขสิทธิพิเศษ';
+    'แก้ไขสิทธิพิเศษ';
 
-  document.getElementById('saveButton').textContent =
-    'บันทึกการแก้ไข';
+  document.getElementById('privilegeId').value =
+    p.privilegeId || '';
 
+  document.getElementById('privilegeName').value =
+    p.name || '';
+
+  document.getElementById('privilegeDescription').value =
+    p.description || '';
+
+  document.getElementById('privilegeType').value =
+    p.type || 'ทั่วไป';
+
+  document.getElementById('privilegeValue').value =
+    p.value || '';
+
+  document.getElementById('startDate').value =
+    normalizeDate(p.startDate);
+
+  document.getElementById('endDate').value =
+    normalizeDate(p.endDate);
+
+  document.getElementById('privilegeStatus').value =
+    p.status || 'ใช้งาน';
+
+  document.getElementById('privilegeSort').value =
+    p.sort ?? 1;
+
+  let levels = Array.isArray(p.levels)
+    ? p.levels
+    : String(p.levels || '').split(',').map(x => x.trim());
+
+  document.querySelectorAll('input[name="level"]')
+    .forEach(el => {
+      el.checked = levels.includes(el.value);
+    });
+
+  document.getElementById('formPanel').classList.remove('hidden');
   document.getElementById('formPanel').scrollIntoView({
-    behavior:'smooth'
+    behavior:'smooth',
+    block:'start'
   });
 }
 
-function toInputDate(value) {
+function normalizeDate(value) {
   if (!value) return '';
 
-  const d = new Date(value);
+  const text = String(value);
 
-  if (isNaN(d.getTime())) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return text;
+  }
+
+  const date = new Date(text);
+
+  if (isNaN(date.getTime())) return '';
 
   return [
-    d.getFullYear(),
-    String(d.getMonth()+1).padStart(2,'0'),
-    String(d.getDate()).padStart(2,'0')
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')
   ].join('-');
 }
 
-async function savePrivilege() {
-  if (!askPin()) return;
+function closeForm() {
+  document.getElementById('formPanel').classList.add('hidden');
+}
 
-  const id = document.getElementById('privilegeId').value;
-  const name = document.getElementById('name').value.trim();
-  const levels = getSelectedLevels();
+async function savePrivilege() {
+  const id = document.getElementById('privilegeId').value.trim();
+  const name = document.getElementById('privilegeName').value.trim();
+
+  const levels = Array.from(
+    document.querySelectorAll('input[name="level"]:checked')
+  ).map(el => el.value);
 
   if (!name) {
-    showMessage('กรุณากรอกชื่อสิทธิพิเศษ','error');
+    alert('กรุณากรอกชื่อสิทธิพิเศษ');
     return;
   }
 
   if (!levels.length) {
-    showMessage('กรุณาเลือกระดับสมาชิกอย่างน้อย 1 ระดับ','error');
+    alert('กรุณาเลือกระดับสมาชิกอย่างน้อย 1 ระดับ');
     return;
   }
 
   if (levels.includes('ทุกระดับ') && levels.length > 1) {
-    showMessage('หากเลือกทุกระดับ ไม่ต้องเลือกระดับอื่นซ้ำ','error');
+    alert('หากเลือกทุกระดับ ไม่ต้องเลือกระดับอื่นเพิ่มเติม');
     return;
   }
 
-  const data = {
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+
+  if (startDate && endDate && endDate < startDate) {
+    alert('วันสิ้นสุดต้องไม่ก่อนวันเริ่มต้น');
+    return;
+  }
+
+  const params = {
+    pin: staffPin,
+    privilegeId: id,
     name,
-    description:document.getElementById('description').value,
-    levels:levels.join(','),
-    type:document.getElementById('type').value,
-    value:document.getElementById('value').value,
-    startDate:document.getElementById('startDate').value,
-    endDate:document.getElementById('endDate').value,
-    status:document.getElementById('status').value,
-    sort:document.getElementById('sort').value,
-    pin:STAFF_PIN_VALUE
+    description: document.getElementById('privilegeDescription').value.trim(),
+    levels: levels.join(','),
+    type: document.getElementById('privilegeType').value,
+    value: document.getElementById('privilegeValue').value.trim(),
+    startDate,
+    endDate,
+    status: document.getElementById('privilegeStatus').value,
+    sort: document.getElementById('privilegeSort').value || '1'
   };
 
-  if (id) data.privilegeId = id;
+  const editing = Boolean(id);
+  const action = editing ? 'editPrivilege' : 'addPrivilege';
 
-  const button = document.getElementById('saveButton');
-  button.disabled = true;
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังบันทึก...';
 
   try {
-    const action = id ? 'editPrivilege' : 'addPrivilege';
+    const result = await jsonp(action, params);
 
-    const result = await api(action,data);
-
-    showMessage(result.message || 'บันทึกสำเร็จ','success');
-
-    resetForm();
-    await loadPrivileges();
-
-  } catch (error) {
-    if (error.message.includes('PIN')) {
-      STAFF_PIN_VALUE = '';
+    if (!result || result.success !== true) {
+      throw new Error(result?.message || 'บันทึกข้อมูลไม่สำเร็จ');
     }
 
-    showMessage(error.message,'error');
+    showMessage(
+      'formMessage',
+      result.message || 'บันทึกข้อมูลเรียบร้อยแล้ว',
+      'success'
+    );
 
-  } finally {
-    button.disabled = false;
-  }
-}
-
-async function togglePrivilege(id) {
-  if (!askPin()) return;
-
-  const item = privileges.find(x =>
-    String(x.privilegeId) === String(id)
-  );
-
-  if (!item) return;
-
-  const newStatus =
-    item.status === 'ใช้งาน' ? 'ปิดใช้งาน' : 'ใช้งาน';
-
-  if (!confirm(
-    'ต้องการ' + (newStatus === 'ใช้งาน' ? 'เปิด' : 'ปิด') +
-    'สิทธิพิเศษนี้ใช่หรือไม่?'
-  )) return;
-
-  try {
-    const result = await api('editPrivilege',{
-      privilegeId:item.privilegeId,
-      name:item.name,
-      description:item.description || '',
-      levels:item.levels,
-      type:item.type || 'ทั่วไป',
-      value:item.value || '',
-      startDate:toInputDate(item.startDate),
-      endDate:toInputDate(item.endDate),
-      status:newStatus,
-      sort:item.sort || 0,
-      pin:STAFF_PIN_VALUE
-    });
-
-    showMessage(result.message,'success');
     await loadPrivileges();
+    closeForm();
+
+    alert(editing
+      ? 'แก้ไขสิทธิพิเศษเรียบร้อยแล้ว'
+      : 'เพิ่มสิทธิพิเศษเรียบร้อยแล้ว');
 
   } catch (error) {
-    if (error.message.includes('PIN')) STAFF_PIN_VALUE = '';
-    showMessage(error.message,'error');
+    showMessage('formMessage', error.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'บันทึกข้อมูล';
   }
 }
 
 async function removePrivilege(id) {
-  if (!askPin()) return;
+  if (!id) {
+    alert('ไม่พบรหัสสิทธิพิเศษ');
+    return;
+  }
 
-  if (!confirm('ยืนยันลบสิทธิพิเศษนี้ใช่หรือไม่?')) return;
+  const confirmed = confirm(
+    'ต้องการลบสิทธิพิเศษรายการนี้ใช่หรือไม่?'
+  );
+
+  if (!confirmed) return;
 
   try {
-    const result = await api('deletePrivilege',{
-      privilegeId:id,
-      pin:STAFF_PIN_VALUE
+    const result = await jsonp('deletePrivilege', {
+      pin: staffPin,
+      privilegeId: id
     });
 
-    showMessage(result.message,'success');
+    if (!result || result.success !== true) {
+      throw new Error(result?.message || 'ลบข้อมูลไม่สำเร็จ');
+    }
+
+    alert(result.message || 'ลบสิทธิพิเศษเรียบร้อยแล้ว');
     await loadPrivileges();
 
   } catch (error) {
-    if (error.message.includes('PIN')) STAFF_PIN_VALUE = '';
-    showMessage(error.message,'error');
+    alert(error.message || 'เกิดข้อผิดพลาด');
   }
 }
 
-loadPrivileges();
+function logout() {
+  staffPin = '';
+  privileges = [];
+
+  document.getElementById('staffPin').value = '';
+  document.getElementById('mainPanel').classList.add('hidden');
+  document.getElementById('loginPanel').classList.remove('hidden');
+  closeForm();
+}
+
+document.getElementById('staffPin')
+  .addEventListener('keydown', event => {
+    if (event.key === 'Enter') login();
+  });
 </script>
 
 </body>
 </html>
-
