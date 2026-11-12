@@ -1,4 +1,4 @@
-```html
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -103,14 +103,14 @@ button:disabled{
   color:var(--muted);
   line-height:1.6;
 }
-#message,#loginMessage{
+#message{
+  display:none;
   padding:10px;
   border-radius:8px;
   margin:10px 0;
   font-size:13px;
   white-space:pre-wrap;
 }
-#message{display:none}
 .ok{background:#e2f5e8;color:#176b39}
 .error{background:#ffebeb;color:#a52c2c}
 .reward{
@@ -167,35 +167,12 @@ button:disabled{
     <p>ระบบจัดการของรางวัลสะสมครั้ง</p>
   </div>
 
-  <!-- LOGIN -->
-  <div id="loginCard" class="card">
-    <h2>เข้าสู่ระบบพนักงาน</h2>
-    <p class="small">กรุณากรอกรหัส PIN พนักงานเพื่อจัดการของรางวัล</p>
-
-    <label for="pin">รหัส PIN 6 หลัก</label>
-    <input
-      id="pin"
-      type="password"
-      inputmode="numeric"
-      maxlength="6"
-      placeholder="กรอกรหัส PIN"
-      autocomplete="off"
-    >
-
-    <button id="loginBtn" style="width:100%" onclick="login()">
-      เข้าสู่ระบบ
-    </button>
-
-    <div id="loginMessage"></div>
-  </div>
-
-  <!-- ADMIN -->
   <div id="adminPanel" class="hidden">
 
     <div class="card">
       <div class="row" style="justify-content:space-between;align-items:center">
         <h2 style="margin:0">จัดการของรางวัลสะสมครั้ง</h2>
-        <button class="secondary" onclick="logout()">ออกจากระบบ</button>
+        <button class="secondary" onclick="backToCenter()">กลับหน้ารวม</button>
       </div>
 
       <p class="small">
@@ -255,9 +232,7 @@ button:disabled{
     <!-- LIST -->
     <div class="card">
       <h2>รายการของรางวัลทั้งหมด</h2>
-      <div id="rewardList">
-        กำลังโหลดรายการ...
-      </div>
+      <div id="rewardList">กำลังโหลดรายการ...</div>
     </div>
 
     <div class="card">
@@ -274,8 +249,39 @@ button:disabled{
 const API_URL =
 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
+const SESSION_KEY = 'NICHA_STAFF_PIN';
+
 let staffPin = '';
 let rewards = [];
+
+/* =========================
+   SESSION INITIALIZATION
+========================= */
+
+function initializePage(){
+  staffPin = sessionStorage.getItem(SESSION_KEY) || '';
+
+  if(!/^\d{6}$/.test(staffPin)){
+    window.top.location.href = 'staff-center.html';
+    return;
+  }
+
+  document.getElementById('adminPanel').classList.remove('hidden');
+  loadRewards();
+}
+
+/* =========================
+   BACK TO CENTER
+========================= */
+
+function backToCenter(){
+  if(window.parent && window.parent !== window &&
+     typeof window.parent.backToMenu === 'function'){
+    window.parent.backToMenu();
+  }else{
+    window.location.href = 'staff-center.html';
+  }
+}
 
 /* =========================
    API
@@ -310,72 +316,6 @@ function showMessage(message,isError=false){
   box.textContent = message;
   box.className = isError ? 'error' : 'ok';
   box.style.display = 'block';
-}
-
-function showLoginMessage(message,isError=false){
-  const box = document.getElementById('loginMessage');
-
-  box.textContent = message;
-  box.className = isError ? 'error' : 'ok';
-}
-
-/* =========================
-   LOGIN
-========================= */
-
-async function login(){
-  const pin = document.getElementById('pin').value.trim();
-  const btn = document.getElementById('loginBtn');
-
-  if(!/^\d{6}$/.test(pin)){
-    showLoginMessage('กรุณากรอก PIN ให้ครบ 6 หลัก',true);
-    return;
-  }
-
-  btn.disabled = true;
-  showLoginMessage('กำลังตรวจสอบ PIN...');
-
-  try{
-    const result = await api('staffLogin',{pin});
-
-    if(!result.success){
-      showLoginMessage(result.message || 'PIN ไม่ถูกต้อง',true);
-      return;
-    }
-
-    staffPin = pin;
-
-    document.getElementById('loginCard').classList.add('hidden');
-    document.getElementById('adminPanel').classList.remove('hidden');
-
-    await loadRewards();
-
-  }catch(error){
-    showLoginMessage(
-      'เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบการ Deploy และการเชื่อมต่อ',
-      true
-    );
-  }finally{
-    btn.disabled = false;
-  }
-}
-
-/* =========================
-   LOGOUT
-========================= */
-
-function logout(){
-  if(!confirm('ต้องการออกจากระบบหรือไม่?')) return;
-
-  staffPin = '';
-  rewards = [];
-
-  document.getElementById('pin').value = '';
-  document.getElementById('adminPanel').classList.add('hidden');
-  document.getElementById('loginCard').classList.remove('hidden');
-  document.getElementById('loginMessage').textContent = '';
-
-  closeForm();
 }
 
 /* =========================
@@ -717,16 +657,11 @@ async function deleteReward(rewardId){
 }
 
 /* =========================
-   ENTER KEY LOGIN
+   START
 ========================= */
 
-document.getElementById('pin').addEventListener('keydown',event=>{
-  if(event.key === 'Enter'){
-    login();
-  }
-});
+initializePage();
 </script>
 
 </body>
 </html>
-```
