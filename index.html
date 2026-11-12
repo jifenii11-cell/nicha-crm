@@ -1090,11 +1090,18 @@ function renderVisitRewards(eligible,current){
 
       const button=document.createElement('button');
       button.className='btn full';
-      button.textContent=isEligible?'ยืนยันแลกรางวัล':'ยังแลกไม่ได้';
+      button.textContent=isEligible
+        ?'แจ้งพนักงานเพื่อแลกรางวัล'
+        :'ยังแลกไม่ได้';
       button.disabled=!isEligible||!rewardId;
 
       button.addEventListener('click',()=>{
-        redeemVisitRewardForMember(rewardId,r.name||'รางวัลสะสมครั้ง',required,button);
+        redeemVisitRewardForMember(
+          rewardId,
+          r.name||'รางวัลสะสมครั้ง',
+          required,
+          button
+        );
       });
 
       card.append(title,description,cost,status,button);
@@ -1102,59 +1109,27 @@ function renderVisitRewards(eligible,current){
     });
 }
 
-async function redeemVisitRewardForMember(rewardId,name,required,button){
+/* =========================================
+   CUSTOMER REQUEST TO REDEEM VISIT REWARD
+   ลูกค้าไม่ต้องกรอก PIN
+   พนักงานเป็นผู้ยืนยันการแลกผ่านหน้าพนักงาน
+========================================= */
+
+function redeemVisitRewardForMember(rewardId,name,required,button){
 
   if(!rewardId){
     showToast('ไม่พบรหัสรางวัล กรุณาติดต่อพนักงาน');
     return;
   }
 
-  const pin=prompt('กรุณาให้พนักงานกรอกรหัส PIN เพื่อยืนยันการแลกรางวัล');
+  alert(
+    '🎁 คุณมีสิทธิ์แลกรางวัลแล้ว!\n\n' +
+    'รางวัล: ' + name + '\n' +
+    'ใช้จำนวน: ' + required + ' ครั้ง\n\n' +
+    'กรุณาแสดงหน้าจอนี้ให้พนักงานตรวจสอบ\n' +
+    'พนักงานจะเป็นผู้ยืนยันการแลกรางวัลให้คุณค่ะ'
+  );
 
-  if(pin===null)return;
-
-  if(!String(pin).trim()){
-    showToast('กรุณากรอกรหัส PIN พนักงาน');
-    return;
-  }
-
-  if(!confirm(
-    'ยืนยันแลก "'+name+'" ใช้จำนวน '+required+
-    ' ครั้งใช่หรือไม่?\n\nเมื่อแลกแล้วจำนวนครั้งสะสมจะเริ่มนับใหม่เป็น 0'
-  )){
-    return;
-  }
-
-  button.disabled=true;
-  button.textContent='กำลังดำเนินการ...';
-
-  try{
-
-    const data=await jsonp('redeemVisitReward',{
-      lineUserId,
-      rewardId,
-      pin:String(pin).trim()
-    });
-
-    if(!data||!data.success){
-      throw new Error(data?.message||'แลกรางวัลไม่สำเร็จ');
-    }
-
-    showToast('แลกรางวัลเรียบร้อยแล้ว จำนวนครั้งสะสมเริ่มใหม่เป็น 0');
-
-    visitPageLoaded=false;
-    visitData=null;
-    visitHistoryData=[];
-
-    await loadVisitPage(true);
-
-  }catch(e){
-
-    showToast(e.message);
-    button.disabled=false;
-    button.textContent='ยืนยันแลกรางวัล';
-
-  }
 }
 
 /* แสดงประวัติสะสมครั้ง โดยรายการใหม่อยู่ด้านบน */
