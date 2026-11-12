@@ -63,10 +63,6 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
 .badge.pending{background:#fff3d9;color:#946719}
 .badge.used{background:#e8e8e8;color:#555}
 .empty{text-align:center;color:var(--muted);padding:25px}
-.login-box{max-width:420px;margin:55px auto;background:white;border-radius:20px;padding:28px;box-shadow:0 10px 35px #173f3515;border:1px solid var(--border)}
-.login-logo{text-align:center;margin-bottom:22px}
-.login-logo .brand{color:var(--green)}
-.login-logo p{font-size:13px;color:var(--muted)}
 .footer{text-align:center;color:#9aa39d;font-size:11px;margin-top:25px}
 @media(max-width:650px){
   .page{padding:14px 11px 35px}
@@ -79,20 +75,7 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
 </head>
 <body>
 
-<div id="loginArea" class="login-box">
-  <div class="login-logo">
-    <div class="brand">NICHA CRM</div>
-    <p>COUPON MANAGEMENT</p>
-  </div>
-  <div class="field">
-    <label>รหัส PIN พนักงาน 6 หลัก</label>
-    <input id="loginPin" type="password" inputmode="numeric" maxlength="6" placeholder="กรอกรหัส PIN">
-  </div>
-  <button class="btn btn-green" style="width:100%" onclick="login()">เข้าสู่ระบบ</button>
-  <div id="loginStatus" class="status"></div>
-</div>
-
-<div id="appArea" class="hidden">
+<div id="appArea">
 <div class="page">
   <div class="header">
     <div class="brand">NICHA CRM</div>
@@ -100,7 +83,7 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
     <div class="header-line"></div>
     <div class="header-bottom">
       <span>ระบบจัดการคูปองส่วนลดสำหรับสมาชิก</span>
-      <button class="btn btn-light btn-small" onclick="logout()">ออกจากระบบ</button>
+      <button class="btn btn-light btn-small" onclick="backToCenter()">กลับหน้ารวม</button>
     </div>
   </div>
 
@@ -208,6 +191,15 @@ let foundMembers=[];
 let coupons=[];
 let editingCouponId=null;
 
+function backToCenter(){
+  if(window.parent && window.parent!==window &&
+     typeof window.parent.backToMenu==='function'){
+    window.parent.backToMenu();
+  }else{
+    window.location.href='staff-center.html';
+  }
+}
+
 async function api(action,payload={}){
   const response=await fetch(API_URL,{
     method:'POST',
@@ -233,36 +225,6 @@ function escapeHtml(value){
   return String(value??'').replace(/[&<>"']/g,char=>({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
   })[char]);
-}
-
-async function login(){
-  const pin=document.getElementById('loginPin').value.trim();
-  if(!/^\d{6}$/.test(pin)){
-    showStatus('loginStatus','กรุณากรอกรหัส PIN 6 หลัก','error');
-    return;
-  }
-  showStatus('loginStatus','กำลังตรวจสอบรหัส PIN...');
-  try{
-    await api('staffLogin',{pin});
-    staffPin=pin;
-    document.getElementById('loginArea').classList.add('hidden');
-    document.getElementById('appArea').classList.remove('hidden');
-    await loadCoupons();
-  }catch(error){
-    showStatus('loginStatus',error.message,'error');
-  }
-}
-
-function logout(){
-  staffPin='';
-  selectedMember=null;
-  foundMembers=[];
-  coupons=[];
-  document.getElementById('appArea').classList.add('hidden');
-  document.getElementById('loginArea').classList.remove('hidden');
-  document.getElementById('loginPin').value='';
-  document.getElementById('loginStatus').className='status';
-  resetForm();
 }
 
 async function searchMember(){
@@ -517,9 +479,20 @@ function formatDate(value){
 document.getElementById('phone').addEventListener('keydown',event=>{
   if(event.key==='Enter')searchMember();
 });
-document.getElementById('loginPin').addEventListener('keydown',event=>{
-  if(event.key==='Enter')login();
-});
+
+/* เริ่มต้นด้วย PIN จากหน้า staff-center เท่านั้น */
+function initializeCouponPage(){
+  staffPin=sessionStorage.getItem('NICHA_STAFF_PIN')||'';
+
+  if(!staffPin){
+    window.top.location.href='staff-center.html';
+    return;
+  }
+
+  loadCoupons();
+}
+
+initializeCouponPage();
 </script>
 </body>
 </html>
