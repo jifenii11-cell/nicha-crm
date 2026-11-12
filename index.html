@@ -580,6 +580,7 @@ let privilegesLoaded=false;
 let visitData=null;
 let visitRewardsData=[];
 let visitPageLoaded=false;
+let visitHistoryData=[];
 
 const tierRules=[
   {name:'BRONZE',min:0,next:5000},
@@ -1005,8 +1006,6 @@ async function loadVisitPage(forceRefresh=false){
   }
 }
 
-let visitHistoryData=[];
-
 function renderVisitPage(){
 
   const current=Number(visitData?.currentVisits||0);
@@ -1158,6 +1157,7 @@ async function redeemVisitRewardForMember(rewardId,name,required,button){
   }
 }
 
+/* แสดงประวัติสะสมครั้ง โดยรายการใหม่อยู่ด้านบน */
 function renderVisitHistory(list){
 
   const box=document.getElementById('visitHistoryList');
@@ -1168,7 +1168,9 @@ function renderVisitHistory(list){
     return;
   }
 
-  [...list].reverse().forEach(item=>{
+  // Backend เรียงรายการใหม่ไปเก่าไว้แล้ว
+  // จึงไม่ต้อง reverse ซ้ำ
+  list.forEach(item=>{
 
     const row=document.createElement('div');
     row.className='visit-history-row';
