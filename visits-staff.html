@@ -1,0 +1,743 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123d32">
+<title>NICHA CRM | พนักงานบันทึกครั้ง</title>
+
+<style>
+:root{
+  --green:#123d32;
+  --green2:#28734b;
+  --gold:#c9a65b;
+  --cream:#f1f7f2;
+  --text:#244333;
+  --muted:#6d7d71;
+  --red:#c64b4b;
+  --border:#e0ebe2;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--text);
+  font-family:Arial,Tahoma,sans-serif;
+}
+.container{
+  max-width:850px;
+  margin:20px auto;
+  padding:15px;
+}
+.header{
+  text-align:center;
+  margin-bottom:20px;
+}
+.header h1{
+  color:var(--green2);
+  margin:8px 0;
+}
+.header p{
+  color:var(--muted);
+  font-size:14px;
+}
+.card{
+  background:white;
+  border-radius:16px;
+  padding:19px;
+  margin-bottom:16px;
+  box-shadow:0 4px 15px #0000000c;
+}
+h2{
+  font-size:18px;
+  margin:0 0 15px;
+  color:var(--green);
+}
+h3{
+  margin:0 0 8px;
+  font-size:17px;
+}
+label{
+  display:block;
+  font-size:14px;
+  font-weight:bold;
+  margin:12px 0 6px;
+}
+input,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #cbdccf;
+  border-radius:9px;
+  font-size:16px;
+  margin-bottom:10px;
+  outline:none;
+}
+input:focus,select:focus{
+  border-color:var(--gold);
+}
+button{
+  border:0;
+  border-radius:9px;
+  padding:12px 15px;
+  background:var(--green2);
+  color:white;
+  font-size:14px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:3px;
+}
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.secondary{background:#64766a}
+.light{background:#e6f2e9;color:#24613d}
+.gold{background:var(--gold)}
+.danger{background:var(--red)}
+.full{width:100%;margin:8px 0}
+.row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.row button{flex:1}
+.hidden{display:none!important}
+.small{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.message{
+  padding:11px;
+  border-radius:9px;
+  margin:10px 0;
+  font-size:13px;
+  white-space:pre-wrap;
+}
+.ok{background:#e2f5e8;color:#176b39}
+.error{background:#ffebeb;color:#a52c2c}
+.member-name{
+  font-size:21px;
+  font-weight:bold;
+  color:var(--green);
+}
+.member-info{
+  background:#f4f8f4;
+  padding:14px;
+  border-radius:12px;
+  margin:12px 0;
+  line-height:1.8;
+}
+.visit-number{
+  font-size:40px;
+  color:var(--green2);
+  font-weight:bold;
+  text-align:center;
+  padding:12px;
+}
+.visit-label{
+  text-align:center;
+  color:var(--muted);
+  font-size:13px;
+}
+.reward{
+  border:1px solid var(--border);
+  padding:13px;
+  border-radius:11px;
+  margin:9px 0;
+}
+.reward strong{color:var(--green)}
+.history-item{
+  border-bottom:1px solid var(--border);
+  padding:12px 0;
+  font-size:13px;
+  line-height:1.7;
+}
+.history-item:last-child{border-bottom:0}
+.status{
+  display:inline-block;
+  padding:4px 9px;
+  border-radius:20px;
+  font-size:11px;
+  background:#e8f3e9;
+  color:#28734b;
+}
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:20px 5px;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>NICHA CRM</h1>
+    <p>ระบบพนักงานบันทึกการเข้าใช้บริการ</p>
+  </div>
+
+  <!-- LOGIN -->
+  <section id="loginCard" class="card">
+    <h2>เข้าสู่ระบบพนักงาน</h2>
+    <p class="small">กรุณากรอก PIN พนักงานเพื่อใช้งานระบบ</p>
+
+    <label>รหัส PIN 6 หลัก</label>
+    <input id="pin" type="password"
+      inputmode="numeric" maxlength="6"
+      placeholder="กรอกรหัส PIN">
+
+    <button class="full" id="loginBtn" onclick="login()">
+      เข้าสู่ระบบ
+    </button>
+
+    <div id="loginMessage"></div>
+  </section>
+
+  <!-- STAFF -->
+  <main id="staffPanel" class="hidden">
+
+    <section class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 style="margin:0">บันทึกการเข้าใช้บริการ</h2>
+        <button class="secondary" onclick="logout()">ออกจากระบบ</button>
+      </div>
+      <p class="small">
+        ค้นหาสมาชิกด้วยเบอร์โทรศัพท์ เพื่อเพิ่มจำนวนครั้งสะสม
+      </p>
+    </section>
+
+    <!-- SEARCH -->
+    <section class="card">
+      <h2>ค้นหาสมาชิก</h2>
+
+      <label>เบอร์โทรศัพท์สมาชิก</label>
+      <input id="searchPhone"
+        type="tel"
+        inputmode="numeric"
+        maxlength="10"
+        placeholder="เช่น 0812345678">
+
+      <button class="full" id="searchBtn" onclick="searchMember()">
+        ค้นหาสมาชิก
+      </button>
+
+      <div id="searchMessage"></div>
+    </section>
+
+    <!-- MEMBER -->
+    <section id="memberCard" class="card hidden">
+      <h2>ข้อมูลสมาชิก</h2>
+
+      <div class="member-info">
+        <div class="member-name" id="memberName">-</div>
+        <div>เบอร์โทร: <span id="memberPhone">-</span></div>
+        <div class="small" id="memberId"></div>
+      </div>
+
+      <div class="visit-number" id="currentVisits">0</div>
+      <div class="visit-label">จำนวนครั้งสะสมปัจจุบัน</div>
+
+      <div id="nextRewardInfo" class="member-info"></div>
+
+      <label>บริการที่ใช้วันนี้ (ไม่บังคับ)</label>
+      <input id="serviceName"
+        type="text"
+        maxlength="150"
+        placeholder="เช่น นวดไทย 60 นาที">
+
+      <button class="full" id="addVisitBtn" onclick="addVisit()">
+        ＋ เพิ่มครั้งให้สมาชิก
+      </button>
+
+      <div id="memberMessage"></div>
+    </section>
+
+    <!-- REDEEM -->
+    <section id="redeemCard" class="card hidden">
+      <h2>แลกรางวัลสะสมครั้ง</h2>
+      <p class="small">
+        เลือกรางวัลที่สมาชิกมีสิทธิ์แลกได้
+      </p>
+      <div id="visitRewardsList"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="historyCard" class="card hidden">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 style="margin:0">ประวัติสะสมครั้ง</h2>
+        <button class="light" onclick="loadHistory()">รีเฟรช</button>
+      </div>
+      <div id="historyList">
+        กำลังโหลดประวัติ...
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const API_URL =
+'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
+
+let staffPin = '';
+let currentMember = null;
+let memberVisits = null;
+let visitRewards = [];
+
+/* =========================
+   API POST
+========================= */
+
+async function api(action,data={}){
+  const response = await fetch(API_URL,{
+    method:'POST',
+    headers:{
+      'Content-Type':'text/plain;charset=utf-8'
+    },
+    body:JSON.stringify({
+      ...data,
+      action
+    })
+  });
+
+  if(!response.ok){
+    throw new Error('HTTP '+response.status);
+  }
+
+  return await response.json();
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+function message(id,text,isError=false){
+  const box=document.getElementById(id);
+  box.textContent=text;
+  box.className='message '+(isError?'error':'ok');
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login(){
+  const pin=document.getElementById('pin').value.trim();
+  const btn=document.getElementById('loginBtn');
+
+  if(!/^\d{6}$/.test(pin)){
+    message('loginMessage','กรุณากรอก PIN ให้ครบ 6 หลัก',true);
+    return;
+  }
+
+  btn.disabled=true;
+  message('loginMessage','กำลังตรวจสอบ PIN...');
+
+  try{
+    const result=await api('staffLogin',{pin});
+
+    if(!result.success){
+      message('loginMessage',result.message||'PIN ไม่ถูกต้อง',true);
+      return;
+    }
+
+    staffPin=pin;
+
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('staffPanel').classList.remove('hidden');
+
+  }catch(error){
+    message('loginMessage','เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบการ Deploy',true);
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+  if(!confirm('ต้องการออกจากระบบหรือไม่?'))return;
+
+  staffPin='';
+  currentMember=null;
+  memberVisits=null;
+  visitRewards=[];
+
+  document.getElementById('pin').value='';
+  document.getElementById('staffPanel').classList.add('hidden');
+  document.getElementById('loginCard').classList.remove('hidden');
+
+  hideMember();
+  document.getElementById('loginMessage').textContent='';
+}
+
+function hideMember(){
+  ['memberCard','redeemCard','historyCard'].forEach(id=>{
+    document.getElementById(id).classList.add('hidden');
+  });
+}
+
+/* =========================
+   SEARCH MEMBER
+========================= */
+
+async function searchMember(){
+  const phone=document.getElementById('searchPhone').value.trim();
+  const btn=document.getElementById('searchBtn');
+
+  if(!/^0\d{9}$/.test(phone)){
+    message('searchMessage','กรุณากรอกเบอร์โทรศัพท์ 10 หลัก',true);
+    return;
+  }
+
+  btn.disabled=true;
+  hideMember();
+  message('searchMessage','กำลังค้นหาสมาชิก...');
+
+  try{
+    const result=await api('searchMember',{
+      pin:staffPin,
+      phone
+    });
+
+    if(!result.success){
+      message('searchMessage',result.message||'ไม่พบสมาชิก',true);
+      return;
+    }
+
+    const member=result.member||result.data||result;
+
+    if(!member.lineUserId){
+      message(
+        'searchMessage',
+        'พบข้อมูลแต่ไม่พบ LINE User ID กรุณาตรวจสอบรูปแบบข้อมูลจาก Backend',
+        true
+      );
+      return;
+    }
+
+    currentMember=member;
+
+    message('searchMessage','พบข้อมูลสมาชิกเรียบร้อยแล้ว');
+
+    await loadMemberData();
+
+  }catch(error){
+    message('searchMessage','ค้นหาสมาชิกไม่สำเร็จ กรุณาลองใหม่',true);
+  }finally{
+    btn.disabled=false;
+  }
+}
+
+/* =========================
+   LOAD MEMBER DATA
+========================= */
+
+async function loadMemberData(){
+  if(!currentMember)return;
+
+  const lineUserId=currentMember.lineUserId;
+
+  try{
+    const [visitResult,rewardResult]=await Promise.all([
+      api('getMemberVisits',{lineUserId}),
+      api('getVisitRewards',{})
+    ]);
+
+    if(!visitResult.success){
+      message('searchMessage',visitResult.message||'โหลดข้อมูลครั้งสะสมไม่สำเร็จ',true);
+      return;
+    }
+
+    memberVisits=visitResult;
+
+    visitRewards=rewardResult.success
+      ? (rewardResult.rewards||[])
+      : [];
+
+    renderMember();
+    renderVisitRewards();
+
+    document.getElementById('memberCard').classList.remove('hidden');
+    document.getElementById('redeemCard').classList.remove('hidden');
+    document.getElementById('historyCard').classList.remove('hidden');
+
+    await loadHistory();
+
+  }catch(error){
+    message('searchMessage','โหลดข้อมูลสมาชิกไม่สำเร็จ',true);
+  }
+}
+
+/* =========================
+   RENDER MEMBER
+========================= */
+
+function renderMember(){
+  const m=currentMember;
+  const v=memberVisits;
+
+  document.getElementById('memberName').textContent=
+    m.name||v.memberName||'สมาชิก NICHA';
+
+  document.getElementById('memberPhone').textContent=
+    m.phone||document.getElementById('searchPhone').value;
+
+  document.getElementById('memberId').textContent=
+    'LINE ID: '+(m.lineUserId||'');
+
+  document.getElementById('currentVisits').textContent=
+    Number(v.currentVisits||0);
+
+  const box=document.getElementById('nextRewardInfo');
+
+  const next=v.nextReward;
+
+  if(next){
+    box.textContent=
+      'รางวัลถัดไป: '+(next.name||'-')+
+      ' | เหลืออีก '+Number(v.visitsToNextReward||0)+' ครั้ง';
+  }else{
+    box.textContent='ยังไม่มีรางวัลถัดไปที่กำหนดไว้';
+  }
+}
+
+/* =========================
+   ADD VISIT
+========================= */
+
+async function addVisit(){
+  if(!currentMember)return;
+
+  const serviceName=
+    document.getElementById('serviceName').value.trim();
+
+  const btn=document.getElementById('addVisitBtn');
+
+  if(!confirm(
+    'ยืนยันเพิ่มจำนวนครั้งให้สมาชิก '+
+    (currentMember.name||'')+' จำนวน 1 ครั้งหรือไม่?'
+  ))return;
+
+  btn.disabled=true;
+  btn.textContent='กำลังบันทึก...';
+
+  try{
+    const result=await api('addVisit',{
+      pin:staffPin,
+      lineUserId:currentMember.lineUserId,
+      serviceName
+    });
+
+    if(!result.success){
+      message('memberMessage',result.message||'เพิ่มครั้งไม่สำเร็จ',true);
+      return;
+    }
+
+    message('memberMessage','บันทึกการเข้าใช้บริการเรียบร้อยแล้ว');
+
+    document.getElementById('serviceName').value='';
+
+    await loadMemberData();
+
+  }catch(error){
+    message('memberMessage','เกิดข้อผิดพลาดในการบันทึก',true);
+  }finally{
+    btn.disabled=false;
+    btn.textContent='＋ เพิ่มครั้งให้สมาชิก';
+  }
+}
+
+/* =========================
+   VISIT REWARDS
+========================= */
+
+function renderVisitRewards(){
+  const list=document.getElementById('visitRewardsList');
+  list.innerHTML='';
+
+  const current=Number(memberVisits?.currentVisits||0);
+
+  const active=visitRewards
+    .filter(r=>r.status==='ใช้งาน')
+    .sort((a,b)=>
+      Number(a.visitsRequired)-Number(b.visitsRequired)
+    );
+
+  if(!active.length){
+    list.textContent='ยังไม่มีรางวัลที่เปิดใช้งาน';
+    return;
+  }
+
+  active.forEach(reward=>{
+    const required=Number(reward.visitsRequired||0);
+    const eligible=current>=required;
+
+    const item=document.createElement('div');
+    item.className='reward';
+
+    const title=document.createElement('strong');
+    title.textContent=reward.name||'ของรางวัล';
+
+    const detail=document.createElement('p');
+    detail.className='small';
+    detail.textContent=
+      'ใช้สิทธิ์เมื่อสะสมครบ '+required+' ครั้ง'+
+      (reward.description?' | '+reward.description:'');
+
+    const status=document.createElement('p');
+    status.className='small';
+    status.textContent=eligible
+      ? 'สมาชิกมีสิทธิ์แลกรางวัลนี้'
+      : 'ยังขาดอีก '+(required-current)+' ครั้ง';
+
+    item.append(title,detail,status);
+
+    if(eligible){
+      const btn=document.createElement('button');
+      btn.className='gold full';
+      btn.textContent='แลกรางวัลนี้ให้สมาชิก';
+      btn.onclick=()=>redeemReward(reward);
+      item.appendChild(btn);
+    }
+
+    list.appendChild(item);
+  });
+}
+
+/* =========================
+   REDEEM VISIT REWARD
+   PIN sent by POST, not URL
+========================= */
+
+async function redeemReward(reward){
+  if(!currentMember)return;
+
+  const confirmed=confirm(
+    'ยืนยันแลกรางวัล "'+reward.name+'" ให้สมาชิก '+
+    (currentMember.name||'')+' หรือไม่?\n\n'+
+    'ระบบจะรีเซ็ตจำนวนครั้งสะสมเป็น 0 ตามเงื่อนไข Backend'
+  );
+
+  if(!confirmed)return;
+
+  try{
+    const result=await api('redeemVisitReward',{
+      pin:staffPin,
+      lineUserId:currentMember.lineUserId,
+      rewardId:reward.rewardId
+    });
+
+    if(!result.success){
+      message('memberMessage',result.message||'แลกรางวัลไม่สำเร็จ',true);
+      return;
+    }
+
+    message('memberMessage','แลกรางวัลเรียบร้อยแล้ว');
+
+    await loadMemberData();
+
+  }catch(error){
+    message('memberMessage','เกิดข้อผิดพลาดในการแลกรางวัล',true);
+  }
+}
+
+/* =========================
+   VISIT HISTORY
+========================= */
+
+async function loadHistory(){
+  if(!currentMember)return;
+
+  const list=document.getElementById('historyList');
+  list.textContent='กำลังโหลดประวัติ...';
+
+  try{
+    const result=await api('getVisitHistory',{
+      lineUserId:currentMember.lineUserId
+    });
+
+    if(!result.success){
+      list.textContent=result.message||'โหลดประวัติไม่สำเร็จ';
+      return;
+    }
+
+    const history=result.history||[];
+
+    if(!history.length){
+      list.textContent='ยังไม่มีประวัติการสะสมครั้ง';
+      return;
+    }
+
+    list.innerHTML='';
+
+    // Backend ส่งข้อมูลเรียงใหม่ไปเก่าอยู่แล้ว
+    history.forEach(record=>{
+      const item=document.createElement('div');
+      item.className='history-item';
+
+      const date=document.createElement('strong');
+      date.textContent=formatDate(record.date);
+
+      const detail=document.createElement('div');
+      detail.textContent=
+        record.action||record.rewardName||'รายการสะสมครั้ง';
+
+      const count=document.createElement('div');
+      count.textContent=
+        'เพิ่ม '+Number(record.visitsAdded||0)+
+        ' ครั้ง | ใช้ '+Number(record.visitsUsed||0)+
+        ' ครั้ง';
+
+      const balance=document.createElement('div');
+      balance.textContent=
+        'ก่อนทำรายการ '+Number(record.before||0)+
+        ' → หลังทำรายการ '+Number(record.after||0);
+
+      item.append(date,detail,count,balance);
+      list.appendChild(item);
+    });
+
+  }catch(error){
+    list.textContent='โหลดประวัติไม่สำเร็จ';
+  }
+}
+
+/* =========================
+   DATE FORMAT
+========================= */
+
+function formatDate(value){
+  if(!value)return '-';
+
+  const date=new Date(value);
+
+  if(Number.isNaN(date.getTime()))return String(value);
+
+  return date.toLocaleString('th-TH',{
+    dateStyle:'short',
+    timeStyle:'short'
+  });
+}
+
+/* =========================
+   ENTER KEY
+========================= */
+
+document.getElementById('pin').addEventListener('keydown',event=>{
+  if(event.key==='Enter')login();
+});
+
+document.getElementById('searchPhone').addEventListener('keydown',event=>{
+  if(event.key==='Enter')searchMember();
+});
+</script>
+</body>
+</html>
+```
