@@ -240,4 +240,493 @@ button:disabled{
         placeholder="รายละเอียดหรือเงื่อนไขการรับรางวัล"
       ></textarea>
 
-      <label for
+      <label for="rewardStatus">สถานะ</label>
+      <select id="rewardStatus">
+        <option value="ใช้งาน">เปิดใช้งาน</option>
+        <option value="ไม่ใช้งาน">ปิดใช้งาน</option>
+      </select>
+
+      <div class="row">
+        <button id="saveBtn" onclick="saveReward()">บันทึก</button>
+        <button class="secondary" onclick="closeForm()">ยกเลิก</button>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="card">
+      <h2>รายการของรางวัลทั้งหมด</h2>
+      <div id="rewardList">
+        กำลังโหลดรายการ...
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="small">
+        หมายเหตุ: หน้านี้ใช้สำหรับจัดการรายการของรางวัลสะสมครั้งเท่านั้น
+        ไม่ใช่หน้าจัดการของรางวัลแลกแต้ม
+      </p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const API_URL =
+'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
+
+let staffPin = '';
+let rewards = [];
+
+/* =========================
+   API
+========================= */
+
+async function api(action,data={}){
+  const response = await fetch(API_URL,{
+    method:'POST',
+    headers:{
+      'Content-Type':'text/plain;charset=utf-8'
+    },
+    body:JSON.stringify({
+      ...data,
+      action
+    })
+  });
+
+  if(!response.ok){
+    throw new Error('HTTP '+response.status);
+  }
+
+  return await response.json();
+}
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(message,isError=false){
+  const box = document.getElementById('message');
+
+  box.textContent = message;
+  box.className = isError ? 'error' : 'ok';
+  box.style.display = 'block';
+}
+
+function showLoginMessage(message,isError=false){
+  const box = document.getElementById('loginMessage');
+
+  box.textContent = message;
+  box.className = isError ? 'error' : 'ok';
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+async function login(){
+  const pin = document.getElementById('pin').value.trim();
+  const btn = document.getElementById('loginBtn');
+
+  if(!/^\d{6}$/.test(pin)){
+    showLoginMessage('กรุณากรอก PIN ให้ครบ 6 หลัก',true);
+    return;
+  }
+
+  btn.disabled = true;
+  showLoginMessage('กำลังตรวจสอบ PIN...');
+
+  try{
+    const result = await api('staffLogin',{pin});
+
+    if(!result.success){
+      showLoginMessage(result.message || 'PIN ไม่ถูกต้อง',true);
+      return;
+    }
+
+    staffPin = pin;
+
+    document.getElementById('loginCard').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+
+    await loadRewards();
+
+  }catch(error){
+    showLoginMessage(
+      'เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบการ Deploy และการเชื่อมต่อ',
+      true
+    );
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+  if(!confirm('ต้องการออกจากระบบหรือไม่?')) return;
+
+  staffPin = '';
+  rewards = [];
+
+  document.getElementById('pin').value = '';
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('loginCard').classList.remove('hidden');
+  document.getElementById('loginMessage').textContent = '';
+
+  closeForm();
+}
+
+/* =========================
+   LOAD REWARDS
+========================= */
+
+async function loadRewards(){
+  const list = document.getElementById('rewardList');
+
+  list.textContent = 'กำลังโหลดรายการ...';
+
+  try{
+    const result = await api('getAllVisitRewards',{
+      pin:staffPin
+    });
+
+    if(!result.success){
+      list.textContent = result.message || 'โหลดรายการไม่สำเร็จ';
+      return;
+    }
+
+    rewards = Array.isArray(result.rewards)
+      ? result.rewards
+      : [];
+
+    renderRewards();
+
+  }catch(error){
+    list.textContent =
+      'โหลดรายการไม่สำเร็จ กรุณาตรวจสอบการเชื่อมต่อ';
+  }
+}
+
+/* =========================
+   RENDER
+========================= */
+
+function renderRewards(){
+  const list = document.getElementById('rewardList');
+
+  list.innerHTML = '';
+
+  if(!rewards.length){
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = 'ยังไม่มีของรางวัลสะสมครั้ง';
+    list.appendChild(empty);
+    return;
+  }
+
+  const sorted = [...rewards].sort((a,b)=>{
+    return Number(a.visitsRequired || 0) -
+           Number(b.visitsRequired || 0);
+  });
+
+  sorted.forEach(reward=>{
+    const item = document.createElement('div');
+    item.className = 'reward';
+
+    const badge = document.createElement('div');
+    badge.className = 'badge';
+    badge.textContent =
+      'สะสมครบ '+(reward.visitsRequired || 0)+' ครั้ง';
+
+    const title = document.createElement('h3');
+    title.textContent = reward.name || 'ไม่มีชื่อรางวัล';
+
+    const description = document.createElement('p');
+    description.textContent =
+      reward.description || 'ไม่มีรายละเอียด';
+
+    const status = document.createElement('p');
+    status.className = 'status ' +
+      (reward.status === 'ใช้งาน' ? 'active' : 'inactive');
+
+    status.textContent =
+      'สถานะ: '+(reward.status || 'ไม่ระบุ');
+
+    const actions = document.createElement('div');
+    actions.className = 'reward-actions';
+
+    const edit = document.createElement('button');
+    edit.className = 'light';
+    edit.textContent = 'แก้ไข';
+    edit.onclick = ()=>editReward(reward.rewardId);
+
+    const toggle = document.createElement('button');
+    toggle.className = 'secondary';
+    toggle.textContent =
+      reward.status === 'ใช้งาน'
+        ? 'ปิดใช้งาน'
+        : 'เปิดใช้งาน';
+    toggle.onclick = ()=>toggleReward(reward.rewardId);
+
+    const del = document.createElement('button');
+    del.className = 'danger';
+    del.textContent = 'ลบ';
+    del.onclick = ()=>deleteReward(reward.rewardId);
+
+    actions.append(edit,toggle,del);
+    item.append(badge,title,description,status,actions);
+    list.appendChild(item);
+  });
+}
+
+/* =========================
+   NEW REWARD
+========================= */
+
+function newReward(){
+  document.getElementById('formTitle').textContent =
+    'เพิ่มของรางวัลสะสมครั้ง';
+
+  document.getElementById('rewardId').value = '';
+  document.getElementById('rewardVisits').value = '';
+  document.getElementById('rewardName').value = '';
+  document.getElementById('rewardDescription').value = '';
+  document.getElementById('rewardStatus').value = 'ใช้งาน';
+
+  document.getElementById('formCard').classList.remove('hidden');
+
+  document.getElementById('formCard').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+}
+
+/* =========================
+   EDIT REWARD
+========================= */
+
+function editReward(rewardId){
+  const reward = rewards.find(item=>
+    String(item.rewardId) === String(rewardId)
+  );
+
+  if(!reward){
+    showMessage('ไม่พบข้อมูลของรางวัล',true);
+    return;
+  }
+
+  document.getElementById('formTitle').textContent =
+    'แก้ไขของรางวัลสะสมครั้ง';
+
+  document.getElementById('rewardId').value =
+    reward.rewardId || '';
+
+  document.getElementById('rewardVisits').value =
+    reward.visitsRequired || '';
+
+  document.getElementById('rewardName').value =
+    reward.name || '';
+
+  document.getElementById('rewardDescription').value =
+    reward.description || '';
+
+  document.getElementById('rewardStatus').value =
+    reward.status || 'ใช้งาน';
+
+  document.getElementById('formCard').classList.remove('hidden');
+
+  document.getElementById('formCard').scrollIntoView({
+    behavior:'smooth',
+    block:'start'
+  });
+}
+
+/* =========================
+   CLOSE FORM
+========================= */
+
+function closeForm(){
+  document.getElementById('formCard').classList.add('hidden');
+}
+
+/* =========================
+   SAVE REWARD
+========================= */
+
+async function saveReward(){
+  const rewardId =
+    document.getElementById('rewardId').value.trim();
+
+  const visitsRequired =
+    Number(document.getElementById('rewardVisits').value);
+
+  const name =
+    document.getElementById('rewardName').value.trim();
+
+  const description =
+    document.getElementById('rewardDescription').value.trim();
+
+  const status =
+    document.getElementById('rewardStatus').value;
+
+  if(!Number.isInteger(visitsRequired) || visitsRequired <= 0){
+    showMessage('กรุณาระบุจำนวนครั้งสะสมให้ถูกต้อง',true);
+    return;
+  }
+
+  if(!name){
+    showMessage('กรุณากรอกชื่อของรางวัล',true);
+    return;
+  }
+
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'กำลังบันทึก...';
+
+  try{
+    const action = rewardId
+      ? 'editVisitReward'
+      : 'addVisitReward';
+
+    const data = {
+      pin:staffPin,
+      visitsRequired,
+      name,
+      description,
+      status
+    };
+
+    if(rewardId){
+      data.rewardId = rewardId;
+    }
+
+    const result = await api(action,data);
+
+    if(!result.success){
+      showMessage(
+        result.message || 'บันทึกของรางวัลไม่สำเร็จ',
+        true
+      );
+      return;
+    }
+
+    showMessage('บันทึกของรางวัลเรียบร้อยแล้ว');
+
+    closeForm();
+    await loadRewards();
+
+  }catch(error){
+    showMessage('เกิดข้อผิดพลาดในการบันทึก',true);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'บันทึก';
+  }
+}
+
+/* =========================
+   TOGGLE STATUS
+========================= */
+
+async function toggleReward(rewardId){
+  const reward = rewards.find(item=>
+    String(item.rewardId) === String(rewardId)
+  );
+
+  if(!reward) return;
+
+  const newStatus =
+    reward.status === 'ใช้งาน'
+      ? 'ไม่ใช้งาน'
+      : 'ใช้งาน';
+
+  const actionText =
+    newStatus === 'ใช้งาน'
+      ? 'เปิดใช้งาน'
+      : 'ปิดใช้งาน';
+
+  if(!confirm('ต้องการ'+actionText+'รางวัลนี้หรือไม่?')){
+    return;
+  }
+
+  try{
+    const result = await api('editVisitReward',{
+      pin:staffPin,
+      rewardId:reward.rewardId,
+      visitsRequired:reward.visitsRequired,
+      name:reward.name,
+      description:reward.description || '',
+      status:newStatus
+    });
+
+    if(!result.success){
+      showMessage(
+        result.message || 'เปลี่ยนสถานะไม่สำเร็จ',
+        true
+      );
+      return;
+    }
+
+    showMessage('เปลี่ยนสถานะเรียบร้อยแล้ว');
+    await loadRewards();
+
+  }catch(error){
+    showMessage('เกิดข้อผิดพลาดในการเปลี่ยนสถานะ',true);
+  }
+}
+
+/* =========================
+   DELETE REWARD
+========================= */
+
+async function deleteReward(rewardId){
+  const reward = rewards.find(item=>
+    String(item.rewardId) === String(rewardId)
+  );
+
+  if(!reward) return;
+
+  const confirmed = confirm(
+    'ยืนยันลบรางวัล "'+reward.name+'" หรือไม่?\n\n'+
+    'หากมีสมาชิกเคยแลกรางวัลนี้แล้ว แนะนำให้ปิดใช้งานแทนการลบ'
+  );
+
+  if(!confirmed) return;
+
+  try{
+    const result = await api('deleteVisitReward',{
+      pin:staffPin,
+      rewardId:reward.rewardId
+    });
+
+    if(!result.success){
+      showMessage(
+        result.message || 'ลบของรางวัลไม่สำเร็จ',
+        true
+      );
+      return;
+    }
+
+    showMessage('ลบของรางวัลเรียบร้อยแล้ว');
+    await loadRewards();
+
+  }catch(error){
+    showMessage('เกิดข้อผิดพลาดในการลบ',true);
+  }
+}
+
+/* =========================
+   ENTER KEY LOGIN
+========================= */
+
+document.getElementById('pin').addEventListener('keydown',event=>{
+  if(event.key === 'Enter'){
+    login();
+  }
+});
+</script>
+
+</body>
+</html>
+```
