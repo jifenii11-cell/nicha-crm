@@ -68,7 +68,6 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
 .login-logo .brand{color:var(--green)}
 .login-logo p{font-size:13px;color:var(--muted)}
 .footer{text-align:center;color:#9aa39d;font-size:11px;margin-top:25px}
-.history-summary{font-size:13px;color:var(--muted);margin-bottom:12px}
 @media(max-width:650px){
   .page{padding:14px 11px 35px}
   .header{padding:21px 18px}
@@ -171,7 +170,13 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
   <div class="card">
     <div class="top-actions">
       <h2 class="card-title">รายการคูปองทั้งหมด</h2>
-      <button class="btn btn-green btn-small" onclick="loadCoupons()">รีเฟรชรายการ</button>
+      <div class="btn-row">
+        <button class="btn btn-gold btn-small"
+          onclick="window.location.href='coupon-history.html'">
+          ประวัติการใช้คูปอง
+        </button>
+        <button class="btn btn-green btn-small" onclick="loadCoupons()">รีเฟรชรายการ</button>
+      </div>
     </div>
     <div class="gold-line"></div>
     <div id="listStatus" class="status"></div>
@@ -185,35 +190,6 @@ th{color:var(--green);font-weight:500;background:#f7f8f4}
         </thead>
         <tbody id="couponTable">
           <tr><td colspan="7" class="empty">กำลังโหลดข้อมูล...</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- ประวัติการใช้คูปอง -->
-  <div class="card">
-    <div class="top-actions">
-      <h2 class="card-title">ประวัติการใช้คูปอง</h2>
-      <button class="btn btn-green btn-small" onclick="loadCouponHistory()">รีเฟรชประวัติ</button>
-    </div>
-    <div class="gold-line"></div>
-    <div class="history-summary" id="historySummary">แสดงประวัติการขอใช้และยืนยันคูปองล่าสุด</div>
-    <div id="historyStatus" class="status"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>วันและเวลา</th>
-            <th>สมาชิก</th>
-            <th>ชื่อคูปอง</th>
-            <th>รายการ</th>
-            <th>สถานะเดิม</th>
-            <th>สถานะใหม่</th>
-            <th>ผู้ดำเนินการ</th>
-          </tr>
-        </thead>
-        <tbody id="historyTable">
-          <tr><td colspan="7" class="empty">กำลังโหลดประวัติ...</td></tr>
         </tbody>
       </table>
     </div>
@@ -271,7 +247,7 @@ async function login(){
     staffPin=pin;
     document.getElementById('loginArea').classList.add('hidden');
     document.getElementById('appArea').classList.remove('hidden');
-    await Promise.all([loadCoupons(),loadCouponHistory()]);
+    await loadCoupons();
   }catch(error){
     showStatus('loginStatus',error.message,'error');
   }
@@ -458,7 +434,7 @@ async function confirmCoupon(id,button){
     if(button){button.disabled=true;button.textContent='กำลังยืนยัน...'}
     await api('confirmCouponUse',{pin:staffPin,couponId:id});
     showStatus('listStatus','ยืนยันการใช้คูปองเรียบร้อยแล้ว','success');
-    await Promise.all([loadCoupons(),loadCouponHistory()]);
+    await loadCoupons();
   }catch(error){
     showStatus('listStatus',error.message,'error');
     if(button){button.disabled=false;button.textContent='ยืนยันการใช้'}
@@ -531,51 +507,11 @@ function resetForm(){
   document.getElementById('selectedMemberBox').innerHTML='<span style="color:var(--muted);font-size:13px">กรุณาค้นหาและเลือกสมาชิกก่อนสร้างคูปอง</span>';
 }
 
-/* โหลดประวัติจาก CouponHistory */
-async function loadCouponHistory(){
-  const tbody=document.getElementById('historyTable');
-  showStatus('historyStatus','กำลังโหลดประวัติการใช้คูปอง...');
-  try{
-    const data=await api('getCouponHistory',{pin:staffPin});
-    const history=Array.isArray(data.history)?data.history:[];
-    document.getElementById('historySummary').textContent=
-      'พบประวัติทั้งหมด '+(data.count??history.length)+' รายการ';
-    if(!history.length){
-      tbody.innerHTML='<tr><td colspan="7" class="empty">ยังไม่มีประวัติการใช้คูปอง</td></tr>';
-    }else{
-      tbody.innerHTML=history.map(item=>`
-        <tr>
-          <td>${escapeHtml(formatDateTime(item.date))}</td>
-          <td>${escapeHtml(item.memberName||'-')}</td>
-          <td>${escapeHtml(item.couponName||'-')}</td>
-          <td>${escapeHtml(item.action||'-')}</td>
-          <td>${escapeHtml(item.oldStatus||'-')}</td>
-          <td><span class="badge ${item.newStatus==='ใช้แล้ว'?'used':item.newStatus==='รอยืนยัน'?'pending':''}">${escapeHtml(item.newStatus||'-')}</span></td>
-          <td>${escapeHtml(item.actor||'-')}</td>
-        </tr>`).join('');
-    }
-    document.getElementById('historyStatus').className='status';
-  }catch(error){
-    showStatus('historyStatus',error.message,'error');
-    tbody.innerHTML='<tr><td colspan="7" class="empty">ไม่สามารถโหลดประวัติได้</td></tr>';
-  }
-}
-
 function formatDate(value){
   if(!value||value==='-')return'-';
   const date=new Date(value);
   if(Number.isNaN(date.getTime()))return String(value);
   return date.toLocaleDateString('th-TH');
-}
-
-function formatDateTime(value){
-  if(!value)return'-';
-  const date=new Date(value);
-  if(Number.isNaN(date.getTime()))return String(value);
-  return date.toLocaleString('th-TH',{
-    year:'numeric',month:'2-digit',day:'2-digit',
-    hour:'2-digit',minute:'2-digit'
-  });
 }
 
 document.getElementById('phone').addEventListener('keydown',event=>{
