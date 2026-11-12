@@ -282,9 +282,10 @@ async function loadHistory(){
       headers:{
         'Content-Type':'text/plain;charset=utf-8'
       },
-      body:JSON.stringify({
-        action:'getCouponHistory'
-      })
+    body:JSON.stringify({
+  action:'getCouponHistory',
+  pin:staffPin
+})
     });
 
     if(!response.ok){
