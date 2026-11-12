@@ -207,12 +207,17 @@ tbody tr:hover{background:#fcfdfb}
 const API_URL =
 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
+const SESSION_KEY = 'NICHA_STAFF_PIN';
+
 let historyData = [];
 let staffPin = '';
 
 function goBack(){
-  if(window.parent && window.parent !== window &&
-     typeof window.parent.backToMenu === 'function'){
+  if(
+    window.parent &&
+    window.parent !== window &&
+    typeof window.parent.backToMenu === 'function'
+  ){
     window.parent.backToMenu();
   }else{
     window.location.href = 'staff-center.html';
@@ -234,7 +239,7 @@ function formatDate(value){
 
   const date = new Date(value);
 
-  if(isNaN(date.getTime())) {
+  if(isNaN(date.getTime())){
     return escapeHTML(value);
   }
 
@@ -268,6 +273,21 @@ async function loadHistory(){
   const body = document.getElementById('historyBody');
   const button = document.getElementById('refreshBtn');
 
+  // ตรวจสอบ PIN ก่อนเรียก API ทุกครั้ง
+  staffPin = sessionStorage.getItem(SESSION_KEY) || '';
+
+  if(!staffPin){
+    body.innerHTML = `
+      <tr>
+        <td colspan="7" class="error">
+          ไม่พบข้อมูลการเข้าสู่ระบบ กรุณาเข้าสู่ระบบใหม่
+        </td>
+      </tr>`;
+
+    setTimeout(goBack, 1000);
+    return;
+  }
+
   body.innerHTML = `
     <tr>
       <td colspan="7" class="loading">กำลังโหลดประวัติ...</td>
@@ -282,10 +302,10 @@ async function loadHistory(){
       headers:{
         'Content-Type':'text/plain;charset=utf-8'
       },
-    body:JSON.stringify({
-  action:'getCouponHistory',
-  pin:staffPin
-})
+      body:JSON.stringify({
+        action:'getCouponHistory',
+        pin:staffPin
+      })
     });
 
     if(!response.ok){
@@ -382,12 +402,12 @@ function renderHistory(){
   `).join('');
 }
 
-/* ตรวจสอบ PIN จากหน้า staff-center */
+/* เริ่มต้นหน้าโดยใช้ Session จาก staff-center */
 function initializeHistoryPage(){
-  staffPin = sessionStorage.getItem('NICHA_STAFF_PIN') || '';
+  staffPin = sessionStorage.getItem(SESSION_KEY) || '';
 
   if(!staffPin){
-    window.top.location.href = 'staff-center.html';
+    goBack();
     return;
   }
 
