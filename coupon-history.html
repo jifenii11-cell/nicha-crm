@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#173f35">
+<title>NICHA CRM | Coupon History</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Playfair+Display:wght@500;600&display=swap');
+:root{--green:#173f35;--green2:#285c4b;--gold:#c6a15b;--cream:#f8f6ef;--text:#26352f;--muted:#78847d;--border:#e8e5dc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--text);font-family:'Kanit',sans-serif;font-weight:300}
+button,input{font:inherit}
+.page{max-width:1100px;margin:auto;padding:22px 14px 45px}
+.header{background:linear-gradient(135deg,#173f35,#285c4b);color:white;border-radius:20px;padding:25px;margin-bottom:20px}
+.brand{font-family:'Playfair Display',serif;font-size:27px;letter-spacing:2px;color:#e3c783}
+.subtitle{font-size:13px;color:#d7e1db;margin-top:5px}
+.header-line{height:1px;background:#ffffff35;margin:17px 0}
+.header-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px}
+.card{background:white;border:1px solid var(--border);border-radius:17px;padding:21px;margin-bottom:18px;box-shadow:0 5px 20px #243b2e08}
+.title{font-size:19px;font-weight:500;color:var(--green);margin:0 0 8px}
+.gold-line{width:42px;height:3px;background:var(--gold);border-radius:4px;margin:12px 0 18px}
+.btn{border:0;border-radius:10px;padding:10px 16px;cursor:pointer}
+.btn-green{background:var(--green);color:white}
+.btn-light{background:#edf2ee;color:var(--green)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+input{width:100%;border:1px solid #dedfd8;border-radius:10px;padding:11px 12px;outline:none}
+input:focus{border-color:var(--gold)}
+.field{max-width:350px;margin-bottom:12px}
+label{display:block;font-size:13px;margin-bottom:6px;color:#59665f}
+.status{display:none;margin-top:12px;padding:10px 12px;border-radius:9px;font-size:13px}
+.status.show{display:block}
+.status.error{background:#faeae8;color:#a53d38}
+.status.success{background:#e8f4ec;color:#276443}
+.status.info{background:#edf2f5;color:#426273}
+.summary{font-size:13px;color:var(--muted);margin-bottom:14px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+th{color:var(--green);font-weight:500;background:#f7f8f4;white-space:nowrap}
+.badge{display:inline-block;border-radius:20px;padding:4px 10px;font-size:11px;background:#e8f3eb;color:#286044;white-space:nowrap}
+.badge.pending{background:#fff3d9;color:#946719}
+.badge.used{background:#e8e8e8;color:#555}
+.empty{text-align:center;color:var(--muted);padding:28px}
+.login{max-width:420px;margin:50px auto}
+.login .brand{color:var(--green);text-align:center}
+.login p{text-align:center;color:var(--muted);font-size:13px}
+.footer{text-align:center;color:#9aa39d;font-size:11px;margin-top:25px}
+@media(max-width:600px){.page{padding:13px 10px 35px}.header{padding:20px}.card{padding:16px}.brand{font-size:24px}}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="header">
+    <div class="brand">NICHA CRM</div>
+    <div class="subtitle">COUPON HISTORY</div>
+    <div class="header-line"></div>
+    <div class="header-bottom">
+      <span>ประวัติการใช้คูปองของสมาชิก</span>
+      <a href="coupons-admin.html" style="text-decoration:none">
+        <button class="btn btn-light">← กลับหน้าจัดการคูปอง</button>
+      </a>
+    </div>
+  </header>
+
+  <section class="card login" id="loginBox">
+    <div class="brand">NICHA CRM</div>
+    <p>ยืนยันตัวตนพนักงานเพื่อดูประวัติ</p>
+    <div class="field">
+      <label>รหัส PIN พนักงาน 6 หลัก</label>
+      <input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="กรอกรหัส PIN">
+    </div>
+    <button class="btn btn-green" id="loginBtn" onclick="loadHistory()">เข้าสู่ระบบและดูประวัติ</button>
+    <div id="loginStatus" class="status"></div>
+  </section>
+
+  <section class="card" id="historyBox" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+      <h2 class="title">ประวัติการใช้คูปอง</h2>
+      <button class="btn btn-green" onclick="loadHistory()">รีเฟรชประวัติ</button>
+    </div>
+    <div class="gold-line"></div>
+    <div class="summary" id="summary">กำลังโหลดข้อมูล...</div>
+    <div id="historyStatus" class="status"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>วันและเวลา</th>
+            <th>ชื่อสมาชิก</th>
+            <th>ชื่อคูปอง</th>
+            <th>รายการ</th>
+            <th>สถานะเดิม</th>
+            <th>สถานะใหม่</th>
+            <th>ผู้ดำเนินการ</th>
+          </tr>
+        </thead>
+        <tbody id="historyTable">
+          <tr><td colspan="7" class="empty">ยังไม่มีข้อมูล</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="footer">NICHA CRM • COUPON HISTORY</div>
+</div>
+
+<script>
+const API_URL='https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
+let staffPin='';
+
+async function api(action,payload={}){
+  const response=await fetch(API_URL,{
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({action,...payload})
+  });
+  const text=await response.text();
+  let data;
+  try{data=JSON.parse(text)}
+  catch(e){throw new Error('เซิร์ฟเวอร์ส่งข้อมูลกลับมาไม่ถูกต้อง')}
+  if(!response.ok)throw new Error(data.message||'เชื่อมต่อไม่สำเร็จ');
+  if(data.success===false)throw new Error(data.message||'เกิดข้อผิดพลาด');
+  return data;
+}
+
+function showStatus(id,message,type='info'){
+  const el=document.getElementById(id);
+  el.textContent=message;
+  el.className='status show '+type;
+}
+
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g,char=>({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'
+  })[char]);
+}
+
+function formatDateTime(value){
+  if(!value)return'-';
+  const date=new Date(value);
+  if(Number.isNaN(date.getTime()))return String(value);
+  return date.toLocaleString('th-TH',{
+    year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit'
+  });
+}
+
+async function loadHistory(){
+  const pin=document.getElementById('pinInput').value.trim();
+  if(!staffPin&&!/^\d{6}$/.test(pin)){
+    showStatus('loginStatus','กรุณากรอกรหัส PIN 6 หลัก','error');
+    return;
+  }
+  if(!staffPin)staffPin=pin;
+
+  const button=document.getElementById('loginBtn');
+  button.disabled=true;
+  button.textContent='กำลังโหลด...';
+
+  try{
+    const data=await api('getCouponHistory',{pin:staffPin});
+    const history=Array.isArray(data.history)?data.history:[];
+    document.getElementById('loginBox').style.display='none';
+    document.getElementById('historyBox').style.display='block';
+    document.getElementById('summary').textContent=
+      'ประวัติทั้งหมด '+(data.count??history.length)+' รายการ';
+
+    const tbody=document.getElementById('historyTable');
+    if(!history.length){
+      tbody.innerHTML='<tr><td colspan="7" class="empty">ยังไม่มีประวัติการใช้คูปอง</td></tr>';
+    }else{
+      tbody.innerHTML=history.map(item=>`
+        <tr>
+          <td>${escapeHtml(formatDateTime(item.date))}</td>
+          <td>${escapeHtml(item.memberName||'-')}</td>
+          <td>${escapeHtml(item.couponName||'-')}</td>
+          <td>${escapeHtml(item.action||'-')}</td>
+          <td>${escapeHtml(item.oldStatus||'-')}</td>
+          <td>
+            <span class="badge ${item.newStatus==='ใช้แล้ว'?'used':item.newStatus==='รอยืนยัน'?'pending':''}">
+              ${escapeHtml(item.newStatus||'-')}
+            </span>
+          </td>
+          <td>${escapeHtml(item.actor||'-')}</td>
+        </tr>
+      `).join('');
+    }
+    document.getElementById('historyStatus').className='status';
+  }catch(error){
+    if(!staffPin){
+      staffPin='';
+      showStatus('loginStatus',error.message,'error');
+    }else{
+      showStatus('historyStatus',error.message,'error');
+    }
+  }finally{
+    button.disabled=false;
+    button.textContent='เข้าสู่ระบบและดูประวัติ';
+  }
+}
+
+document.getElementById('pinInput').addEventListener('keydown',event=>{
+  if(event.key==='Enter')loadHistory();
+});
+</script>
+</body>
+</html>
