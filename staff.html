@@ -179,8 +179,9 @@ button:disabled{
   justify-content:space-between;
   align-items:center;
   gap:10px;
+  flex-wrap:wrap;
 }
-.logout{
+.back{
   font-size:13px;
   padding:9px 12px;
 }
@@ -212,35 +213,14 @@ hr{
     <p>STAFF MANAGEMENT SYSTEM</p>
   </div>
 
-  <!-- LOGIN -->
-  <section id="loginSection" class="card">
-    <h2>เข้าสู่ระบบพนักงาน</h2>
-
-    <label for="pinInput">รหัส PIN พนักงาน 6 หลัก</label>
-    <input
-      id="pinInput"
-      type="password"
-      inputmode="numeric"
-      maxlength="6"
-      placeholder="กรอกรหัส PIN"
-      autocomplete="off"
-    >
-
-    <button id="loginBtn" class="primary" onclick="login()">
-      เข้าสู่ระบบ
-    </button>
-
-    <div id="loginMessage"></div>
-  </section>
-
   <!-- STAFF APP -->
-  <main id="staffSection" class="hidden">
+  <main id="staffSection">
 
     <div class="card">
       <div class="top-row">
         <h2 style="margin:0">ระบบจัดการสมาชิก</h2>
-        <button class="secondary logout" onclick="logout()">
-          ออกจากระบบ
+        <button class="secondary back" onclick="backToCenter()">
+          ← กลับหน้ารวม
         </button>
       </div>
       <p class="small">
@@ -380,7 +360,7 @@ hr{
 <script>
 /**************************************************
  * NICHA CRM STAFF
- * ระบบพนักงาน
+ * ใช้ PIN จาก STAFF CENTER จุดเดียว
  * ค้นหาสมาชิก
  * เพิ่มแต้ม 100 บาท = 1 แต้ม
  * บันทึกบริการและเพิ่มจำนวนครั้ง 1 ครั้ง
@@ -391,16 +371,48 @@ const API_URL =
 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
 const POINT_RATE = 100;
+const SESSION_KEY = 'NICHA_STAFF_PIN';
 
 let staffPIN = '';
 let currentMember = null;
 let saving = false;
 
 /* -----------------------------------------------
+   CHECK CENTRAL LOGIN
+------------------------------------------------ */
+
+function initializeStaffPage() {
+  staffPIN = sessionStorage.getItem(SESSION_KEY) || '';
+
+  if (!/^\d{6}$/.test(staffPIN)) {
+    window.top.location.href = 'staff-center.html';
+    return;
+  }
+
+  document.getElementById('staffSection').classList.remove('hidden');
+}
+
+function backToCenter() {
+  if (
+    window.parent &&
+    window.parent !== window &&
+    typeof window.parent.backToMenu === 'function'
+  ) {
+    window.parent.backToMenu();
+  } else {
+    window.location.href = 'staff-center.html';
+  }
+}
+
+/* -----------------------------------------------
    API
 ------------------------------------------------ */
 
 async function api(action, params = {}) {
+  if (!staffPIN) {
+    throw new Error('ไม่พบข้อมูลเข้าสู่ระบบ กรุณากลับไปหน้ารวม');
+  }
+
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
@@ -461,77 +473,6 @@ function setLoading(buttonId, loading, loadingText) {
       btn.dataset.originalText || btn.textContent;
     btn.disabled = false;
   }
-}
-
-/* -----------------------------------------------
-   LOGIN
------------------------------------------------- */
-
-async function login() {
-  if (saving) return;
-
-  const pin = document.getElementById('pinInput').value.trim();
-
-  if (!/^\d{6}$/.test(pin)) {
-    showMessage(
-      'loginMessage',
-      'กรุณากรอก PIN ให้ครบ 6 หลัก',
-      'error'
-    );
-    return;
-  }
-
-  saving = true;
-  setLoading('loginBtn', true, 'กำลังตรวจสอบ...');
-
-  try {
-    const result = await api('staffLogin', {
-      pin: pin
-    });
-
-    if (result.success === false) {
-      throw new Error(result.message || 'PIN ไม่ถูกต้อง');
-    }
-
-    staffPIN = pin;
-
-    document.getElementById('loginSection').classList.add('hidden');
-    document.getElementById('staffSection').classList.remove('hidden');
-
-    showMessage('loginMessage', '', '');
-
-  } catch (error) {
-    showMessage(
-      'loginMessage',
-      error.message || 'เข้าสู่ระบบไม่สำเร็จ',
-      'error'
-    );
-  } finally {
-    saving = false;
-    setLoading('loginBtn', false);
-  }
-}
-
-/* -----------------------------------------------
-   LOGOUT
------------------------------------------------- */
-
-function logout() {
-  staffPIN = '';
-  currentMember = null;
-
-  document.getElementById('pinInput').value = '';
-  document.getElementById('searchInput').value = '';
-  document.getElementById('serviceInput').value = '';
-  document.getElementById('amountInput').value = '';
-  document.getElementById('deductInput').value = '';
-  document.getElementById('deductReason').value = '';
-
-  document.getElementById('staffSection').classList.add('hidden');
-  document.getElementById('memberSection').classList.add('hidden');
-  document.getElementById('loginSection').classList.remove('hidden');
-
-  showMessage('loginMessage', '', '');
 }
 
 /* -----------------------------------------------
@@ -962,10 +903,6 @@ async function deductPoints() {
    ENTER KEY
 ------------------------------------------------ */
 
-document.getElementById('pinInput').addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') login();
-});
-
 document.getElementById('searchInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') searchMember();
 });
@@ -977,6 +914,8 @@ document.getElementById('amountInput').addEventListener('keydown', function(e) {
 /* -----------------------------------------------
    START
 ------------------------------------------------ */
+
+initializeStaffPage();
 
 console.log('NICHA CRM STAFF READY');
 
