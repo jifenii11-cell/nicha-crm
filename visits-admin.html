@@ -1,0 +1,243 @@
+```html
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123d32">
+<title>NICHA CRM | จัดการของรางวัลสะสมครั้ง</title>
+
+<style>
+:root{
+  --green:#123d32;
+  --green2:#28734b;
+  --gold:#c9a65b;
+  --cream:#f1f7f2;
+  --text:#244333;
+  --muted:#6d7d71;
+  --red:#c64b4b;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--text);
+  font-family:Arial,Tahoma,sans-serif;
+}
+.container{
+  max-width:850px;
+  margin:25px auto;
+  padding:18px;
+}
+.header{
+  text-align:center;
+  margin-bottom:22px;
+}
+.header h1{
+  color:var(--green2);
+  margin-bottom:5px;
+  font-size:25px;
+}
+.header p{
+  color:var(--muted);
+  font-size:14px;
+}
+.card{
+  background:white;
+  border-radius:16px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 4px 15px #0000000c;
+}
+h2{
+  font-size:19px;
+  margin:0 0 16px;
+  color:var(--green);
+}
+input,select,textarea{
+  width:100%;
+  padding:13px;
+  border:1px solid #cbdccf;
+  border-radius:9px;
+  margin:7px 0 14px;
+  font-size:16px;
+  font-family:inherit;
+}
+textarea{
+  min-height:85px;
+  resize:vertical;
+}
+label{
+  display:block;
+  font-weight:bold;
+  font-size:14px;
+}
+button{
+  border:0;
+  border-radius:9px;
+  padding:12px 16px;
+  background:var(--green2);
+  color:white;
+  font-size:14px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:4px;
+}
+button.secondary{background:#64766a}
+button.danger{background:var(--red)}
+button.light{background:#e6f2e9;color:#24613d}
+button.gold{background:var(--gold);color:white}
+button:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+.row{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.row button{flex:1}
+.hidden{display:none!important}
+.small{
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+}
+#message,#loginMessage{
+  padding:10px;
+  border-radius:8px;
+  margin:10px 0;
+  font-size:13px;
+  white-space:pre-wrap;
+}
+#message{display:none}
+.ok{background:#e2f5e8;color:#176b39}
+.error{background:#ffebeb;color:#a52c2c}
+.reward{
+  border:1px solid #e0ebe2;
+  border-radius:12px;
+  padding:16px;
+  margin:12px 0;
+}
+.reward h3{
+  margin:0 0 8px;
+  color:var(--green);
+  font-size:17px;
+}
+.reward p{
+  margin:6px 0;
+  font-size:14px;
+  line-height:1.5;
+}
+.status{
+  font-size:13px;
+  font-weight:bold;
+}
+.active{color:#21834b}
+.inactive{color:#c64b4b}
+.reward-actions{
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+.reward-actions button{flex:1}
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:25px 10px;
+}
+.badge{
+  display:inline-block;
+  background:#f7f0df;
+  color:#92702d;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px;
+  margin-bottom:8px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>NICHA CRM</h1>
+    <p>ระบบจัดการของรางวัลสะสมครั้ง</p>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginCard" class="card">
+    <h2>เข้าสู่ระบบพนักงาน</h2>
+    <p class="small">กรุณากรอกรหัส PIN พนักงานเพื่อจัดการของรางวัล</p>
+
+    <label for="pin">รหัส PIN 6 หลัก</label>
+    <input
+      id="pin"
+      type="password"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="กรอกรหัส PIN"
+      autocomplete="off"
+    >
+
+    <button id="loginBtn" style="width:100%" onclick="login()">
+      เข้าสู่ระบบ
+    </button>
+
+    <div id="loginMessage"></div>
+  </div>
+
+  <!-- ADMIN -->
+  <div id="adminPanel" class="hidden">
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between;align-items:center">
+        <h2 style="margin:0">จัดการของรางวัลสะสมครั้ง</h2>
+        <button class="secondary" onclick="logout()">ออกจากระบบ</button>
+      </div>
+
+      <p class="small">
+        ตั้งค่ารางวัลสำหรับสมาชิกที่มาใช้บริการสะสมครบตามจำนวนครั้ง
+      </p>
+
+      <div id="message"></div>
+
+      <div class="row">
+        <button onclick="newReward()">＋ เพิ่มของรางวัล</button>
+        <button class="light" onclick="loadRewards()">รีเฟรชรายการ</button>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div id="formCard" class="card hidden">
+      <h2 id="formTitle">เพิ่มของรางวัลสะสมครั้ง</h2>
+
+      <input type="hidden" id="rewardId">
+
+      <label for="rewardVisits">จำนวนครั้งที่ต้องสะสม</label>
+      <input
+        id="rewardVisits"
+        type="number"
+        min="1"
+        step="1"
+        placeholder="เช่น 10"
+      >
+
+      <label for="rewardName">ชื่อของรางวัล</label>
+      <input
+        id="rewardName"
+        type="text"
+        maxlength="150"
+        placeholder="เช่น นวดไทยฟรี 60 นาที"
+      >
+
+      <label for="rewardDescription">รายละเอียดของรางวัล</label>
+      <textarea
+        id="rewardDescription"
+        maxlength="500"
+        placeholder="รายละเอียดหรือเงื่อนไขการรับรางวัล"
+      ></textarea>
+
+      <label for
