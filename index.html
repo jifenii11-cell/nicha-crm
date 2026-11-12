@@ -278,7 +278,7 @@ button{cursor:pointer}
   </div>
 </section>
 
-<!-- หน้าประวัติ -->
+<!-- หน้าประวัติแต้ม -->
 <section class="page" id="historyPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
   <div class="section-title">ประวัติแต้มสะสม</div>
@@ -369,6 +369,39 @@ button{cursor:pointer}
   <div id="usedCouponsList">
     <div class="loader">กำลังโหลดคูปองที่ใช้แล้ว...</div>
   </div>
+
+  <button class="coupon-nav-btn"
+    style="width:100%;margin-top:14px"
+    onclick="showPage('memberCouponHistoryPage')">
+    🧾 ประวัติการใช้คูปอง
+  </button>
+</section>
+
+<!-- หน้าประวัติการใช้คูปอง -->
+<section class="page" id="memberCouponHistoryPage">
+
+  <button class="back"
+    onclick="showPage('usedCouponsPage')">
+    ‹ กลับหน้าคูปองที่ใช้แล้ว
+  </button>
+
+  <div class="section-title">ประวัติการใช้คูปอง</div>
+  <p class="section-sub">
+    รายการคูปองที่พนักงานยืนยันการใช้เรียบร้อยแล้ว
+  </p>
+
+  <div class="row-between" style="margin-bottom:12px">
+    <span class="notice">ประวัติการใช้สิทธิ์ของคุณ</span>
+    <button class="back" style="padding:0"
+      onclick="loadMemberCouponHistory()">
+      รีเฟรชรายการ ↻
+    </button>
+  </div>
+
+  <div id="memberCouponHistoryList">
+    <div class="loader">กำลังโหลดประวัติ...</div>
+  </div>
+
 </section>
 
 <!-- หน้าสิทธิพิเศษ -->
@@ -472,9 +505,9 @@ function showPage(id){
   if(id==='historyPage'&&!historyLoaded)loadHistory();
   if(id==='memberPage')renderMemberInfo();
 
-  // โหลดสถานะคูปองใหม่ทุกครั้งที่เปิดหน้า
   if(id==='couponsPage')loadCoupons(true);
   if(id==='usedCouponsPage')loadUsedCoupons(true);
+  if(id==='memberCouponHistoryPage')loadMemberCouponHistory();
 
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -945,7 +978,6 @@ function renderRecent(transactions,redemptions){
    MEMBER COUPONS
 ========================================= */
 
-// โหลดข้อมูลคูปองจากฐานข้อมูล
 async function getCouponsData(forceRefresh=false){
 
   if(!lineUserId){
@@ -971,8 +1003,6 @@ async function getCouponsData(forceRefresh=false){
   return couponsData;
 }
 
-
-// แสดงรายการคูปอง
 function renderCouponCards(list,box,emptyTitle){
 
   box.innerHTML='';
@@ -1070,7 +1100,6 @@ function renderCouponCards(list,box,emptyTitle){
       statusTextEl
     );
 
-    // ขอใช้คูปองได้เฉพาะสถานะใช้งาน
     if(status==='ใช้งาน'){
 
       const requestBtn=document.createElement('button');
@@ -1085,10 +1114,7 @@ function renderCouponCards(list,box,emptyTitle){
 
       card.appendChild(requestBtn);
 
-    }
-
-    // รอพนักงานยืนยัน
-    else if(status==='รอยืนยัน'){
+    }else if(status==='รอยืนยัน'){
 
       const waiting=document.createElement('div');
       waiting.className='notice';
@@ -1102,10 +1128,7 @@ function renderCouponCards(list,box,emptyTitle){
 
       card.appendChild(waiting);
 
-    }
-
-    // พนักงานยืนยันแล้ว
-    else if(status==='ใช้แล้ว'){
+    }else if(status==='ใช้แล้ว'){
 
       const used=document.createElement('div');
       used.className='notice';
@@ -1126,9 +1149,6 @@ function renderCouponCards(list,box,emptyTitle){
   });
 }
 
-
-// หน้าคูปองของฉัน
-// แสดงทุกสถานะ ยกเว้นใช้แล้ว
 async function loadCoupons(forceRefresh=false){
 
   const box=document.getElementById('couponsList');
@@ -1176,9 +1196,6 @@ async function loadCoupons(forceRefresh=false){
   }
 }
 
-
-// หน้าคูปองที่ใช้แล้ว
-// แสดงเฉพาะสถานะใช้แล้ว
 async function loadUsedCoupons(forceRefresh=false){
 
   const box=document.getElementById('usedCouponsList');
@@ -1257,8 +1274,6 @@ async function requestCoupon(couponId,btn){
 
     showToast('ส่งคำขอแล้ว กรุณารอพนักงานยืนยัน');
 
-    // โหลดสถานะใหม่จากฐานข้อมูล
-    // คูปองจะยังอยู่หน้าเดิมจนกว่าพนักงานจะยืนยัน
     couponsLoaded=false;
     couponsData=[];
 
@@ -1271,6 +1286,126 @@ async function requestCoupon(couponId,btn){
     btn.textContent='ขอใช้คูปอง';
 
   }
+}
+
+/* =========================================
+   MEMBER COUPON HISTORY
+========================================= */
+
+async function loadMemberCouponHistory(){
+
+  const box=document.getElementById('memberCouponHistoryList');
+
+  if(!lineUserId){
+    box.innerHTML='<div class="empty">กรุณาเข้าสู่ระบบสมาชิกก่อน</div>';
+    return;
+  }
+
+  box.innerHTML='<div class="loader">กำลังโหลดประวัติการใช้คูปอง...</div>';
+
+  try{
+
+    const data=await jsonp('getMemberCouponHistory',{
+      lineUserId
+    });
+
+    if(!data||!data.success){
+      throw new Error(data?.message||'ไม่สามารถโหลดประวัติได้');
+    }
+
+    const list=data.history||[];
+
+    box.innerHTML='';
+
+    if(!list.length){
+      box.innerHTML=`
+        <div class="coupon-box">
+          <div class="coupon-tag">NICHA MEMBER</div>
+          <h3>ยังไม่มีประวัติการใช้คูปอง</h3>
+          <div class="notice">
+            เมื่อพนักงานยืนยันการใช้คูปองแล้ว
+            ประวัติจะแสดงที่หน้านี้
+          </div>
+        </div>`;
+      return;
+    }
+
+    list.forEach(item=>{
+
+      const card=document.createElement('div');
+      card.className='coupon-box';
+
+      const tag=document.createElement('div');
+      tag.className='coupon-tag';
+      tag.textContent='NICHA COUPON HISTORY';
+
+      const title=document.createElement('h3');
+      title.textContent=item.couponName||'คูปองส่วนลด';
+
+      const discount=document.createElement('div');
+      discount.className='coupon-discount';
+
+      const type=String(item.discountType||'บาท').trim();
+      const value=Number(item.discountValue||0);
+
+      discount.textContent=type==='%'?
+        'ส่วนลด '+money(value)+'%':
+        'ส่วนลด '+money(value)+' บาท';
+
+      const minimum=document.createElement('div');
+      minimum.className='notice';
+      minimum.textContent=
+        'ยอดซื้อขั้นต่ำ '+money(item.minimumSpend||0)+' บาท';
+
+      const date=document.createElement('div');
+      date.className='notice';
+      date.style.marginTop='10px';
+      date.textContent='วันที่ใช้: '+formatDateTime(item.date);
+
+      const status=document.createElement('div');
+      status.className='coupon-status';
+      status.style.color='#286044';
+      status.textContent='✓ '+(item.status||'ใช้แล้ว');
+
+      card.append(tag,title,discount,minimum,date,status);
+      box.appendChild(card);
+
+    });
+
+  }catch(e){
+
+    box.innerHTML='';
+
+    const message=document.createElement('div');
+    message.className='empty';
+    message.textContent=e.message;
+
+    const retry=document.createElement('button');
+    retry.className='btn full';
+    retry.style.marginTop='12px';
+    retry.textContent='ลองโหลดอีกครั้ง';
+    retry.onclick=loadMemberCouponHistory;
+
+    box.append(message,retry);
+  }
+}
+
+function formatDateTime(value){
+
+  if(!value)return 'ไม่ระบุวันที่';
+
+  const d=new Date(value);
+
+  if(isNaN(d.getTime()))return String(value);
+
+  return d.toLocaleString('th-TH',{
+    timeZone:'Asia/Bangkok',
+    day:'numeric',
+    month:'long',
+    year:'numeric',
+    hour:'2-digit',
+    minute:'2-digit'
+  })+' น.';
 }
 
 /* =========================================
