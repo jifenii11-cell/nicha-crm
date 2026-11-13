@@ -128,7 +128,7 @@ button{cursor:pointer}
       <p>ขณะนี้บัญชีสมาชิกของคุณถูกระงับการใช้งานชั่วคราว ไม่สามารถสะสมคะแนน แลกรางวัล ใช้คูปอง หรือรับสิทธิพิเศษสมาชิกได้ กรุณาติดต่อพนักงานที่ร้านเพื่อสอบถามข้อมูลเพิ่มเติมค่ะ</p>
     </div>
     <div class="member-card">
-      <div class="card-head"><div class="card-label">NICHA MEMBER CARD</div><div class="tier" id="tierLabel">BRONZE</div></div>
+      <div class="card-head"><div class="card-label">NICHA MEMBER CARD</div><div class="tier" id="tierLabel">รอตรวจสอบ</div></div>
       <div class="member-name" id="memberName">สมาชิก NICHA</div>
       <div class="member-phone" id="memberPhone">—</div>
       <div class="points-row">
@@ -237,7 +237,7 @@ button{cursor:pointer}
 <section class="page" id="privilegesPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
   <div class="section-title">สิทธิพิเศษสมาชิก</div><p class="section-sub">ความพิเศษที่ NICHA ตั้งใจมอบให้สมาชิก</p>
-  <div class="panel"><div class="row-between"><div class="panel-title" style="margin:0">สิทธิพิเศษของคุณ</div><div class="tier" id="privilegeTier">BRONZE</div></div><div id="memberPrivilegesList"><div class="loader">กำลังโหลดสิทธิพิเศษ...</div></div></div>
+  <div class="panel"><div class="row-between"><div class="panel-title" style="margin:0">สิทธิพิเศษของคุณ</div><div class="tier" id="privilegeTier">รอตรวจสอบ</div></div><div id="memberPrivilegesList"><div class="loader">กำลังโหลดสิทธิพิเศษ...</div></div></div>
   <p class="notice">สิทธิพิเศษและเงื่อนไขเป็นไปตามประกาศของณิชานวดเพื่อสุขภาพ</p>
 </section>
 </main>
@@ -269,12 +269,9 @@ let visitPageLoaded=false;
 let visitHistoryData=[];
 let memberVisitCount=null;
 
-const tierRules=[
-  {name:'BRONZE',min:0,next:3000},
-  {name:'SILVER',min:3000,next:6000},
-  {name:'GOLD',min:6000,next:10000},
-  {name:'PLATINUM VIP',min:10000,next:null}
-];
+/* เกณฑ์ระดับสมาชิกดึงจาก Code.gs เท่านั้น */
+let tierRules=[];
+let tierSettingsLoaded=false;
 
 /* COMMON */
 function money(n){
@@ -428,10 +425,19 @@ async function loadMember(){
 }
 
 /* TIER INFORMATION
+   เกณฑ์ระดับสมาชิกและยอดขั้นต่ำมาจาก Code.gs
    ใช้ยอดใช้จ่ายสะสมเท่านั้น ไม่ใช้ member.level เดิม
-   เพราะระดับเดิมอาจถูกคำนวณจากคะแนนสะสม
 */
 function tierInfo(){
+
+  if(!tierSettingsLoaded || !tierRules.length){
+    return {
+      tier:null,
+      spend:null,
+      verified:false
+    };
+  }
+
   const rawSpend=
     member?.lifetimeSpend ??
     member?.totalSpend ??
@@ -445,7 +451,7 @@ function tierInfo(){
     Number(rawSpend)<0
   ){
     return {
-      tier:tierRules[0],
+      tier:null,
       spend:null,
       verified:false
     };
@@ -467,16 +473,63 @@ function tierInfo(){
   };
 }
 
-/* LOAD REAL MEMBER SPENDING */
+/* LOAD MEMBER SPENDING + DATABASE LEVEL SETTINGS */
 async function loadMemberSpending(){
+
   if(!lineUserId||!member)return;
 
   try{
-    console.log('กำลังเรียก getMemberSpending');
 
-    const data=await jsonp('getMemberSpending',{lineUserId});
+    console.log('กำลังโหลดเกณฑ์ระดับสมาชิกและยอดใช้จ่าย');
 
-    console.log('ผลลัพธ์ getMemberSpending:',data);
+    const results=await Promise.all([
+      jsonp('getMemberSpending',{lineUserId}),
+      jsonp('getPublicLevelSettings')
+    ]);
+
+    const data=results[0];
+    const levelData=results[1];
+
+    if(
+      !levelData ||
+      !levelData.success ||
+      !Array.isArray(levelData.levels) ||
+      !levelData.levels.length
+    ){
+      throw new Error('ไม่สามารถโหลดเกณฑ์ระดับสมาชิกจากฐานข้อมูลได้');
+    }
+
+    const levels=levelData.levels.map(level=>({
+      name:String(level.name||'').trim().toUpperCase(),
+      min:Number(level.min)
+    }));
+
+    for(let i=0;i<levels.length;i++){
+
+      if(
+        !levels[i].name ||
+        !Number.isFinite(levels[i].min) ||
+        levels[i].min<0
+      ){
+        throw new Error('ข้อมูลเกณฑ์ระดับสมาชิกไม่ถูกต้อง');
+      }
+
+      if(i>0 && levels[i].min<=levels[i-1].min){
+        throw new Error('เกณฑ์ระดับสมาชิกต้องเรียงจากน้อยไปมาก');
+      }
+    }
+
+    tierRules=levels.map((level,index)=>({
+      name:level.name,
+      min:level.min,
+      next:levels[index+1]
+        ?levels[index+1].min
+        :null
+    }));
+
+    tierSettingsLoaded=true;
+
+    console.log('เกณฑ์ระดับสมาชิกจากฐานข้อมูล:',tierRules);
 
     if(!data||!data.success){
       throw new Error(data?.message||'โหลดข้อมูลยอดใช้จ่ายไม่สำเร็จ');
@@ -505,30 +558,37 @@ async function loadMemberSpending(){
     renderTierSpending();
     renderMemberInfo();
 
-    console.log('NICHA CRM ยอดใช้จ่ายสะสมจริง:',spend);
-    console.log('NICHA CRM ระดับสมาชิก:',tierInfo().tier.name);
+    console.log('ยอดใช้จ่ายสะสม:',spend);
+    console.log('ระดับสมาชิก:',tierInfo().tier.name);
 
   }catch(error){
-    console.error('โหลดข้อมูลยอดใช้จ่ายผิดพลาด:',error);
+
+    console.error('โหลดข้อมูลระดับสมาชิกผิดพลาด:',error);
+
+    tierSettingsLoaded=false;
+    tierRules=[];
 
     document.getElementById('tierLabel').textContent='ตรวจสอบข้อมูล';
     document.getElementById('spendText').textContent=
-      'ไม่สามารถโหลดข้อมูลยอดใช้จ่ายได้';
+      'ไม่สามารถโหลดข้อมูลระดับสมาชิกได้';
 
     document.getElementById('needText').textContent='';
     document.getElementById('tierProgress').style.width='0%';
-    document.getElementById('tierProgressText').textContent='ไม่สามารถตรวจสอบยอดได้';
-    document.getElementById('nextTierText').textContent='กรุณาลองใหม่';
+    document.getElementById('tierProgressText').textContent=
+      'ไม่สามารถตรวจสอบระดับสมาชิกได้';
+
+    document.getElementById('nextTierText').textContent=
+      'กรุณาลองใหม่';
 
     const infoTier=document.getElementById('infoTier');
-    if(infoTier)infoTier.value='รอตรวจสอบยอดใช้จ่าย';
+    if(infoTier)infoTier.value='รอตรวจสอบข้อมูล';
 
     const privilegeTier=document.getElementById('privilegeTier');
     if(privilegeTier)privilegeTier.textContent='รอตรวจสอบ';
   }
 }
 
-/* RENDER TIER FROM REAL SPENDING */
+/* RENDER TIER FROM DATABASE SETTINGS */
 function renderTierSpending(){
   const info=tierInfo();
 
