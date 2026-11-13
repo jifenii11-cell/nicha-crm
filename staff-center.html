@@ -4,345 +4,300 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NICHA CRM | Staff</title>
+<meta name="theme-color" content="#123d32">
+<title>NICHA CRM | Staff Center</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f1f7f2;color:#244b38}
-.wrap{max-width:520px;margin:auto;padding:20px}
-.card{background:white;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 4px 18px #0000000c}
-h2{text-align:center;color:#286344;margin-top:8px}
-h3{margin-top:0}
-input,button,select{width:100%;padding:14px;margin:7px 0;border-radius:10px;font-size:16px}
-input,select{border:1px solid #cbdccf;background:#fff}
-button{border:0;background:#32734e;color:white;font-weight:bold;cursor:pointer}
-button.secondary{background:#e5efe8;color:#286344}
-button.danger{background:#a94b4b}
-.small{font-size:13px;color:#718477}
-.points{font-size:38px;font-weight:bold;color:#287448;text-align:center}
-.hidden{display:none}
-.result{padding:13px;border:1px solid #d9e8dc;border-radius:12px;margin:9px 0}
-.result button{margin-bottom:0}
-.status{text-align:center;font-size:14px;color:#a14c36;white-space:pre-wrap}
-.row{display:flex;gap:8px}
-.row button{flex:1}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f7f2;color:#244333}
+.hidden{display:none!important}
+.wrap{max-width:1100px;margin:auto;padding:16px}
+.header{background:linear-gradient(135deg,#123d32,#245b48);color:white;padding:25px 20px;border-radius:18px;text-align:center;margin-bottom:16px}
+.header h1{margin:0 0 7px;font-size:25px}
+.header p{margin:0;color:#d8e7de;font-size:13px}
+.card{background:white;padding:20px;border-radius:16px;margin-bottom:16px;box-shadow:0 3px 12px #0000000c}
+h2{font-size:18px;color:#123d32;margin:0 0 15px}
+input{width:100%;padding:14px;border:1px solid #d6e2d9;border-radius:10px;font-size:17px}
+button{border:0;border-radius:10px;padding:13px 16px;font-size:14px;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.primary{background:#123d32;color:white;width:100%;margin-top:14px}
+.menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.menu button{min-height:105px;background:white;color:#123d32;border:1px solid #dce9df;text-align:left;padding:17px;box-shadow:0 3px 10px #00000008}
+.menu button.active{background:#123d32;color:white}
+.menu .emoji{font-size:25px;display:block;margin-bottom:8px}
+.menu small{display:block;font-weight:normal;margin-top:5px;opacity:.75}
+.toolbar,.menu-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.back{background:#e5efe8;color:#123d32}
+.logout{background:#a83232;color:white}
+#appFrame{width:100%;height:calc(100vh - 190px);min-height:600px;border:0;border-radius:12px;background:white}
+.status{padding:12px;border-radius:9px;margin-top:12px;font-size:14px;line-height:1.5}
+.error{background:#fff0ef;color:#a83232}
+.success{background:#e5f5e9;color:#176335}
+.small{font-size:12px;color:#718078;line-height:1.6}
+.footer{text-align:center;color:#849188;font-size:12px;padding:15px}
+@media(max-width:520px){
+.menu{grid-template-columns:1fr 1fr;gap:8px}
+.menu button{padding:12px;min-height:100px;font-size:13px}
+.menu .emoji{font-size:22px}
+#appFrame{height:calc(100vh - 170px);min-height:550px}
+.wrap{padding:10px}
+}
 </style>
 </head>
+
 <body>
 <div class="wrap">
 
-<div class="card">
-<h2>NICHA CRM</h2>
-<p style="text-align:center">ระบบจัดการสมาชิกสำหรับพนักงาน</p>
+<div class="header">
+<h1>NICHA CRM</h1>
+<p>STAFF CENTER · ศูนย์จัดการระบบพนักงาน</p>
 </div>
 
-<div id="loginBox" class="card">
-<h3>เข้าสู่ระบบพนักงาน</h3>
-<input id="pin" type="password" inputmode="numeric"
-maxlength="6" placeholder="กรอก PIN 6 หลัก">
-<button onclick="login()">เข้าสู่ระบบ</button>
-<div id="loginStatus" class="status"></div>
+<section id="loginPanel" class="card">
+<h2>เข้าสู่ระบบพนักงาน</h2>
+<label for="centerPin">รหัส PIN พนักงาน 6 หลัก</label>
+<input id="centerPin" type="password" maxlength="6" inputmode="numeric" autocomplete="off" placeholder="กรอกรหัส PIN">
+<button id="loginBtn" class="primary" onclick="loginCenter()">เข้าสู่ระบบ</button>
+<div id="loginMessage"></div>
+</section>
+
+<main id="dashboard" class="hidden">
+
+<section id="menuPanel" class="card">
+
+<div class="menu-toolbar">
+<div>
+<h2 style="margin-bottom:5px">เมนูจัดการระบบทั้งหมด</h2>
+<p class="small">เลือกเมนูที่ต้องการใช้งาน</p>
+</div>
+<button class="logout" onclick="logoutCenter()">ออกจากระบบ</button>
 </div>
 
-<div id="staffBox" class="hidden">
-<div class="card">
-<h3>ค้นหาสมาชิก</h3>
-<input id="phone" type="tel" inputmode="numeric"
-placeholder="กรอกเบอร์โทรศัพท์สมาชิก">
-<button onclick="searchMember()">ค้นหาสมาชิก</button>
-<div id="searchStatus" class="status"></div>
-<div id="results"></div>
+<div class="menu">
+
+<button onclick="openPage('staff.html')" data-page="staff.html">
+<span class="emoji">👤</span>
+บันทึกบริการ / เพิ่มแต้ม
+<small>ค้นหาสมาชิกและบันทึกบริการ</small>
+</button>
+
+<button onclick="openPage('rewards-admin.html')" data-page="rewards-admin.html">
+<span class="emoji">🎁</span>
+จัดการรางวัล
+<small>รางวัลแลกแต้ม</small>
+</button>
+
+<button onclick="openPage('privileges-admin.html')" data-page="privileges-admin.html">
+<span class="emoji">💎</span>
+สิทธิพิเศษสมาชิก
+<small>จัดการสิทธิ์ตามระดับสมาชิก</small>
+</button>
+
+<button onclick="openPage('visits-admin.html')" data-page="visits-admin.html">
+<span class="emoji">🏆</span>
+รางวัลสะสมครั้ง
+<small>ตั้งค่ารางวัล 10–50 ครั้ง</small>
+</button>
+
+<button onclick="openPage('visits-staff.html')" data-page="visits-staff.html">
+<span class="emoji">📋</span>
+จัดการสะสมครั้ง
+<small>บันทึกและตรวจสอบจำนวนครั้ง</small>
+</button>
+
+<button onclick="openPage('coupons-admin.html')" data-page="coupons-admin.html">
+<span class="emoji">🎟️</span>
+จัดการคูปอง
+<small>สร้างและจัดการคูปอง</small>
+</button>
+
+<button onclick="openPage('member-level-admin.html')" data-page="member-level-admin.html">
+<span class="emoji">💎</span>
+จัดการระดับสมาชิก
+<small>ดูแต้มตลอดชีพและความคืบหน้าการเลื่อนระดับ</small>
+</button>
+
+<button onclick="openPage('members-admin.html')" data-page="members-admin.html">
+<span class="emoji">👥</span>
+ข้อมูลสมาชิกทั้งหมด
+<small>ค้นหาสมาชิกและเปิด–ปิดสถานะสมาชิก</small>
+</button>
+
+<button onclick="openPage('coupon-history.html')" data-page="coupon-history.html">
+<span class="emoji">📚</span>
+ประวัติคูปอง
+<small>ตรวจสอบประวัติการใช้คูปอง</small>
+</button>
+
+</div>
+</section>
+
+<section id="pagePanel" class="card hidden">
+
+<div class="toolbar">
+<button class="back" onclick="backToMenu()">← กลับหน้ารวม</button>
+<strong id="pageTitle">NICHA CRM</strong>
+<button class="logout" onclick="logoutCenter()">ออกจากระบบ</button>
 </div>
 
-<div id="memberBox" class="card hidden">
-<h3>ข้อมูลสมาชิก</h3>
-<p id="memberName"></p>
-<p id="memberPhone"></p>
-<p id="memberLevel"></p>
-<div class="points"><span id="memberPoints">0</span></div>
-<p class="small" style="text-align:center">แต้มคงเหลือ</p>
+<div id="frameStatus" class="small"></div>
 
-<hr>
-<h3>เพิ่มแต้มจากยอดใช้บริการ</h3>
-<input id="amount" type="number" min="1"
-placeholder="ยอดใช้บริการ (บาท)">
-<input id="item" type="text"
-placeholder="รายการบริการ เช่น นวดไทย 60 นาที">
-<button onclick="addPoints()">บันทึกเพิ่มแต้ม</button>
+<iframe id="appFrame" title="NICHA CRM Staff App" allow="clipboard-read; clipboard-write"></iframe>
 
-<hr>
-<h3>หักแต้มสมาชิก</h3>
-<input id="deduct" type="number" min="1"
-placeholder="จำนวนแต้มที่ต้องการหัก">
-<button class="danger" onclick="deductPoints()">ยืนยันหักแต้ม</button>
+</section>
+</main>
 
-<div id="actionStatus" class="status"></div>
-</div>
-
-<div class="card">
-<button class="secondary" onclick="logout()">ออกจากระบบ</button>
-</div>
-</div>
-
+<div class="footer">NICHA CRM · STAFF MANAGEMENT CENTER</div>
 </div>
 
 <script>
-const API_URL = 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
+const API_URL =
+'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
-let staffPin = '';
-let currentMember = null;
+const BASE_URL =
+'https://jifenii11-cell.github.io/nicha-crm/';
 
+const SESSION_KEY = 'NICHA_STAFF_PIN';
 
-async function api(action, params = {}) {
-  try {
-    const response = await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify({
-        action: action,
-        ...params
-      })
-    });
+let staffPIN = '';
+let currentPage = '';
 
-    if (!response.ok) {
-      throw new Error('เซิร์ฟเวอร์ตอบกลับผิดพลาด');
-    }
+const PAGE_INFO = {
+'staff.html':{title:'บันทึกบริการ / เพิ่มแต้ม'},
+'rewards-admin.html':{title:'จัดการรางวัลแลกแต้ม'},
+'privileges-admin.html':{title:'จัดการสิทธิพิเศษสมาชิก'},
+'visits-admin.html':{title:'จัดการรางวัลสะสมครั้ง'},
+'visits-staff.html':{title:'จัดการสะสมครั้งสำหรับพนักงาน'},
+'coupons-admin.html':{title:'จัดการคูปอง'},
+'coupon-history.html':{title:'ประวัติการใช้คูปอง'},
+'member-level-admin.html':{title:'จัดการระดับสมาชิก'},
+'members-admin.html':{title:'จัดการข้อมูลสมาชิกทั้งหมด'}
+};
 
-    const result = await response.json();
-
-    if (!result || typeof result !== 'object') {
-      throw new Error('รูปแบบข้อมูลตอบกลับไม่ถูกต้อง');
-    }
-
-    return result;
-
-  } catch (error) {
-    console.error('NICHA CRM API:', error);
-
-    if (error instanceof TypeError) {
-      throw new Error('เชื่อมต่อระบบไม่ได้ กรุณาตรวจสอบการตั้งค่า Apps Script');
-    }
-
-    throw error;
-  }
+async function api(action,params={}){
+const response = await fetch(API_URL,{
+method:'POST',
+headers:{'Content-Type':'text/plain;charset=utf-8'},
+body:JSON.stringify({action,...params})
+});
+if(!response.ok) throw new Error('เชื่อมต่อระบบไม่สำเร็จ');
+return await response.json();
 }
 
-
-async function login() {
-  const pin = document.getElementById('pin').value.trim();
-  const status = document.getElementById('loginStatus');
-
-  if (!/^[0-9]{6}$/.test(pin)) {
-    status.textContent = 'กรุณากรอก PIN 6 หลัก';
-    return;
-  }
-
-  status.textContent = 'กำลังตรวจสอบ...';
-
-  try {
-    const result = await api('staffLogin', {pin});
-
-    if (!result.success) {
-      throw new Error(result.message || 'PIN ไม่ถูกต้อง');
-    }
-
-    staffPin = pin;
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('staffBox').classList.remove('hidden');
-    status.textContent = '';
-  } catch (error) {
-    status.textContent = error.message;
-  }
+function showMessage(id,message,type='error'){
+const el=document.getElementById(id);
+el.innerHTML='';
+if(!message)return;
+const div=document.createElement('div');
+div.className='status '+type;
+div.textContent=message;
+el.appendChild(div);
 }
 
-async function searchMember() {
-  const phone = document.getElementById('phone').value.trim();
-  const status = document.getElementById('searchStatus');
-  const resultsBox = document.getElementById('results');
+async function loginCenter(){
+const pin=document.getElementById('centerPin').value.trim();
+const btn=document.getElementById('loginBtn');
 
-  document.getElementById('memberBox').classList.add('hidden');
-  resultsBox.innerHTML = '';
-
-  if (phone.replace(/\D/g,'').length < 4) {
-    status.textContent = 'กรุณากรอกเบอร์โทรอย่างน้อย 4 หลัก';
-    return;
-  }
-
-  status.textContent = 'กำลังค้นหา...';
-
-  try {
-    const result = await api('searchMember', {
-      pin: staffPin,
-      phone
-    });
-
-    if (!result.success) {
-      throw new Error(result.message || 'ค้นหาไม่สำเร็จ');
-    }
-
-    if (!result.members || result.members.length === 0) {
-      status.textContent = 'ไม่พบข้อมูลสมาชิก';
-      return;
-    }
-
-    status.textContent = 'พบสมาชิก ' + result.count + ' รายการ';
-
-    result.members.forEach(member => {
-      const div = document.createElement('div');
-      div.className = 'result';
-
-      const name = document.createElement('strong');
-      name.textContent = member.name || 'ไม่ระบุชื่อ';
-
-      const detail = document.createElement('p');
-      detail.textContent =
-        'เบอร์โทร: ' + (member.phone || '-') +
-        ' | แต้ม: ' + (member.points || 0);
-
-      const btn = document.createElement('button');
-      btn.textContent = 'เลือกรายนี้';
-      btn.onclick = () => selectMember(member);
-
-      div.append(name, detail, btn);
-      resultsBox.appendChild(div);
-    });
-  } catch (error) {
-    status.textContent = error.message;
-  }
+if(!/^\d{6}$/.test(pin)){
+showMessage('loginMessage','กรุณากรอก PIN ให้ครบ 6 หลัก');
+return;
 }
 
-function selectMember(member) {
-  currentMember = member;
+btn.disabled=true;
+btn.textContent='กำลังตรวจสอบ...';
 
-  document.getElementById('memberName').textContent =
-    'ชื่อ: ' + (member.name || '-');
-
-  document.getElementById('memberPhone').textContent =
-    'เบอร์โทร: ' + (member.phone || '-');
-
-  document.getElementById('memberLevel').textContent =
-    'ระดับสมาชิก: ' + (member.level || 'Bronze');
-
-  document.getElementById('memberPoints').textContent =
-    Number(member.points) || 0;
-
-  document.getElementById('actionStatus').textContent = '';
-  document.getElementById('memberBox').classList.remove('hidden');
+try{
+const result=await api('staffLogin',{pin});
+if(!result || result.success!==true){
+throw new Error(result?.message || 'PIN ไม่ถูกต้อง');
 }
 
-async function addPoints() {
-  if (!currentMember) return;
+staffPIN=pin;
+sessionStorage.setItem(SESSION_KEY,pin);
 
-  const amount = Number(document.getElementById('amount').value);
-  const item = document.getElementById('item').value.trim();
-  const status = document.getElementById('actionStatus');
+document.getElementById('loginPanel').classList.add('hidden');
+document.getElementById('dashboard').classList.remove('hidden');
+document.getElementById('centerPin').value='';
+showMessage('loginMessage','');
 
-  if (!amount || amount < 1) {
-    status.textContent = 'กรุณากรอกยอดใช้บริการ';
-    return;
-  }
-
-  if (!confirm('ยืนยันเพิ่มแต้มจากยอด ' + amount + ' บาท ใช่หรือไม่?')) return;
-
-  status.textContent = 'กำลังบันทึก...';
-
-  try {
-    const result = await api('addPoints', {
-      pin: staffPin,
-      lineUserId: currentMember.lineUserId,
-      amount: String(amount),
-      item
-    });
-
-    if (!result.success) {
-      throw new Error(result.message || 'เพิ่มแต้มไม่สำเร็จ');
-    }
-
-    status.textContent = result.message || 'เพิ่มแต้มสำเร็จ';
-    document.getElementById('amount').value = '';
-    document.getElementById('item').value = '';
-    await refreshMember();
-  } catch (error) {
-    status.textContent = error.message;
-  }
+}catch(error){
+showMessage('loginMessage',error.message || 'เข้าสู่ระบบไม่สำเร็จ');
+}finally{
+btn.disabled=false;
+btn.textContent='เข้าสู่ระบบ';
+}
 }
 
-async function deductPoints() {
-  if (!currentMember) return;
+function openPage(file){
+const savedPIN=sessionStorage.getItem(SESSION_KEY);
 
-  const points = Number(document.getElementById('deduct').value);
-  const status = document.getElementById('actionStatus');
-
-  if (!Number.isInteger(points) || points < 1) {
-    status.textContent = 'กรุณากรอกจำนวนแต้มที่ต้องการหัก';
-    return;
-  }
-
-  if (points > Number(currentMember.points || 0)) {
-    status.textContent = 'แต้มของสมาชิกไม่เพียงพอ';
-    return;
-  }
-
-  if (!confirm('ยืนยันหัก ' + points + ' แต้ม ใช่หรือไม่?')) return;
-
-  status.textContent = 'กำลังบันทึก...';
-
-  try {
-    const result = await api('deductPoints', {
-      pin: staffPin,
-      lineUserId: currentMember.lineUserId,
-      points: String(points)
-    });
-
-    if (!result.success) {
-      throw new Error(result.message || 'หักแต้มไม่สำเร็จ');
-    }
-
-    status.textContent = result.message || 'หักแต้มสำเร็จ';
-    document.getElementById('deduct').value = '';
-    await refreshMember();
-  } catch (error) {
-    status.textContent = error.message;
-  }
+if(!staffPIN || savedPIN!==staffPIN){
+alert('กรุณาเข้าสู่ระบบก่อน');
+logoutCenter(false);
+return;
 }
 
-async function refreshMember() {
-  const result = await api('getMember', {
-    lineUserId: currentMember.lineUserId
-  });
+const info=PAGE_INFO[file];
+if(!info)return;
 
-  if (result.success && result.member) {
-    currentMember.points = Number(result.member.points) || 0;
-    currentMember.level = result.member.level || currentMember.level;
+currentPage=file;
 
-    document.getElementById('memberPoints').textContent =
-      currentMember.points;
+document.getElementById('menuPanel').classList.add('hidden');
+document.getElementById('pagePanel').classList.remove('hidden');
+document.getElementById('pageTitle').textContent=info.title;
+document.getElementById('frameStatus').textContent='กำลังเปิดระบบ...';
 
-    document.getElementById('memberLevel').textContent =
-      'ระดับสมาชิก: ' + currentMember.level;
-  }
+document.querySelectorAll('.menu button').forEach(btn=>{
+btn.classList.toggle('active',btn.dataset.page===file);
+});
+
+const frame=document.getElementById('appFrame');
+
+frame.onload=function(){
+if(currentPage!==file)return;
+document.getElementById('frameStatus').textContent='เปิดหน้า '+info.title+' แล้ว';
+};
+
+frame.src=BASE_URL+file;
 }
 
-function logout() {
-  staffPin = '';
-  currentMember = null;
-
-  document.getElementById('pin').value = '';
-  document.getElementById('phone').value = '';
-  document.getElementById('results').innerHTML = '';
-  document.getElementById('memberBox').classList.add('hidden');
-  document.getElementById('staffBox').classList.add('hidden');
-  document.getElementById('loginBox').classList.remove('hidden');
+function backToMenu(){
+document.getElementById('pagePanel').classList.add('hidden');
+document.getElementById('menuPanel').classList.remove('hidden');
+document.querySelectorAll('.menu button').forEach(btn=>btn.classList.remove('active'));
+currentPage='';
 }
+
+window.backToMenu=backToMenu;
+
+function logoutCenter(askConfirm=true){
+if(askConfirm && !confirm('ต้องการออกจากระบบพนักงานหรือไม่?'))return;
+
+staffPIN='';
+currentPage='';
+sessionStorage.removeItem(SESSION_KEY);
+
+const frame=document.getElementById('appFrame');
+frame.onload=null;
+frame.src='about:blank';
+
+document.getElementById('frameStatus').textContent='';
+document.getElementById('centerPin').value='';
+document.getElementById('dashboard').classList.add('hidden');
+document.getElementById('pagePanel').classList.add('hidden');
+document.getElementById('menuPanel').classList.remove('hidden');
+document.getElementById('loginPanel').classList.remove('hidden');
+
+document.querySelectorAll('.menu button').forEach(btn=>btn.classList.remove('active'));
+showMessage('loginMessage','');
+}
+
+document.getElementById('centerPin').addEventListener('keydown',e=>{
+if(e.key==='Enter')loginCenter();
+});
+
+console.log('NICHA CRM STAFF CENTER READY');
 </script>
-  <div style="max-width:500px;margin:20px auto;padding:15px;text-align:center">
-  <a href="rewards-admin.html"
-     style="display:block;background:#28734b;color:white;
-     padding:15px;border-radius:12px;text-decoration:none;
-     font-weight:bold;font-size:16px">
-     🎁 จัดการของรางวัล
-  </a>
-</div>
+
 </body>
 </html>
