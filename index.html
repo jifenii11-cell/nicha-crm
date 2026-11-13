@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -125,30 +126,26 @@ button{cursor:pointer}
   gap:8px
 }
 
-/* เมนูหลัก 6 ปุ่ม เรียงแนวนอน */
+/* เมนูหลัก 6 ปุ่ม: 2 แถว แถวละ 3 ปุ่ม */
 .quick-grid{
   display:grid;
-  grid-template-columns:repeat(6,minmax(105px,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:10px;
-  margin:20px -16px;
-  padding:4px 16px 12px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scrollbar-width:thin;
-  scrollbar-color:#c9a96e #eee8dc;
-  -webkit-overflow-scrolling:touch;
+  margin:20px 0;
+  padding:4px 0 12px;
+  width:100%;
 }
 
 .quick{
   position:relative;
   overflow:hidden;
-  min-width:105px;
-  min-height:132px;
+  min-width:0;
+  min-height:115px;
   border:1px solid #c9a96e;
-  border-radius:17px;
+  border-radius:15px;
   background:linear-gradient(145deg,#1d5143,#0d3028);
   color:#fff;
-  padding:15px 8px 14px;
+  padding:12px 5px;
   text-align:center;
   box-shadow:0 5px 13px #123d321c;
   transition:transform .2s,box-shadow .2s
@@ -186,13 +183,13 @@ button{cursor:pointer}
   display:flex;
   align-items:center;
   justify-content:center;
-  width:59px;
-  height:59px;
-  margin:3px auto 10px;
+  width:45px;
+  height:45px;
+  margin:3px auto 9px;
   border:1px solid #d7b978;
   border-radius:50%;
   background:linear-gradient(145deg,#f5e6c5,#c9a96e);
-  font-size:29px;
+  font-size:23px;
   box-shadow:0 3px 10px #00000025
 }
 
@@ -200,9 +197,10 @@ button{cursor:pointer}
   display:block;
   position:relative;
   z-index:1;
-  font-size:12px;
+  font-size:11px;
   font-weight:bold;
-  color:#f5e7c7
+  color:#f5e7c7;
+  line-height:1.4
 }
 
 .panel{
@@ -417,8 +415,15 @@ button{cursor:pointer}
 .member-disabled-banner strong{display:block;font-size:16px;margin-bottom:6px}
 .member-disabled-banner p{font-size:12px;margin:0}
 
+@media(max-width:360px){
+  .quick-grid{gap:7px}
+  .quick{min-height:108px;padding:11px 3px}
+  .quick .ico{width:40px;height:40px;font-size:21px}
+  .quick span:last-child{font-size:10px}
+}
+
 @media(min-width:400px){
-  .quick{min-height:140px}
+  .quick{min-height:120px}
 }
 </style>
 </head>
@@ -488,7 +493,7 @@ button{cursor:pointer}
       </div>
     </div>
 
-    <!-- เมนูหลัก 6 ปุ่ม แนวนอน -->
+    <!-- เมนูหลัก 6 ปุ่ม: 2 แถว แถวละ 3 ปุ่ม -->
     <div class="quick-grid">
 
       <button class="quick" onclick="showPage('rewardsPage')">
