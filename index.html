@@ -4,102 +4,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#123d32">
+<meta name="theme-color" content="#79543a">
 <title>NICHA CRM | สมาชิก</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
 :root{
-  --green:#123d32;--green2:#1d5143;--gold:#c9a96e;
-  --cream:#f7f3e9;--ink:#26352f;--muted:#78827b;--line:#e8e1d3;
+  --green:#79543a;
+  --green2:#9b704f;
+  --gold:#c99a55;
+  --cream:#f7eee3;
+  --ink:#49372b;
+  --muted:#927f70;
+  --line:#ead9c5;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,"Noto Sans Thai",sans-serif}
+body{margin:0;background:#f4eadd;color:var(--ink);font-family:Arial,"Noto Sans Thai",sans-serif}
 button,input{font:inherit}
 button{cursor:pointer}
-.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:85px;background:#fbfaf6}
-.top{background:linear-gradient(135deg,#0d3028,#1d5143);color:white;padding:22px 20px 25px;border-radius:0 0 26px 26px}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:85px;background:#fffaf4;box-shadow:0 0 30px #79543a12}
+.top{background:linear-gradient(135deg,#6d4932,#a8794f,#c49a69);color:white;padding:22px 20px 25px;border-radius:0 0 26px 26px;box-shadow:0 8px 22px #79543a20}
 .brand{display:flex;justify-content:space-between}
-.brand-name{font-size:13px;letter-spacing:2px;color:#ead7ad}
-.brand-sub{font-size:11px;color:#d9dfd9;margin-top:4px}
-.status{font-size:11px;color:#ead7ad}
+.brand-name{font-size:14px;letter-spacing:3px;color:#fff0d4;font-weight:bold}
+.brand-sub{font-size:11px;color:#f8e8d5;margin-top:5px}
+.status{font-size:11px;color:#f7dfb8}
 .content{padding:18px 16px}
 .page{display:none}
 .page.active{display:block}
 .section-title{font-size:18px;color:var(--green);font-weight:bold;margin:6px 0 4px}
 .section-sub{font-size:12px;color:var(--muted);margin:0 0 16px}
-.member-card{background:linear-gradient(135deg,#174638,#0b2d25);color:white;border:1px solid #b99a61;border-radius:20px;padding:20px;margin-top:-2px;box-shadow:0 10px 24px #153c3022}
+
+/* SPA HERO */
+.spa-hero{position:relative;overflow:hidden;border-radius:20px;margin:0 0 18px;min-height:180px;background:#ead4b9;box-shadow:0 10px 25px #7650381a}
+.spa-hero img{display:block;width:100%;height:210px;object-fit:cover;object-position:center 43%}
+.spa-hero-overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;padding:18px;background:linear-gradient(0deg,#3c2619c9,transparent 78%);color:white}
+.spa-kicker{font-size:10px;letter-spacing:2px;color:#f6dfb6}
+.spa-title{font-size:21px;font-weight:bold;text-shadow:0 2px 8px #0005}
+.spa-subtitle{font-size:12px;margin-top:5px;color:#fff4e8}
+
+.member-card{background:linear-gradient(135deg,#f3dfc4,#d6b184,#bd8d5d);color:#49372b;border:1px solid #c99a55;border-radius:20px;padding:20px;margin-top:-2px;box-shadow:0 10px 24px #79543a20}
 .card-head{display:flex;justify-content:space-between}
-.card-label{font-size:10px;letter-spacing:2px;color:#e4d0a5}
-.tier{border:1px solid var(--gold);border-radius:20px;padding:5px 11px;font-size:10px;color:#f3dfb4}
-.member-name{font-size:23px;font-weight:bold;margin:22px 0 3px}
-.member-phone{font-size:12px;color:#d3ddd6}
+.card-label{font-size:10px;letter-spacing:2px;color:#76543b}
+.tier{border:1px solid #9c7047;border-radius:20px;padding:5px 11px;font-size:10px;color:#704b2e;background:#fff7e9}
+.member-name{font-size:23px;font-weight:bold;margin:22px 0 3px;color:#49372b}
+.member-phone{font-size:12px;color:#765b45}
 .points-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px}
-.points-number{font-size:38px;color:#f0d7a3;font-weight:bold}
-.points-caption{font-size:11px;color:#e0e6df;margin-top:5px}
-.card-foot{border-top:1px solid #ffffff2b;margin-top:18px;padding-top:13px}
-.progress-line{height:6px;background:#ffffff35;border-radius:8px;overflow:hidden;margin:9px 0 6px}
-.progress-fill{height:100%;width:0;background:#ead7ad}
-.progress-text{display:flex;justify-content:space-between;font-size:10px;color:#e0e6df}
+.points-number{font-size:38px;color:#80552f;font-weight:bold}
+.points-caption{font-size:11px;color:#765b45;margin-top:5px}
+.card-foot{border-top:1px solid #79543a35;margin-top:18px;padding-top:13px}
+.progress-line{height:6px;background:#ffffff8a;border-radius:8px;overflow:hidden;margin:9px 0 6px}
+.progress-fill{height:100%;width:0;background:#956b3f}
+.progress-text{display:flex;justify-content:space-between;font-size:10px;color:#765b45}
 .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
-.quick{border:1px solid var(--line);border-radius:15px;background:white;padding:15px 7px;text-align:center;color:var(--green);min-height:84px}
+.quick{border:1px solid var(--line);border-radius:15px;background:#fffdf9;padding:15px 7px;text-align:center;color:var(--green);min-height:84px;box-shadow:0 3px 12px #79543a08;transition:.2s}
+.quick:active{transform:scale(.97)}
 .quick .ico{font-size:22px;display:block;margin-bottom:7px}
 .quick span:last-child{font-size:11px}
-.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.panel{background:#fffdf9;border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0;box-shadow:0 4px 14px #79543a08}
 .panel-title{font-weight:bold;color:var(--green);font-size:14px;margin-bottom:10px}
 .row-between{display:flex;justify-content:space-between;align-items:center}
-.btn{border:0;border-radius:12px;background:var(--green);color:white;padding:12px 16px;font-weight:bold}
-.btn.gold{background:var(--gold);color:#2d2a20}
+.btn{border:0;border-radius:12px;background:linear-gradient(135deg,#79543a,#a8794f);color:white;padding:12px 16px;font-weight:bold;box-shadow:0 4px 12px #79543a20}
+.btn.gold{background:linear-gradient(135deg,#e7c99b,#c99a55);color:#49372b}
 .btn.full{width:100%}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .back{border:0;background:transparent;color:var(--green);padding:5px 0 13px;font-size:13px}
-.item{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #eee9df}
+.item{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #f0e5d8}
 .item:last-child{border-bottom:0}
-.item-title{font-size:13px;font-weight:bold;color:#34453c}
+.item-title{font-size:13px;font-weight:bold;color:#594332}
 .item-meta{font-size:11px;color:var(--muted);margin-top:5px}
 .item-points{font-weight:bold;font-size:13px;white-space:nowrap}
-.plus{color:#34835c}.minus{color:#a84e45}
+.plus{color:#55815c}.minus{color:#a84e45}
 .empty{text-align:center;color:var(--muted);font-size:13px;padding:24px 10px}
 .field{margin:12px 0}
-.field label{display:block;font-size:12px;color:#5c6a62;margin-bottom:6px}
-.field input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:white}
+.field label{display:block;font-size:12px;color:#765b45;margin-bottom:6px}
+.field input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:#fffdf9;color:var(--ink)}
 .notice{font-size:11px;color:var(--muted);line-height:1.6}
-.reward{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:white}
+.reward{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:#fffdf9}
 .reward h3{font-size:14px;margin:0 0 6px;color:var(--green)}
-.reward .cost{font-size:12px;color:#9a7842;margin-bottom:12px}
-.coupon-box{border:1px dashed var(--gold);background:#fffdf7;border-radius:14px;padding:16px;margin:10px 0}
-.coupon-tag{font-size:10px;letter-spacing:1px;color:#9a7842}
+.reward .cost{font-size:12px;color:#a47743;margin-bottom:12px}
+.coupon-box{border:1px dashed var(--gold);background:#fffaf1;border-radius:14px;padding:16px;margin:10px 0}
+.coupon-tag{font-size:10px;letter-spacing:1px;color:#a47743}
 .coupon-box h3{margin:7px 0;color:var(--green);font-size:16px}
-.coupon-discount{font-size:22px;font-weight:bold;color:#9a7842;margin:10px 0}
+.coupon-discount{font-size:22px;font-weight:bold;color:#a47743;margin:10px 0}
 .coupon-status{font-size:12px;font-weight:bold;margin-top:12px}
-.coupon-nav-btn{border:1px solid var(--gold);background:#fffdf7;color:#8b6c38;border-radius:12px;padding:11px 14px;font-size:12px;font-weight:bold}
-.privilege{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #eee9df}
+.coupon-nav-btn{border:1px solid var(--gold);background:#fff7e9;color:#805b35;border-radius:12px;padding:11px 14px;font-size:12px;font-weight:bold}
+.privilege{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #f0e5d8}
 .privilege:last-child{border:0}
 .privilege-icon{font-size:23px}
 .privilege-name{font-size:14px;font-weight:bold;color:var(--green)}
 .privilege-detail{font-size:12px;color:var(--muted);line-height:1.6;margin-top:5px}
-.privilege-condition{font-size:11px;color:#9a7842;line-height:1.6;margin-top:6px}
-.visit-card{background:linear-gradient(135deg,#174638,#0b2d25);color:white;border:1px solid var(--gold);border-radius:20px;padding:20px;margin:12px 0;box-shadow:0 10px 24px #153c3022}
-.visit-label{font-size:11px;letter-spacing:1.5px;color:#ead7ad}
-.visit-number{font-size:54px;font-weight:bold;color:#f0d7a3;text-align:center;margin:12px 0 0}
-.visit-caption{text-align:center;font-size:12px;color:#e0e6df}
-.visit-progress{height:9px;background:#ffffff35;border-radius:10px;overflow:hidden;margin:14px 0 8px}
-.visit-progress-fill{height:100%;width:0;background:#ead7ad;border-radius:10px;transition:width .3s}
-.visit-reward{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0}
+.privilege-condition{font-size:11px;color:#a47743;line-height:1.6;margin-top:6px}
+.visit-card{background:linear-gradient(135deg,#79543a,#b98a5e);color:white;border:1px solid var(--gold);border-radius:20px;padding:20px;margin:12px 0;box-shadow:0 10px 24px #79543a20}
+.visit-label{font-size:11px;letter-spacing:1.5px;color:#f6dfb6}
+.visit-number{font-size:54px;font-weight:bold;color:#f8dfb5;text-align:center;margin:12px 0 0}
+.visit-caption{text-align:center;font-size:12px;color:#fff0df}
+.visit-progress{height:9px;background:#ffffff40;border-radius:10px;overflow:hidden;margin:14px 0 8px}
+.visit-progress-fill{height:100%;width:0;background:#f3d5a6;border-radius:10px;transition:width .3s}
+.visit-reward{background:#fffdf9;border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0}
 .visit-reward h3{margin:0 0 6px;font-size:15px;color:var(--green)}
-.visit-reward .visit-cost{font-size:12px;color:#9a7842;margin:6px 0 12px}
-.visit-status{display:inline-block;border-radius:20px;padding:5px 10px;font-size:11px;background:#f2eee4;color:#78643d;margin:5px 0 10px}
-.visit-status.ready{background:#e8f3eb;color:#286044}
-.visit-history-row{padding:12px 0;border-bottom:1px solid #eee9df}
+.visit-reward .visit-cost{font-size:12px;color:#a47743;margin:6px 0 12px}
+.visit-status{display:inline-block;border-radius:20px;padding:5px 10px;font-size:11px;background:#f7eee3;color:#80623d;margin:5px 0 10px}
+.visit-status.ready{background:#edf3e9;color:#426b48}
+.visit-history-row{padding:12px 0;border-bottom:1px solid #f0e5d8}
 .visit-history-row:last-child{border-bottom:0}
-.visit-history-title{font-size:13px;font-weight:bold;color:#34453c}
+.visit-history-title{font-size:13px;font-weight:bold;color:#594332}
 .visit-history-meta{font-size:11px;color:var(--muted);margin-top:5px}
 .visit-history-count{font-size:12px;font-weight:bold;margin-top:5px}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:white;border-top:1px solid var(--line);padding:8px 5px calc(8px + env(safe-area-inset-bottom));z-index:10}
-.nav-btn{border:0;background:transparent;color:#89928c;font-size:10px;padding:5px 2px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#fffaf4;border-top:1px solid var(--line);padding:8px 5px calc(8px + env(safe-area-inset-bottom));z-index:10;box-shadow:0 -5px 18px #79543a0c}
+.nav-btn{border:0;background:transparent;color:#a18f7e;font-size:10px;padding:5px 2px}
 .nav-btn b{display:block;font-size:19px;margin-bottom:3px}
-.nav-btn.active{color:var(--green);font-weight:bold}
+.nav-btn.active{color:#80552f;font-weight:bold}
 .loader{text-align:center;padding:34px 15px;color:var(--muted);font-size:13px}
-.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#243c32;color:white;padding:11px 16px;border-radius:12px;font-size:12px;display:none;z-index:30;max-width:90%;text-align:center}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#67452f;color:white;padding:11px 16px;border-radius:12px;font-size:12px;display:none;z-index:30;max-width:90%;text-align:center}
 .hidden{display:none!important}
 .member-disabled-banner{background:#fff0ed;border:1px solid #e7a49b;color:#9c352b;border-radius:15px;padding:16px;margin:0 0 16px;line-height:1.7}
 .member-disabled-banner strong{display:block;font-size:16px;margin-bottom:6px}
@@ -119,6 +134,16 @@ button{cursor:pointer}
 <section class="page active" id="homePage">
   <div id="loading" class="loader">กำลังเริ่มต้นระบบสมาชิก…</div>
   <div id="homeContent" class="hidden">
+
+    <div class="spa-hero">
+      <img src="nicha-spa-hero.png" alt="บรรยากาศการนวดหน้า SPA ณิชา">
+      <div class="spa-hero-overlay">
+        <div class="spa-kicker">NICHA SPA · WELLNESS & RELAX</div>
+        <div class="spa-title">ผ่อนคลาย...ให้รางวัลตัวเอง</div>
+        <div class="spa-subtitle">ดูแลสุขภาพกายและใจ ให้สดใสไปกับณิชา</div>
+      </div>
+    </div>
+
     <div id="memberDisabledBanner" class="member-disabled-banner hidden">
       <strong>⚠️ บัญชีสมาชิกถูกปิดใช้งาน</strong>
       <p>ขณะนี้บัญชีสมาชิกของคุณถูกระงับการใช้งานชั่วคราว ไม่สามารถสะสมคะแนน แลกรางวัล ใช้คูปอง หรือรับสิทธิพิเศษสมาชิกได้ กรุณาติดต่อพนักงานที่ร้านเพื่อสอบถามข้อมูลเพิ่มเติมค่ะ</p>
@@ -561,7 +586,7 @@ function renderVisitHistory(list){
     const meta=document.createElement('div');meta.className='visit-history-meta';meta.textContent=formatDateTime(item.date);
     const count=document.createElement('div');count.className='visit-history-count';
     const added=Number(item.visitsAdded||0),used=Number(item.visitsUsed||0);
-    if(added>0){count.style.color='#34835c';count.textContent='+'+money(added)+' ครั้ง'}
+    if(added>0){count.style.color='#55815c';count.textContent='+'+money(added)+' ครั้ง'}
     else if(used>0){count.style.color='#a84e45';count.textContent='ใช้แลก '+money(used)+' ครั้ง'}
     else{count.textContent='รายการสะสมครั้ง'}
     row.append(title,meta,count);
