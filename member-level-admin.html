@@ -73,9 +73,7 @@ body{
   border-bottom:1px solid #edf0eb;
 }
 
-.level:last-child{
-  border-bottom:0;
-}
+.level:last-child{border-bottom:0}
 
 .level-info{
   width:125px;
@@ -93,9 +91,7 @@ body{
   margin-top:5px;
 }
 
-.level-input{
-  flex:1;
-}
+.level-input{flex:1}
 
 .level-input input{
   width:100%;
@@ -191,9 +187,7 @@ button:disabled{
   color:var(--muted);
 }
 
-.hidden{
-  display:none!important;
-}
+.hidden{display:none!important}
 
 @media(max-width:480px){
   body{padding:10px}
@@ -213,7 +207,7 @@ button:disabled{
 
   <div class="header">
     <h1>NICHA CRM</h1>
-    <p>ระบบกำหนดระดับสมาชิกและคะแนนเลื่อนขั้น</p>
+    <p>ระบบกำหนดระดับสมาชิกตามยอดใช้จ่ายสะสม</p>
   </div>
 
   <div id="adminPanel" class="hidden">
@@ -233,9 +227,12 @@ button:disabled{
 
       <div class="note">
         <strong>หลักการกำหนดระดับสมาชิก</strong><br>
-        คะแนนที่ใช้เลื่อนระดับจะคำนวณจากแต้มสะสมตลอดชีพของสมาชิก
-        ไม่ใช่แต้มคงเหลือที่สมาชิกนำไปแลกรางวัล<br>
-        Bronze เริ่มต้นที่ 0 คะแนน
+        ระบบจะคำนวณระดับสมาชิกจากยอดใช้จ่ายสะสมทั้งหมด
+        ของสมาชิก ไม่ใช่แต้มคงเหลือหรือแต้มสะสมตลอดชีพ<br>
+        Bronze เริ่มต้นที่ 0 บาท<br>
+        Silver เริ่มต้นที่ 3,000 บาท<br>
+        Gold เริ่มต้นที่ 6,000 บาท<br>
+        Platinum VIP เริ่มต้นที่ 10,000 บาท
       </div>
 
     </div>
@@ -276,11 +273,6 @@ button:disabled{
 
 <script>
 
-/**************************************************
- * NICHA CRM
- * MEMBER LEVEL ADMIN
- **************************************************/
-
 const API_URL =
 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
@@ -288,10 +280,6 @@ const SESSION_KEY = 'NICHA_STAFF_PIN';
 
 let staffPin = '';
 let levels = [];
-
-/**************************************************
- * INITIALIZE
- **************************************************/
 
 function initializePage(){
 
@@ -309,10 +297,6 @@ function initializePage(){
   loadLevels();
 }
 
-/**************************************************
- * BACK TO STAFF CENTER
- **************************************************/
-
 function backToCenter(){
 
   if(
@@ -326,11 +310,6 @@ function backToCenter(){
   }
 
 }
-
-/**************************************************
- * API CONNECTION
- * ใช้รูปแบบเดียวกับ rewards-admin.html
- **************************************************/
 
 async function api(action,data={}){
 
@@ -364,17 +343,12 @@ async function api(action,data={}){
     return JSON.parse(raw);
   }catch(error){
     console.error('API RESPONSE:',raw);
-
     throw new Error(
       'เซิร์ฟเวอร์ส่งข้อมูลไม่ถูกต้อง กรุณาตรวจสอบ URL และ Apps Script'
     );
   }
 
 }
-
-/**************************************************
- * MESSAGE
- **************************************************/
 
 function showMessage(message,isError=false){
 
@@ -384,11 +358,9 @@ function showMessage(message,isError=false){
   box.className =
     'message ' + (isError ? 'error' : 'success');
 
-}
+  box.style.display = 'block';
 
-/**************************************************
- * LOAD LEVEL SETTINGS
- **************************************************/
+}
 
 async function loadLevels(){
 
@@ -433,10 +405,6 @@ async function loadLevels(){
 
 }
 
-/**************************************************
- * RENDER LEVELS
- **************************************************/
-
 function renderLevels(){
 
   const list = document.getElementById('levelList');
@@ -469,7 +437,7 @@ function renderLevels(){
     desc.className = 'level-desc';
 
     desc.textContent =
-      index === 0 ? 'ระดับเริ่มต้น' : 'คะแนนขั้นต่ำ';
+      index === 0 ? 'ระดับเริ่มต้น' : 'ยอดใช้จ่ายขั้นต่ำ';
 
     info.append(name,desc);
 
@@ -491,7 +459,7 @@ function renderLevels(){
 
     const unit = document.createElement('div');
     unit.className = 'unit';
-    unit.textContent = 'แต้มสะสมตลอดชีพ';
+    unit.textContent = 'ยอดใช้จ่ายสะสม (บาท)';
 
     inputWrap.append(input,unit);
     row.append(info,inputWrap);
@@ -501,10 +469,6 @@ function renderLevels(){
   });
 
 }
-
-/**************************************************
- * VALIDATE LEVELS
- **************************************************/
 
 function collectLevels(){
 
@@ -521,7 +485,7 @@ function collectLevels(){
 
   if(updated[0].min !== 0){
     throw new Error(
-      'ระดับ Bronze ต้องเริ่มต้นที่ 0 คะแนน'
+      'ระดับ Bronze ต้องเริ่มต้นที่ 0 บาท'
     );
   }
 
@@ -532,13 +496,13 @@ function collectLevels(){
       updated[i].min < 0
     ){
       throw new Error(
-        'กรุณากรอกคะแนนเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป'
+        'กรุณากรอกยอดใช้จ่ายเป็นจำนวนเต็มตั้งแต่ 0 บาทขึ้นไป'
       );
     }
 
     if(i>0 && updated[i].min <= updated[i-1].min){
       throw new Error(
-        'คะแนนแต่ละระดับต้องเพิ่มขึ้นตามลำดับ'
+        'ยอดใช้จ่ายแต่ละระดับต้องเรียงจากน้อยไปมาก'
       );
     }
 
@@ -548,10 +512,6 @@ function collectLevels(){
 
 }
 
-/**************************************************
- * SAVE LEVEL SETTINGS
- **************************************************/
-
 async function saveLevels(){
 
   const button = document.getElementById('saveBtn');
@@ -559,18 +519,14 @@ async function saveLevels(){
   let updatedLevels;
 
   try{
-
     updatedLevels = collectLevels();
-
   }catch(error){
-
     showMessage(error.message,true);
     return;
-
   }
 
   if(!confirm(
-    'ยืนยันบันทึกคะแนนเลื่อนระดับสมาชิกหรือไม่?'
+    'ยืนยันบันทึกเกณฑ์ยอดใช้จ่ายสะสมเพื่อเลื่อนระดับสมาชิกหรือไม่?'
   )){
     return;
   }
@@ -584,7 +540,11 @@ async function saveLevels(){
       'saveLevelSettings',
       {
         pin:staffPin,
-        levels:updatedLevels
+
+        // ส่งค่าให้ตรงกับ Code.gs
+        silver:updatedLevels[1].min,
+        gold:updatedLevels[2].min,
+        platinum:updatedLevels[3].min
       }
     );
 
@@ -594,10 +554,12 @@ async function saveLevels(){
       );
     }
 
-    levels = updatedLevels;
+    levels = result.levels || updatedLevels;
+
+    renderLevels();
 
     showMessage(
-      result.message || 'บันทึกระดับสมาชิกเรียบร้อยแล้ว'
+      result.message || 'บันทึกเกณฑ์ระดับสมาชิกเรียบร้อยแล้ว'
     );
 
   }catch(error){
@@ -612,10 +574,6 @@ async function saveLevels(){
   }
 
 }
-
-/**************************************************
- * START
- **************************************************/
 
 initializePage();
 
