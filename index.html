@@ -125,23 +125,30 @@ button{cursor:pointer}
   gap:8px
 }
 
-/* เมนูหลัก 6 ปุ่ม สีเขียวแถบทอง */
+/* เมนูหลัก 6 ปุ่ม เรียงแนวนอน */
 .quick-grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:13px;
-  margin:20px 0
+  grid-template-columns:repeat(6,minmax(105px,1fr));
+  gap:10px;
+  margin:20px -16px;
+  padding:4px 16px 12px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:thin;
+  scrollbar-color:#c9a96e #eee8dc;
+  -webkit-overflow-scrolling:touch;
 }
 
 .quick{
   position:relative;
   overflow:hidden;
+  min-width:105px;
   min-height:132px;
   border:1px solid #c9a96e;
   border-radius:17px;
   background:linear-gradient(145deg,#1d5143,#0d3028);
   color:#fff;
-  padding:15px 10px 14px;
+  padding:15px 8px 14px;
   text-align:center;
   box-shadow:0 5px 13px #123d321c;
   transition:transform .2s,box-shadow .2s
@@ -481,7 +488,7 @@ button{cursor:pointer}
       </div>
     </div>
 
-    <!-- เมนูหลัก 6 ปุ่ม -->
+    <!-- เมนูหลัก 6 ปุ่ม แนวนอน -->
     <div class="quick-grid">
 
       <button class="quick" onclick="showPage('rewardsPage')">
