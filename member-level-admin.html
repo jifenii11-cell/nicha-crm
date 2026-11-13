@@ -9,45 +9,48 @@
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#f1f7f2;color:#244333;font-family:Arial,sans-serif;padding:18px}
-.wrap{max-width:1050px;margin:18px auto}
+.wrap{max-width:1100px;margin:18px auto}
 .card{background:#fff;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 5px 22px #173f3512}
 h1{margin:0;color:#123d32;font-size:25px}
-.sub{color:#718078;margin:7px 0 0}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-button,input{font:inherit;border-radius:10px;padding:11px 14px}
+h2{margin:0;color:#123d32;font-size:20px}
+.sub,.muted{color:#718078;font-size:13px}
+.sub{margin:7px 0 0}
+.top,.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+button,input,textarea{font:inherit;border-radius:10px;padding:11px 14px}
 button{border:0;background:#174b3d;color:#fff;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5}
-input{border:1px solid #ccd9d0;background:#fff;color:#244333;width:100%;max-width:360px}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,textarea{border:1px solid #ccd9d0;background:#fff;color:#244333;width:100%}
+input{max-width:360px}
+textarea{min-height:75px;resize:vertical}
 .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
 .tier{border:1px solid #dce8df;border-radius:14px;padding:15px;background:#fbfdfb}
 .tier strong{display:block;font-size:18px;margin-bottom:5px}
 .tier span{color:#607368;font-size:14px}
 .notice{background:#edf6ef;border-left:4px solid #28734b;padding:13px 15px;border-radius:9px;line-height:1.65;margin-top:16px}
-.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.search{flex:1;min-width:220px}
-.muted{color:#718078;font-size:13px}
-.status{padding:12px;border-radius:10px;background:#fff5e8;color:#8a5b18;margin-top:12px}
+.search{flex:1;min-width:220px;max-width:none}
+.status{padding:12px;border-radius:10px;background:#fff5e8;color:#8a5b18;margin-top:12px;line-height:1.5}
 .status.error{background:#fff0ef;color:#a33d36}
 .status.ok{background:#edf6ef;color:#28734b}
 .table-wrap{overflow:auto;margin-top:14px}
-table{border-collapse:collapse;width:100%;min-width:760px}
+table{border-collapse:collapse;width:100%;min-width:850px}
 th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e6eee8;font-size:14px}
 th{background:#f5f9f5;color:#476052;white-space:nowrap}
 .pill{display:inline-block;padding:5px 9px;border-radius:30px;background:#e8f2eb;color:#24563c;font-weight:bold;white-space:nowrap}
 .progress{height:7px;background:#e6eee8;border-radius:20px;overflow:hidden;min-width:90px;margin-top:6px}
 .bar{height:100%;background:#c5a45d}
 .empty{text-align:center;color:#7b8980;padding:25px}
-.count{font-weight:bold;color:#123d32}
-.settings-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
-.setting-field label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px;color:#476052}
-.setting-field input{max-width:none;width:100%}
-.settings-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.settings-grid,.edit-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.edit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px;color:#476052}
+.field input{max-width:none}
+.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
 .secondary{background:#e5efe8;color:#174b3d}
+.small{padding:7px 10px;font-size:12px}
+.history-item{border-bottom:1px solid #e6eee8;padding:12px 0;font-size:13px;line-height:1.6}
+.hidden{display:none!important}
 @media(max-width:700px){
- .settings-grid{grid-template-columns:1fr}
- body{padding:10px}
- .card{padding:15px}
- .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .settings-grid,.edit-grid{grid-template-columns:1fr}
+ body{padding:10px}.card{padding:15px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
  h1{font-size:21px}
 }
 </style>
@@ -72,18 +75,18 @@ th{background:#f5f9f5;color:#476052;white-space:nowrap}
  </div>
 
  <div class="notice">
-  <b>หลักการคำนวณระดับสมาชิก</b><br>
+  <b>หลักการคำนวณ</b><br>
   แต้มสะสมตลอดชีพใช้เลื่อนระดับและไม่ลดลงเมื่อแลกรางวัล
   ส่วนแต้มคงเหลือใช้แลกรางวัลเท่านั้น
-  ระดับสมาชิกและสิทธิพิเศษจะไม่ลดลงเพราะสมาชิกใช้แต้มแลกรางวัล
+  การปรับยอดสมาชิกจะบันทึกประวัติไว้ตรวจสอบย้อนหลัง
  </div>
 </section>
 
 <section class="card">
  <div class="top">
   <div>
-   <h2 style="margin:0">⚙️ ตั้งค่าแต้มเลื่อนระดับสมาชิก</h2>
-   <p class="sub">กำหนดแต้มสะสมตลอดชีพที่ใช้เลื่อนระดับได้เอง</p>
+   <h2>⚙️ ตั้งค่าแต้มเลื่อนระดับสมาชิก</h2>
+   <p class="sub">เจ้าของร้านกำหนดเกณฑ์ Silver, Gold และ Platinum VIP ได้เอง</p>
   </div>
   <button class="secondary" type="button"
    onclick="loadLevelSettings()" id="settingsRefreshBtn">
@@ -91,32 +94,26 @@ th{background:#f5f9f5;color:#476052;white-space:nowrap}
   </button>
  </div>
 
- <div class="notice" style="margin-top:12px">
-  Bronze เป็นระดับเริ่มต้นที่ 0 แต้ม ไม่สามารถเปลี่ยนได้
-  ส่วน Silver, Gold และ Platinum VIP สามารถกำหนดเองได้
-  แต้มต้องเรียงจากน้อยไปมาก
- </div>
-
  <div class="settings-grid">
-  <div class="setting-field">
+  <div class="field">
    <label for="silverPoints">Silver (แต้ม)</label>
    <input id="silverPoints" type="number" min="1" step="1" value="100">
   </div>
-  <div class="setting-field">
+  <div class="field">
    <label for="goldPoints">Gold (แต้ม)</label>
    <input id="goldPoints" type="number" min="1" step="1" value="300">
   </div>
-  <div class="setting-field">
+  <div class="field">
    <label for="platinumPoints">Platinum VIP (แต้ม)</label>
    <input id="platinumPoints" type="number" min="1" step="1" value="600">
   </div>
  </div>
 
- <div class="settings-actions">
-  <button type="button" onclick="saveLevelSettings()" id="saveSettingsBtn">
+ <div class="actions">
+  <button onclick="saveLevelSettings()" id="saveSettingsBtn">
    บันทึกเกณฑ์ระดับสมาชิก
   </button>
-  <span class="muted">การบันทึกจะคำนวณระดับสมาชิกทั้งหมดใหม่ทันที</span>
+  <span class="muted">Bronze เริ่มต้น 0 แต้ม และไม่สามารถเปลี่ยนได้</span>
  </div>
  <div id="settingsMessage"></div>
 </section>
@@ -124,7 +121,7 @@ th{background:#f5f9f5;color:#476052;white-space:nowrap}
 <section class="card">
  <div class="toolbar">
   <div>
-   <b>รายชื่อสมาชิกและความคืบหน้าการเลื่อนระดับ</b>
+   <h2>👥 รายชื่อสมาชิก</h2>
    <div class="muted" id="summary">กำลังโหลดข้อมูล...</div>
   </div>
   <input class="search" id="search"
@@ -139,18 +136,64 @@ th{background:#f5f9f5;color:#476052;white-space:nowrap}
    <thead>
     <tr>
      <th>สมาชิก</th>
-     <th>ระดับปัจจุบัน</th>
+     <th>ระดับ</th>
      <th>แต้มสะสมตลอดชีพ</th>
      <th>แต้มคงเหลือ</th>
      <th>ระดับถัดไป</th>
      <th>ความคืบหน้า</th>
+     <th>จัดการ</th>
     </tr>
    </thead>
    <tbody id="memberRows">
-    <tr><td colspan="6" class="empty">กำลังโหลด...</td></tr>
+    <tr><td colspan="7" class="empty">กำลังโหลด...</td></tr>
    </tbody>
   </table>
  </div>
+</section>
+
+<section class="card hidden" id="adjustCard">
+ <div class="top">
+  <div>
+   <h2>✏️ ปรับแต้มสมาชิก</h2>
+   <p class="sub" id="selectedMemberLabel">เลือกสมาชิก</p>
+  </div>
+  <button class="secondary" onclick="closeAdjust()">ปิด</button>
+ </div>
+
+ <div class="notice">
+  ปรับยอดแต้มคงเหลือและแต้มสะสมตลอดชีพแยกจากกันได้
+  ระดับสมาชิกจะคำนวณจากแต้มสะสมตลอดชีพใหม่ทันที
+  กรุณาระบุเหตุผลทุกครั้ง
+ </div>
+
+ <div class="edit-grid">
+  <div class="field">
+   <label for="editRemaining">แต้มคงเหลือสำหรับแลกรางวัล</label>
+   <input id="editRemaining" type="number" min="0" step="1">
+  </div>
+  <div class="field">
+   <label for="editLifetime">แต้มสะสมตลอดชีพสำหรับระดับสมาชิก</label>
+   <input id="editLifetime" type="number" min="0" step="1">
+  </div>
+ </div>
+
+ <div class="field" style="margin-top:12px">
+  <label for="editReason">เหตุผลในการปรับแต้ม (จำเป็น)</label>
+  <textarea id="editReason" maxlength="300"
+   placeholder="เช่น แก้ไขยอดจากการบันทึกผิด / เพิ่มแต้มชดเชยลูกค้า"></textarea>
+ </div>
+
+ <div class="actions">
+  <button onclick="savePointAdjustment()" id="saveAdjustmentBtn">
+   บันทึกการปรับแต้ม
+  </button>
+  <button class="secondary" onclick="loadPointHistory()">
+   ดูประวัติการปรับแต้ม
+  </button>
+ </div>
+
+ <div id="adjustMessage"></div>
+ <div id="pointHistory" class="hidden"></div>
 </section>
 
 </main>
@@ -161,6 +204,7 @@ const SESSION_KEY='NICHA_STAFF_PIN';
 
 let members=[];
 let levels=[];
+let selectedMember=null;
 
 async function api(action,params={}){
  const pin=sessionStorage.getItem(SESSION_KEY)||'';
@@ -180,12 +224,6 @@ async function api(action,params={}){
  return res.json();
 }
 
-function showMessage(msg,type='error'){
- const el=document.getElementById('message');
- el.className='status '+type;
- el.textContent=msg;
-}
-
 function escapeHTML(v){
  return String(v??'').replace(/[&<>"']/g,c=>({
   '&':'&amp;',
@@ -200,10 +238,10 @@ function fmt(n){
  return (Number(n)||0).toLocaleString('th-TH');
 }
 
-function showSettingsMessage(msg,type='error'){
- const el=document.getElementById('settingsMessage');
+function msg(id,text,type='error'){
+ const el=document.getElementById(id);
  el.className='status '+type;
- el.textContent=msg;
+ el.textContent=text;
 }
 
 async function loadLevelSettings(){
@@ -212,21 +250,20 @@ async function loadLevelSettings(){
  btn.textContent='กำลังโหลด...';
 
  try{
-  const data=await api('getLevelSettings');
+  const d=await api('getLevelSettings');
 
-  if(!data.success)throw new Error(data.message||'โหลดเกณฑ์ไม่สำเร็จ');
+  if(!d.success)throw new Error(d.message||'โหลดเกณฑ์ไม่สำเร็จ');
 
-  const list=data.levels||[];
-  const find=name=>list.find(x=>x.name===name)?.min;
+  const find=n=>(d.levels||[]).find(x=>x.name===n)?.min;
 
   document.getElementById('silverPoints').value=find('Silver')??100;
   document.getElementById('goldPoints').value=find('Gold')??300;
   document.getElementById('platinumPoints').value=find('Platinum VIP')??600;
 
-  showSettingsMessage('โหลดเกณฑ์ปัจจุบันแล้ว','ok');
+  msg('settingsMessage','โหลดเกณฑ์ปัจจุบันแล้ว','ok');
 
  }catch(e){
-  showSettingsMessage(e.message||'โหลดเกณฑ์ไม่สำเร็จ');
+  msg('settingsMessage',e.message);
  }finally{
   btn.disabled=false;
   btn.textContent='โหลดค่าเดิม';
@@ -234,68 +271,62 @@ async function loadLevelSettings(){
 }
 
 async function saveLevelSettings(){
- const btn=document.getElementById('saveSettingsBtn');
-
  const silver=Number(document.getElementById('silverPoints').value);
  const gold=Number(document.getElementById('goldPoints').value);
  const platinum=Number(document.getElementById('platinumPoints').value);
 
- if(
-  !Number.isSafeInteger(silver)||
-  !Number.isSafeInteger(gold)||
-  !Number.isSafeInteger(platinum)||
-  silver<=0||gold<=0||platinum<=0
- ){
-  showSettingsMessage('กรุณากรอกแต้มเป็นจำนวนเต็มมากกว่า 0');
+ if(![silver,gold,platinum].every(x=>Number.isSafeInteger(x)&&x>0)){
+  msg('settingsMessage','กรุณากรอกแต้มเป็นจำนวนเต็มมากกว่า 0');
   return;
  }
 
  if(!(silver<gold&&gold<platinum)){
-  showSettingsMessage('แต้มต้องเรียงจากน้อยไปมาก Silver < Gold < Platinum VIP');
+  msg('settingsMessage','แต้มต้องเรียง Silver < Gold < Platinum VIP');
   return;
  }
 
- if(!confirm('ยืนยันบันทึกเกณฑ์ระดับสมาชิกใหม่? ระบบจะคำนวณระดับสมาชิกทั้งหมดตามเกณฑ์ใหม่นี้'))return;
+ if(!confirm('ยืนยันบันทึกเกณฑ์ระดับสมาชิกใหม่?'))return;
 
- btn.disabled=true;
- btn.textContent='กำลังบันทึก...';
+ const b=document.getElementById('saveSettingsBtn');
+ b.disabled=true;
+ b.textContent='กำลังบันทึก...';
 
  try{
-  const data=await api('saveLevelSettings',{silver,gold,platinum});
+  const d=await api('saveLevelSettings',{silver,gold,platinum});
 
-  if(!data.success)throw new Error(data.message||'บันทึกไม่สำเร็จ');
+  if(!d.success)throw new Error(d.message||'บันทึกไม่สำเร็จ');
 
-  levels=data.levels||[];
+  levels=d.levels||[];
 
-  showSettingsMessage('บันทึกเกณฑ์สำเร็จ และคำนวณระดับสมาชิกใหม่แล้ว','ok');
+  msg('settingsMessage','บันทึกเกณฑ์สำเร็จและคำนวณระดับสมาชิกใหม่แล้ว','ok');
 
   await loadMembers();
 
  }catch(e){
-  showSettingsMessage(e.message||'บันทึกไม่สำเร็จ');
+  msg('settingsMessage',e.message);
  }finally{
-  btn.disabled=false;
-  btn.textContent='บันทึกเกณฑ์ระดับสมาชิก';
+  b.disabled=false;
+  b.textContent='บันทึกเกณฑ์ระดับสมาชิก';
  }
 }
 
 async function loadMembers(){
- const btn=document.getElementById('refreshBtn');
+ const b=document.getElementById('refreshBtn');
 
- btn.disabled=true;
- btn.textContent='กำลังโหลด...';
+ b.disabled=true;
+ b.textContent='กำลังโหลด...';
  document.getElementById('message').textContent='';
 
  try{
-  const data=await api('getAllMembers');
+  const d=await api('getAllMembers');
 
-  if(!data.success)throw new Error(data.message||'โหลดข้อมูลไม่สำเร็จ');
+  if(!d.success)throw new Error(d.message||'โหลดข้อมูลไม่สำเร็จ');
 
-  members=data.members||[];
-  levels=data.levels||[];
+  members=d.members||[];
+  levels=d.levels||[];
 
   document.getElementById('summary').textContent=
-   'สมาชิกทั้งหมด '+fmt(data.count)+' คน';
+   'สมาชิกทั้งหมด '+fmt(d.count)+' คน';
 
   if(levels.length){
    document.getElementById('tiers').innerHTML=levels.map(x=>`
@@ -309,12 +340,14 @@ async function loadMembers(){
   renderMembers();
 
  }catch(e){
-  showMessage(e.message);
+  msg('message',e.message);
+
   document.getElementById('memberRows').innerHTML=
-   '<tr><td colspan="6" class="empty">ไม่สามารถโหลดข้อมูลได้</td></tr>';
+   '<tr><td colspan="7" class="empty">ไม่สามารถโหลดข้อมูลได้</td></tr>';
+
  }finally{
-  btn.disabled=false;
-  btn.textContent='รีเฟรชข้อมูล';
+  b.disabled=false;
+  b.textContent='รีเฟรชข้อมูล';
  }
 }
 
@@ -327,14 +360,13 @@ function renderMembers(){
   )
  );
 
- const tbody=document.getElementById('memberRows');
-
  if(!filtered.length){
-  tbody.innerHTML='<tr><td colspan="6" class="empty">ไม่พบสมาชิก</td></tr>';
+  document.getElementById('memberRows').innerHTML=
+   '<tr><td colspan="7" class="empty">ไม่พบสมาชิก</td></tr>';
   return;
  }
 
- tbody.innerHTML=filtered.map(m=>{
+ document.getElementById('memberRows').innerHTML=filtered.map(m=>{
   const total=Number(m.lifetimePoints)||0;
   const next=Number(m.nextLevelAt)||0;
 
@@ -347,7 +379,7 @@ function renderMembers(){
    :100;
 
   const progress=m.nextLevel
-   ?`${fmt(total)} / ${fmt(next)} แต้ม · ขาดอีก ${fmt(m.pointsToNextLevel)} แต้ม`
+   ?`${fmt(total)} / ${fmt(next)} · ขาดอีก ${fmt(m.pointsToNextLevel)} แต้ม`
    :'ถึงระดับสูงสุดแล้ว';
 
   return `
@@ -361,14 +393,152 @@ function renderMembers(){
     <td>${fmt(m.remainingPoints)}</td>
     <td>${m.nextLevel?escapeHTML(m.nextLevel):'สูงสุดแล้ว'}</td>
     <td>
-     <div>${progress}</div>
+     ${progress}
      <div class="progress">
       <div class="bar" style="width:${percent}%"></div>
      </div>
     </td>
+    <td>
+     <button class="small" onclick="openAdjust('${encodeURIComponent(String(m.lineUserId))}')">
+      ปรับแต้ม
+     </button>
+    </td>
    </tr>
   `;
  }).join('');
+}
+
+async function openAdjust(encodedId){
+ const id=decodeURIComponent(encodedId);
+
+ try{
+  const d=await api('getMemberPointDetails',{lineUserId:id});
+
+  if(!d.success)throw new Error(d.message||'โหลดข้อมูลสมาชิกไม่สำเร็จ');
+
+  selectedMember=d.member;
+
+  document.getElementById('selectedMemberLabel').textContent=
+   `${selectedMember.name} · ${selectedMember.phone||''} · ${selectedMember.level}`;
+
+  document.getElementById('editRemaining').value=selectedMember.remainingPoints;
+  document.getElementById('editLifetime').value=selectedMember.lifetimePoints;
+  document.getElementById('editReason').value='';
+
+  document.getElementById('adjustMessage').textContent='';
+  document.getElementById('pointHistory').classList.add('hidden');
+  document.getElementById('pointHistory').innerHTML='';
+
+  document.getElementById('adjustCard').classList.remove('hidden');
+
+  document.getElementById('adjustCard').scrollIntoView({
+   behavior:'smooth',
+   block:'start'
+  });
+
+ }catch(e){
+  msg('message',e.message);
+ }
+}
+
+function closeAdjust(){
+ document.getElementById('adjustCard').classList.add('hidden');
+ selectedMember=null;
+}
+
+async function savePointAdjustment(){
+ if(!selectedMember){
+  msg('adjustMessage','ยังไม่ได้เลือกสมาชิก');
+  return;
+ }
+
+ const remaining=Number(document.getElementById('editRemaining').value);
+ const lifetime=Number(document.getElementById('editLifetime').value);
+ const reason=document.getElementById('editReason').value.trim();
+
+ if(!Number.isSafeInteger(remaining)||remaining<0||
+    !Number.isSafeInteger(lifetime)||lifetime<0){
+  msg('adjustMessage','กรุณากรอกแต้มเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป');
+  return;
+ }
+
+ if(!reason){
+  msg('adjustMessage','กรุณาระบุเหตุผลในการปรับแต้ม');
+  return;
+ }
+
+ if(!confirm(
+  `ยืนยันปรับแต้มของ ${selectedMember.name} ?\n`+
+  `แต้มคงเหลือ: ${fmt(selectedMember.remainingPoints)} → ${fmt(remaining)}\n`+
+  `แต้มสะสมตลอดชีพ: ${fmt(selectedMember.lifetimePoints)} → ${fmt(lifetime)}`
+ ))return;
+
+ const b=document.getElementById('saveAdjustmentBtn');
+ b.disabled=true;
+ b.textContent='กำลังบันทึก...';
+
+ try{
+  const memberId=selectedMember.lineUserId;
+
+  const d=await api('adjustMemberPoints',{
+   lineUserId:memberId,
+   remainingPoints:remaining,
+   lifetimePoints:lifetime,
+   reason
+  });
+
+  if(!d.success)throw new Error(d.message||'ปรับแต้มไม่สำเร็จ');
+
+  msg('adjustMessage',
+   `บันทึกสำเร็จ ระดับสมาชิกปัจจุบัน: ${d.member.level}`,'ok');
+
+  await loadMembers();
+  await openAdjust(encodeURIComponent(String(memberId)));
+
+ }catch(e){
+  msg('adjustMessage',e.message);
+ }finally{
+  b.disabled=false;
+  b.textContent='บันทึกการปรับแต้ม';
+ }
+}
+
+async function loadPointHistory(){
+ if(!selectedMember)return;
+
+ try{
+  const d=await api('getPointAdjustmentHistory',{
+   lineUserId:selectedMember.lineUserId
+  });
+
+  if(!d.success)throw new Error(d.message||'โหลดประวัติไม่สำเร็จ');
+
+  document.getElementById('pointHistory').classList.remove('hidden');
+
+  if(!d.history||!d.history.length){
+   document.getElementById('pointHistory').innerHTML=
+    '<p class="muted">ยังไม่มีประวัติการปรับแต้ม</p>';
+   return;
+  }
+
+  document.getElementById('pointHistory').innerHTML=
+   '<h3>ประวัติการปรับแต้ม</h3>'+
+   d.history.map(x=>`
+    <div class="history-item">
+     <b>${escapeHTML(x.name)}</b>
+     · ${escapeHTML(new Date(x.date).toLocaleString('th-TH'))}<br>
+     แต้มคงเหลือ:
+     ${fmt(x.oldRemainingPoints)} → ${fmt(x.newRemainingPoints)}<br>
+     แต้มสะสมตลอดชีพ:
+     ${fmt(x.oldLifetimePoints)} → ${fmt(x.newLifetimePoints)}<br>
+     เหตุผล: ${escapeHTML(x.reason)}<br>
+     <span class="muted">${escapeHTML(x.operator)}</span>
+    </div>
+   `).join('');
+
+ }catch(e){
+  msg('adjustMessage',e.message);
+ }
 }
 
 loadLevelSettings();
