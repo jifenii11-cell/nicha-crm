@@ -172,6 +172,12 @@ button:disabled{opacity:.5;cursor:not-allowed}
           <small>สร้างและจัดการคูปอง</small>
         </button>
 
+        <button onclick="openPage('member-level-admin.html')" data-page="member-level-admin.html">
+          <span class="emoji">💎</span>
+          จัดการระดับสมาชิก
+          <small>ดูแต้มตลอดชีพและความคืบหน้าการเลื่อนระดับ</small>
+        </button>
+
         <button onclick="openPage('coupon-history.html')" data-page="coupon-history.html">
           <span class="emoji">📚</span>
           ประวัติคูปอง
@@ -249,6 +255,9 @@ const PAGE_INFO = {
   },
   'coupon-history.html': {
     title:'ประวัติการใช้คูปอง'
+  },
+  'member-level-admin.html': {
+    title:'จัดการระดับสมาชิก'
   }
 };
 
