@@ -1,548 +1,308 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#123d32">
-<title>NICHA CRM | ระดับสมาชิก</title>
+<title>NICHA CRM | จัดการสมาชิก</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#f1f7f2;color:#244333;font-family:Arial,sans-serif;padding:18px}
-.wrap{max-width:1100px;margin:18px auto}
-.card{background:#fff;border-radius:18px;padding:20px;margin-bottom:16px;box-shadow:0 5px 22px #173f3512}
-h1{margin:0;color:#123d32;font-size:25px}
-h2{margin:0;color:#123d32;font-size:20px}
-.sub,.muted{color:#718078;font-size:13px}
-.sub{margin:7px 0 0}
-.top,.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-button,input,textarea{font:inherit;border-radius:10px;padding:11px 14px}
-button{border:0;background:#174b3d;color:#fff;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5;cursor:not-allowed}
-input,textarea{border:1px solid #ccd9d0;background:#fff;color:#244333;width:100%}
-input{max-width:360px}
-textarea{min-height:75px;resize:vertical}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:18px}
-.tier{border:1px solid #dce8df;border-radius:14px;padding:15px;background:#fbfdfb}
-.tier strong{display:block;font-size:18px;margin-bottom:5px}
-.tier span{color:#607368;font-size:14px}
-.notice{background:#edf6ef;border-left:4px solid #28734b;padding:13px 15px;border-radius:9px;line-height:1.65;margin-top:16px}
-.search{flex:1;min-width:220px;max-width:none}
-.status{padding:12px;border-radius:10px;background:#fff5e8;color:#8a5b18;margin-top:12px;line-height:1.5}
-.status.error{background:#fff0ef;color:#a33d36}
-.status.ok{background:#edf6ef;color:#28734b}
-.table-wrap{overflow:auto;margin-top:14px}
-table{border-collapse:collapse;width:100%;min-width:850px}
-th,td{text-align:left;padding:12px 10px;border-bottom:1px solid #e6eee8;font-size:14px}
-th{background:#f5f9f5;color:#476052;white-space:nowrap}
-.pill{display:inline-block;padding:5px 9px;border-radius:30px;background:#e8f2eb;color:#24563c;font-weight:bold;white-space:nowrap}
-.progress{height:7px;background:#e6eee8;border-radius:20px;overflow:hidden;min-width:90px;margin-top:6px}
-.bar{height:100%;background:#c5a45d}
-.empty{text-align:center;color:#7b8980;padding:25px}
-.settings-grid,.edit-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
-.edit-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-.field label{display:block;font-size:13px;font-weight:bold;margin-bottom:6px;color:#476052}
-.field input{max-width:none}
-.actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
-.secondary{background:#e5efe8;color:#174b3d}
-.small{padding:7px 10px;font-size:12px}
-.history-item{border-bottom:1px solid #e6eee8;padding:12px 0;font-size:13px;line-height:1.6}
-.hidden{display:none!important}
-@media(max-width:700px){
- .settings-grid,.edit-grid{grid-template-columns:1fr}
- body{padding:10px}.card{padding:15px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}
- h1{font-size:21px}
+body{
+  margin:0;
+  padding:20px;
+  background:#f1f7f2;
+  color:#244333;
+  font-family:Arial,sans-serif;
+}
+.container{max-width:1100px;margin:auto}
+.header{
+  background:#123d32;
+  color:white;
+  padding:22px;
+  border-radius:16px;
+  margin-bottom:18px;
+}
+.header h2{margin:0 0 8px}
+.card{
+  background:white;
+  padding:18px;
+  border-radius:14px;
+  margin-bottom:15px;
+  box-shadow:0 2px 10px #0000000b;
+}
+input{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccd9cf;
+  border-radius:9px;
+  font-size:15px;
+}
+button{
+  border:0;
+  padding:10px 14px;
+  border-radius:8px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.refresh{background:#28734b;color:white}
+.disable{background:#ffe5e5;color:#a32626}
+.enable{background:#dff5e5;color:#176b38}
+table{width:100%;border-collapse:collapse;min-width:850px}
+th,td{
+  padding:12px 9px;
+  border-bottom:1px solid #e5ece6;
+  text-align:left;
+  font-size:14px;
+}
+th{background:#edf5ee}
+.table-wrap{overflow-x:auto}
+.status{
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+}
+.active{background:#dcf5e3;color:#176b38}
+.inactive{background:#ffe1e1;color:#a32626}
+.summary{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+}
+.summary div{
+  background:#edf5ee;
+  padding:15px;
+  border-radius:10px;
+}
+.summary strong{display:block;font-size:23px;margin-top:5px}
+#message{margin:12px 0;color:#28734b}
+@media(max-width:600px){
+  body{padding:10px}
+  .summary{grid-template-columns:1fr}
 }
 </style>
 </head>
+
 <body>
-<main class="wrap">
+<div class="container">
 
-<section class="card">
- <div class="top">
-  <div>
-   <h1>💎 จัดการระดับสมาชิก</h1>
-   <p class="sub">NICHA CRM · ใช้แต้มสะสมตลอดชีพเป็นเกณฑ์เลื่อนระดับ</p>
+<div class="header">
+  <h2>NICHA CRM</h2>
+  <div>ระบบจัดการข้อมูลสมาชิก</div>
+</div>
+
+<div class="card">
+  <div class="summary">
+    <div>สมาชิกทั้งหมด<strong id="total">0</strong></div>
+    <div>เปิดใช้งาน<strong id="activeTotal">0</strong></div>
+    <div>ปิดใช้งาน<strong id="inactiveTotal">0</strong></div>
   </div>
-  <button onclick="loadMembers()" id="refreshBtn">รีเฟรชข้อมูล</button>
- </div>
+</div>
 
- <div class="grid" id="tiers">
-  <div class="tier"><strong>Bronze</strong><span>เริ่มต้น 0 แต้ม</span></div>
-  <div class="tier"><strong>Silver</strong><span>100 แต้ม</span></div>
-  <div class="tier"><strong>Gold</strong><span>300 แต้ม</span></div>
-  <div class="tier"><strong>Platinum VIP</strong><span>600 แต้ม</span></div>
- </div>
+<div class="card">
+  <input id="search" placeholder="ค้นหาชื่อ เบอร์โทร หรือ LINE User ID">
+  <br><br>
+  <button class="refresh" onclick="loadMembers()">รีเฟรชข้อมูล</button>
+  <div id="message">กำลังเตรียมระบบ...</div>
+</div>
 
- <div class="notice">
-  <b>หลักการคำนวณ</b><br>
-  แต้มสะสมตลอดชีพใช้เลื่อนระดับและไม่ลดลงเมื่อแลกรางวัล
-  ส่วนแต้มคงเหลือใช้แลกรางวัลเท่านั้น
-  การปรับยอดสมาชิกจะบันทึกประวัติไว้ตรวจสอบย้อนหลัง
- </div>
-</section>
-
-<section class="card">
- <div class="top">
-  <div>
-   <h2>⚙️ ตั้งค่าแต้มเลื่อนระดับสมาชิก</h2>
-   <p class="sub">เจ้าของร้านกำหนดเกณฑ์ Silver, Gold และ Platinum VIP ได้เอง</p>
+<div class="card">
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>ลำดับ</th>
+          <th>ชื่อสมาชิก</th>
+          <th>เบอร์โทร</th>
+          <th>แต้มคงเหลือ</th>
+          <th>แต้มสะสม</th>
+          <th>ระดับสมาชิก</th>
+          <th>สถานะ</th>
+          <th>จัดการ</th>
+        </tr>
+      </thead>
+      <tbody id="memberList">
+        <tr><td colspan="8">กำลังโหลดข้อมูล...</td></tr>
+      </tbody>
+    </table>
   </div>
-  <button class="secondary" type="button"
-   onclick="loadLevelSettings()" id="settingsRefreshBtn">
-   โหลดค่าเดิม
-  </button>
- </div>
+</div>
 
- <div class="settings-grid">
-  <div class="field">
-   <label for="silverPoints">Silver (แต้ม)</label>
-   <input id="silverPoints" type="number" min="1" step="1" value="100">
-  </div>
-  <div class="field">
-   <label for="goldPoints">Gold (แต้ม)</label>
-   <input id="goldPoints" type="number" min="1" step="1" value="300">
-  </div>
-  <div class="field">
-   <label for="platinumPoints">Platinum VIP (แต้ม)</label>
-   <input id="platinumPoints" type="number" min="1" step="1" value="600">
-  </div>
- </div>
-
- <div class="actions">
-  <button onclick="saveLevelSettings()" id="saveSettingsBtn">
-   บันทึกเกณฑ์ระดับสมาชิก
-  </button>
-  <span class="muted">Bronze เริ่มต้น 0 แต้ม และไม่สามารถเปลี่ยนได้</span>
- </div>
- <div id="settingsMessage"></div>
-</section>
-
-<section class="card">
- <div class="toolbar">
-  <div>
-   <h2>👥 รายชื่อสมาชิก</h2>
-   <div class="muted" id="summary">กำลังโหลดข้อมูล...</div>
-  </div>
-  <input class="search" id="search"
-   placeholder="ค้นหาชื่อ เบอร์โทร หรือ LINE User ID"
-   oninput="renderMembers()">
- </div>
-
- <div id="message"></div>
-
- <div class="table-wrap">
-  <table>
-   <thead>
-    <tr>
-     <th>สมาชิก</th>
-     <th>ระดับ</th>
-     <th>แต้มสะสมตลอดชีพ</th>
-     <th>แต้มคงเหลือ</th>
-     <th>ระดับถัดไป</th>
-     <th>ความคืบหน้า</th>
-     <th>จัดการ</th>
-    </tr>
-   </thead>
-   <tbody id="memberRows">
-    <tr><td colspan="7" class="empty">กำลังโหลด...</td></tr>
-   </tbody>
-  </table>
- </div>
-</section>
-
-<section class="card hidden" id="adjustCard">
- <div class="top">
-  <div>
-   <h2>✏️ ปรับแต้มสมาชิก</h2>
-   <p class="sub" id="selectedMemberLabel">เลือกสมาชิก</p>
-  </div>
-  <button class="secondary" onclick="closeAdjust()">ปิด</button>
- </div>
-
- <div class="notice">
-  ปรับยอดแต้มคงเหลือและแต้มสะสมตลอดชีพแยกจากกันได้
-  ระดับสมาชิกจะคำนวณจากแต้มสะสมตลอดชีพใหม่ทันที
-  กรุณาระบุเหตุผลทุกครั้ง
- </div>
-
- <div class="edit-grid">
-  <div class="field">
-   <label for="editRemaining">แต้มคงเหลือสำหรับแลกรางวัล</label>
-   <input id="editRemaining" type="number" min="0" step="1">
-  </div>
-  <div class="field">
-   <label for="editLifetime">แต้มสะสมตลอดชีพสำหรับระดับสมาชิก</label>
-   <input id="editLifetime" type="number" min="0" step="1">
-  </div>
- </div>
-
- <div class="field" style="margin-top:12px">
-  <label for="editReason">เหตุผลในการปรับแต้ม (จำเป็น)</label>
-  <textarea id="editReason" maxlength="300"
-   placeholder="เช่น แก้ไขยอดจากการบันทึกผิด / เพิ่มแต้มชดเชยลูกค้า"></textarea>
- </div>
-
- <div class="actions">
-  <button onclick="savePointAdjustment()" id="saveAdjustmentBtn">
-   บันทึกการปรับแต้ม
-  </button>
-  <button class="secondary" onclick="loadPointHistory()">
-   ดูประวัติการปรับแต้ม
-  </button>
- </div>
-
- <div id="adjustMessage"></div>
- <div id="pointHistory" class="hidden"></div>
-</section>
-
-</main>
+</div>
 
 <script>
-const API_URL='https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
-const SESSION_KEY='NICHA_STAFF_PIN';
+const API_URL =
+'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
-let members=[];
-let levels=[];
-let selectedMember=null;
+let members = [];
 
-async function api(action,params={}){
- const pin=sessionStorage.getItem(SESSION_KEY)||'';
-
- if(!pin){
-  throw new Error('ไม่พบการเข้าสู่ระบบ กรุณากลับไปเข้าสู่ระบบที่ Staff Center');
- }
-
- const res=await fetch(API_URL,{
-  method:'POST',
-  headers:{'Content-Type':'text/plain;charset=utf-8'},
-  body:JSON.stringify({action,pin,...params})
- });
-
- if(!res.ok)throw new Error('เชื่อมต่อระบบไม่สำเร็จ');
-
- return res.json();
+function getPIN(){
+  return sessionStorage.getItem('NICHA_STAFF_PIN') || '';
 }
 
-function escapeHTML(v){
- return String(v??'').replace(/[&<>"']/g,c=>({
-  '&':'&amp;',
-  '<':'&lt;',
-  '>':'&gt;',
-  '"':'&quot;',
-  "'":'&#39;'
- }[c]));
+async function api(action, params={}){
+  const pin = getPIN();
+
+  if(!pin){
+    throw new Error('กรุณาเข้าสู่ระบบพนักงานก่อน');
+  }
+
+  const response = await fetch(API_URL,{
+    method:'POST',
+    headers:{
+      'Content-Type':'text/plain;charset=utf-8'
+    },
+    body:JSON.stringify({
+      action:action,
+      pin:pin,
+      ...params
+    })
+  });
+
+  return await response.json();
 }
 
-function fmt(n){
- return (Number(n)||0).toLocaleString('th-TH');
-}
-
-function msg(id,text,type='error'){
- const el=document.getElementById(id);
- el.className='status '+type;
- el.textContent=text;
-}
-
-async function loadLevelSettings(){
- const btn=document.getElementById('settingsRefreshBtn');
- btn.disabled=true;
- btn.textContent='กำลังโหลด...';
-
- try{
-  const d=await api('getLevelSettings');
-
-  if(!d.success)throw new Error(d.message||'โหลดเกณฑ์ไม่สำเร็จ');
-
-  const find=n=>(d.levels||[]).find(x=>x.name===n)?.min;
-
-  document.getElementById('silverPoints').value=find('Silver')??100;
-  document.getElementById('goldPoints').value=find('Gold')??300;
-  document.getElementById('platinumPoints').value=find('Platinum VIP')??600;
-
-  msg('settingsMessage','โหลดเกณฑ์ปัจจุบันแล้ว','ok');
-
- }catch(e){
-  msg('settingsMessage',e.message);
- }finally{
-  btn.disabled=false;
-  btn.textContent='โหลดค่าเดิม';
- }
-}
-
-async function saveLevelSettings(){
- const silver=Number(document.getElementById('silverPoints').value);
- const gold=Number(document.getElementById('goldPoints').value);
- const platinum=Number(document.getElementById('platinumPoints').value);
-
- if(![silver,gold,platinum].every(x=>Number.isSafeInteger(x)&&x>0)){
-  msg('settingsMessage','กรุณากรอกแต้มเป็นจำนวนเต็มมากกว่า 0');
-  return;
- }
-
- if(!(silver<gold&&gold<platinum)){
-  msg('settingsMessage','แต้มต้องเรียง Silver < Gold < Platinum VIP');
-  return;
- }
-
- if(!confirm('ยืนยันบันทึกเกณฑ์ระดับสมาชิกใหม่?'))return;
-
- const b=document.getElementById('saveSettingsBtn');
- b.disabled=true;
- b.textContent='กำลังบันทึก...';
-
- try{
-  const d=await api('saveLevelSettings',{silver,gold,platinum});
-
-  if(!d.success)throw new Error(d.message||'บันทึกไม่สำเร็จ');
-
-  levels=d.levels||[];
-
-  msg('settingsMessage','บันทึกเกณฑ์สำเร็จและคำนวณระดับสมาชิกใหม่แล้ว','ok');
-
-  await loadMembers();
-
- }catch(e){
-  msg('settingsMessage',e.message);
- }finally{
-  b.disabled=false;
-  b.textContent='บันทึกเกณฑ์ระดับสมาชิก';
- }
+function showMessage(text){
+  document.getElementById('message').textContent=text;
 }
 
 async function loadMembers(){
- const b=document.getElementById('refreshBtn');
+  showMessage('กำลังโหลดข้อมูลสมาชิก...');
 
- b.disabled=true;
- b.textContent='กำลังโหลด...';
- document.getElementById('message').textContent='';
+  try{
+    const result = await api('getAllMembersAdmin');
 
- try{
-  const d=await api('getAllMembers');
+    if(!result || result.success === false){
+      throw new Error(result?.message || 'ไม่สามารถโหลดข้อมูลได้');
+    }
 
-  if(!d.success)throw new Error(d.message||'โหลดข้อมูลไม่สำเร็จ');
+    members = result.members || result.data || [];
 
-  members=d.members||[];
-  levels=d.levels||[];
+    renderMembers();
+    showMessage('โหลดข้อมูลเรียบร้อย');
 
-  document.getElementById('summary').textContent=
-   'สมาชิกทั้งหมด '+fmt(d.count)+' คน';
-
-  if(levels.length){
-   document.getElementById('tiers').innerHTML=levels.map(x=>`
-    <div class="tier">
-     <strong>${escapeHTML(x.name)}</strong>
-     <span>เริ่มต้น ${fmt(x.min)} แต้ม</span>
-    </div>
-   `).join('');
+  }catch(error){
+    showMessage(error.message);
+    document.getElementById('memberList').innerHTML =
+      '<tr><td colspan="8">'+escapeHTML(error.message)+'</td></tr>';
   }
-
-  renderMembers();
-
- }catch(e){
-  msg('message',e.message);
-
-  document.getElementById('memberRows').innerHTML=
-   '<tr><td colspan="7" class="empty">ไม่สามารถโหลดข้อมูลได้</td></tr>';
-
- }finally{
-  b.disabled=false;
-  b.textContent='รีเฟรชข้อมูล';
- }
 }
 
 function renderMembers(){
- const q=(document.getElementById('search').value||'').trim().toLowerCase();
+  const keyword =
+    document.getElementById('search').value.toLowerCase().trim();
 
- const filtered=members.filter(m=>
-  [m.name,m.phone,m.lineUserId].some(v=>
-   String(v||'').toLowerCase().includes(q)
-  )
- );
+  const filtered = members.filter(m=>{
+    const text = [
+      m.name,m.phone,m.lineUserId
+    ].join(' ').toLowerCase();
 
- if(!filtered.length){
-  document.getElementById('memberRows').innerHTML=
-   '<tr><td colspan="7" class="empty">ไม่พบสมาชิก</td></tr>';
-  return;
- }
-
- document.getElementById('memberRows').innerHTML=filtered.map(m=>{
-  const total=Number(m.lifetimePoints)||0;
-  const next=Number(m.nextLevelAt)||0;
-
-  const previous=(
-   levels.filter(x=>total>=Number(x.min)).slice(-1)[0]||{min:0}
-  ).min;
-
-  const percent=m.nextLevel
-   ?Math.max(0,Math.min(100,(total-previous)/(next-previous)*100))
-   :100;
-
-  const progress=m.nextLevel
-   ?`${fmt(total)} / ${fmt(next)} · ขาดอีก ${fmt(m.pointsToNextLevel)} แต้ม`
-   :'ถึงระดับสูงสุดแล้ว';
-
-  return `
-   <tr>
-    <td>
-     <b>${escapeHTML(m.name)}</b>
-     <div class="muted">${escapeHTML(m.phone||'')}</div>
-    </td>
-    <td><span class="pill">${escapeHTML(m.level)}</span></td>
-    <td><b>${fmt(total)}</b></td>
-    <td>${fmt(m.remainingPoints)}</td>
-    <td>${m.nextLevel?escapeHTML(m.nextLevel):'สูงสุดแล้ว'}</td>
-    <td>
-     ${progress}
-     <div class="progress">
-      <div class="bar" style="width:${percent}%"></div>
-     </div>
-    </td>
-    <td>
-     <button class="small" onclick="openAdjust('${encodeURIComponent(String(m.lineUserId))}')">
-      ปรับแต้ม
-     </button>
-    </td>
-   </tr>
-  `;
- }).join('');
-}
-
-async function openAdjust(encodedId){
- const id=decodeURIComponent(encodedId);
-
- try{
-  const d=await api('getMemberPointDetails',{lineUserId:id});
-
-  if(!d.success)throw new Error(d.message||'โหลดข้อมูลสมาชิกไม่สำเร็จ');
-
-  selectedMember=d.member;
-
-  document.getElementById('selectedMemberLabel').textContent=
-   `${selectedMember.name} · ${selectedMember.phone||''} · ${selectedMember.level}`;
-
-  document.getElementById('editRemaining').value=selectedMember.remainingPoints;
-  document.getElementById('editLifetime').value=selectedMember.lifetimePoints;
-  document.getElementById('editReason').value='';
-
-  document.getElementById('adjustMessage').textContent='';
-  document.getElementById('pointHistory').classList.add('hidden');
-  document.getElementById('pointHistory').innerHTML='';
-
-  document.getElementById('adjustCard').classList.remove('hidden');
-
-  document.getElementById('adjustCard').scrollIntoView({
-   behavior:'smooth',
-   block:'start'
+    return text.includes(keyword);
   });
 
- }catch(e){
-  msg('message',e.message);
- }
-}
+  const active = members.filter(m=>isActive(m)).length;
+  const inactive = members.length-active;
 
-function closeAdjust(){
- document.getElementById('adjustCard').classList.add('hidden');
- selectedMember=null;
-}
+  document.getElementById('total').textContent=members.length;
+  document.getElementById('activeTotal').textContent=active;
+  document.getElementById('inactiveTotal').textContent=inactive;
 
-async function savePointAdjustment(){
- if(!selectedMember){
-  msg('adjustMessage','ยังไม่ได้เลือกสมาชิก');
-  return;
- }
+  const tbody=document.getElementById('memberList');
 
- const remaining=Number(document.getElementById('editRemaining').value);
- const lifetime=Number(document.getElementById('editLifetime').value);
- const reason=document.getElementById('editReason').value.trim();
-
- if(!Number.isSafeInteger(remaining)||remaining<0||
-    !Number.isSafeInteger(lifetime)||lifetime<0){
-  msg('adjustMessage','กรุณากรอกแต้มเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป');
-  return;
- }
-
- if(!reason){
-  msg('adjustMessage','กรุณาระบุเหตุผลในการปรับแต้ม');
-  return;
- }
-
- if(!confirm(
-  `ยืนยันปรับแต้มของ ${selectedMember.name} ?\n`+
-  `แต้มคงเหลือ: ${fmt(selectedMember.remainingPoints)} → ${fmt(remaining)}\n`+
-  `แต้มสะสมตลอดชีพ: ${fmt(selectedMember.lifetimePoints)} → ${fmt(lifetime)}`
- ))return;
-
- const b=document.getElementById('saveAdjustmentBtn');
- b.disabled=true;
- b.textContent='กำลังบันทึก...';
-
- try{
-  const memberId=selectedMember.lineUserId;
-
-  const d=await api('adjustMemberPoints',{
-   lineUserId:memberId,
-   remainingPoints:remaining,
-   lifetimePoints:lifetime,
-   reason
-  });
-
-  if(!d.success)throw new Error(d.message||'ปรับแต้มไม่สำเร็จ');
-
-  msg('adjustMessage',
-   `บันทึกสำเร็จ ระดับสมาชิกปัจจุบัน: ${d.member.level}`,'ok');
-
-  await loadMembers();
-  await openAdjust(encodeURIComponent(String(memberId)));
-
- }catch(e){
-  msg('adjustMessage',e.message);
- }finally{
-  b.disabled=false;
-  b.textContent='บันทึกการปรับแต้ม';
- }
-}
-
-async function loadPointHistory(){
- if(!selectedMember)return;
-
- try{
-  const d=await api('getPointAdjustmentHistory',{
-   lineUserId:selectedMember.lineUserId
-  });
-
-  if(!d.success)throw new Error(d.message||'โหลดประวัติไม่สำเร็จ');
-
-  document.getElementById('pointHistory').classList.remove('hidden');
-
-  if(!d.history||!d.history.length){
-   document.getElementById('pointHistory').innerHTML=
-    '<p class="muted">ยังไม่มีประวัติการปรับแต้ม</p>';
-   return;
+  if(!filtered.length){
+    tbody.innerHTML='<tr><td colspan="8">ไม่พบข้อมูลสมาชิก</td></tr>';
+    return;
   }
 
-  document.getElementById('pointHistory').innerHTML=
-   '<h3>ประวัติการปรับแต้ม</h3>'+
-   d.history.map(x=>`
-    <div class="history-item">
-     <b>${escapeHTML(x.name)}</b>
-     · ${escapeHTML(new Date(x.date).toLocaleString('th-TH'))}<br>
-     แต้มคงเหลือ:
-     ${fmt(x.oldRemainingPoints)} → ${fmt(x.newRemainingPoints)}<br>
-     แต้มสะสมตลอดชีพ:
-     ${fmt(x.oldLifetimePoints)} → ${fmt(x.newLifetimePoints)}<br>
-     เหตุผล: ${escapeHTML(x.reason)}<br>
-     <span class="muted">${escapeHTML(x.operator)}</span>
-    </div>
-   `).join('');
+  tbody.innerHTML=filtered.map((m,index)=>{
+    const enabled=isActive(m);
+    const lineId=m.lineUserId || m.lineUserID || '';
 
- }catch(e){
-  msg('adjustMessage',e.message);
- }
+    return `
+      <tr>
+        <td>${index+1}</td>
+        <td>${escapeHTML(m.name || '-')}</td>
+        <td>${escapeHTML(m.phone || '-')}</td>
+        <td>${Number(m.remainingPoints || 0).toLocaleString()}</td>
+        <td>${Number(m.lifetimePoints || 0).toLocaleString()}</td>
+        <td>${escapeHTML(m.level || '-')}</td>
+        <td>
+          <span class="status ${enabled?'active':'inactive'}">
+            ${enabled?'เปิดใช้งาน':'ปิดใช้งาน'}
+          </span>
+        </td>
+        <td>
+          <button
+            class="${enabled?'disable':'enable'}"
+            onclick="changeStatus('${encodeURIComponent(lineId)}',${enabled})">
+            ${enabled?'ปิดสมาชิก':'เปิดสมาชิก'}
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
 }
 
-loadLevelSettings();
+function isActive(m){
+  const status=String(m.status || m.memberStatus || 'เปิดใช้งาน')
+    .toLowerCase();
+
+  return !['ปิดใช้งาน','ปิด','inactive','disabled','false','0']
+    .includes(status);
+}
+
+async function changeStatus(encodedId, currentlyActive){
+  const lineUserId=decodeURIComponent(encodedId);
+
+  if(!lineUserId){
+    alert('ไม่พบ LINE User ID ของสมาชิก');
+    return;
+  }
+
+  const actionText=currentlyActive?'ปิดใช้งาน':'เปิดใช้งาน';
+
+  if(!confirm('ยืนยัน'+actionText+'สมาชิกคนนี้หรือไม่?')){
+    return;
+  }
+
+  showMessage('กำลังบันทึกสถานะ...');
+
+  try{
+    const result=await api('setMemberStatus',{
+      lineUserId:lineUserId,
+      status:currentlyActive?'ปิดใช้งาน':'เปิดใช้งาน',
+      active:!currentlyActive
+    });
+
+    if(result && result.success===false){
+      throw new Error(result.message || 'บันทึกไม่สำเร็จ');
+    }
+
+    alert('บันทึกสถานะเรียบร้อย');
+    await loadMembers();
+
+  }catch(error){
+    alert(error.message);
+    showMessage(error.message);
+  }
+}
+
+function escapeHTML(value){
+  return String(value ?? '').replace(/[&<>"']/g,char=>({
+    '&':'&amp;',
+    '<':'&lt;',
+    '>':'&gt;',
+    '"':'&quot;',
+    "'":'&#39;'
+  })[char]);
+}
+
+document.getElementById('search')
+  .addEventListener('input',renderMembers);
+
 loadMembers();
 </script>
+
 </body>
 </html>
