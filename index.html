@@ -4,752 +4,106 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#79543a">
+<meta name="theme-color" content="#123d32">
 <title>NICHA CRM | สมาชิก</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 <style>
-  
 :root{
-  --green:#345348;
-  --green2:#49695b;
-  --gold:#b99a68;
-  --gold-light:#e6d5b5;
-  --cream:#f8f5ef;
-  --white:#fffefa;
-  --ink:#393f39;
-  --muted:#898b82;
-  --line:#eae4d9;
-  --beige:#eee8dc;
-  --shadow:0 8px 26px rgba(79,67,47,.07);
+  --green:#123d32;--green2:#1d5143;--gold:#c9a96e;
+  --cream:#f7f3e9;--ink:#26352f;--muted:#78827b;--line:#e8e1d3;
 }
-
 *{box-sizing:border-box}
-
-html{scroll-behavior:smooth}
-
-body{
-  margin:0;
-  background:#eeeae2;
-  color:var(--ink);
-  font-family:Arial,"Noto Sans Thai",sans-serif;
-  -webkit-font-smoothing:antialiased;
-}
-
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,"Noto Sans Thai",sans-serif}
 button,input{font:inherit}
-button{cursor:pointer;-webkit-tap-highlight-color:transparent}
-
-.app{
-  max-width:520px;
-  margin:auto;
-  min-height:100vh;
-  padding-bottom:95px;
-  background:var(--cream);
-  box-shadow:0 0 40px rgba(60,50,35,.06);
-}
-
-.top{
-  background:linear-gradient(145deg,#f4efe5,#e9e1d2);
-  color:var(--green);
-  padding:25px 22px 27px;
-  border-bottom:1px solid #e6dece;
-  position:relative;
-  overflow:hidden;
-}
-
-.top:after{
-  content:"";
-  position:absolute;
-  width:150px;
-  height:150px;
-  border:1px solid #c4ad83;
-  border-radius:50%;
-  right:-55px;
-  top:-75px;
-  opacity:.35;
-}
-
-.brand{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  position:relative;
-  z-index:1;
-}
-
-.brand-name{
-  font-size:14px;
-  letter-spacing:3px;
-  color:#9a7c4d;
-  font-weight:700;
-}
-
-.brand-sub{
-  font-size:12px;
-  color:#66766b;
-  margin-top:6px;
-  letter-spacing:.2px;
-}
-
-.status{
-  font-size:10px;
-  color:#718276;
-  background:#fffdf8;
-  border:1px solid #e4dac8;
-  padding:7px 10px;
-  border-radius:30px;
-}
-
-.content{padding:21px 17px}
-
+button{cursor:pointer}
+.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:85px;background:#fbfaf6}
+.top{background:linear-gradient(135deg,#0d3028,#1d5143);color:white;padding:22px 20px 25px;border-radius:0 0 26px 26px}
+.brand{display:flex;justify-content:space-between}
+.brand-name{font-size:13px;letter-spacing:2px;color:#ead7ad}
+.brand-sub{font-size:11px;color:#d9dfd9;margin-top:4px}
+.status{font-size:11px;color:#ead7ad}
+.content{padding:18px 16px}
 .page{display:none}
-.page.active{display:block;animation:fadeIn .25s ease}
-
-@keyframes fadeIn{
-  from{opacity:0;transform:translateY(5px)}
-  to{opacity:1;transform:translateY(0)}
-}
-
-.section-title{
-  font-size:20px;
-  color:var(--green);
-  font-weight:700;
-  margin:7px 0 5px;
-  letter-spacing:.1px;
-}
-
-.section-sub{
-  font-size:12px;
-  color:var(--muted);
-  margin:0 0 19px;
-  line-height:1.7;
-}
-
-.member-card{
-  background:linear-gradient(135deg,#526f60 0%,#344f43 55%,#263e35 100%);
-  color:#fffdf7;
-  border:1px solid #c5aa79;
-  border-radius:22px;
-  padding:22px 21px;
-  margin-top:0;
-  box-shadow:0 13px 30px rgba(48,69,56,.16);
-  position:relative;
-  overflow:hidden;
-}
-
-.member-card:after{
-  content:"";
-  position:absolute;
-  width:190px;
-  height:190px;
-  border:1px solid rgba(232,211,170,.18);
-  border-radius:50%;
-  right:-75px;
-  bottom:-105px;
-  box-shadow:0 0 0 15px rgba(232,211,170,.035),
-             0 0 0 32px rgba(232,211,170,.025);
-  pointer-events:none;
-}
-
-.card-head,.points-row,.card-foot{
-  position:relative;
-  z-index:1;
-}
-
-.card-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.card-label{
-  font-size:10px;
-  letter-spacing:2px;
-  color:#e8d8b9;
-}
-
-.tier{
-  border:1px solid #d4bc8e;
-  border-radius:30px;
-  padding:6px 13px;
-  font-size:10px;
-  letter-spacing:1px;
-  color:#f1dfbd;
-  background:#ffffff0d;
-}
-
-.member-name{
-  font-size:23px;
-  font-weight:600;
-  margin:25px 0 4px;
-  letter-spacing:.2px;
-}
-
-.member-phone{
-  font-size:12px;
-  color:#d6dfd7;
-}
-
-.points-row{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  margin-top:23px;
-}
-
-.points-number{
-  font-size:43px;
-  line-height:1.1;
-  color:#f0dcb5;
-  font-weight:700;
-  letter-spacing:1px;
-}
-
-.points-caption{
-  font-size:11px;
-  color:#e1e5dc;
-  margin-top:6px;
-}
-
-.card-foot{
-  border-top:1px solid #ffffff30;
-  margin-top:20px;
-  padding-top:14px;
-}
-
-.progress-line{
-  height:6px;
-  background:#ffffff30;
-  border-radius:10px;
-  overflow:hidden;
-  margin:10px 0 8px;
-}
-
-.progress-fill{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#d5b981,#f1dfba);
-  border-radius:10px;
-  transition:width .5s ease;
-}
-
-.progress-text{
-  display:flex;
-  justify-content:space-between;
-  gap:8px;
-  font-size:10px;
-  color:#e0e6df;
-}
-
-.quick-grid{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:11px;
-  margin:21px 0;
-}
-
-.quick{
-  border:1px solid var(--line);
-  border-radius:17px;
-  background:var(--white);
-  padding:16px 5px 14px;
-  text-align:center;
-  color:var(--green);
-  min-height:91px;
-  box-shadow:0 3px 12px rgba(80,67,46,.035);
-  transition:transform .18s ease,box-shadow .18s ease;
-}
-
-.quick:active{
-  transform:scale(.97);
-  box-shadow:none;
-}
-
-.quick .ico{
-  font-size:23px;
-  display:block;
-  margin-bottom:9px;
-  filter:saturate(.75);
-}
-
-.quick span:last-child{
-  font-size:11px;
-  font-weight:600;
-  color:#58665c;
-}
-
-.panel{
-  background:var(--white);
-  border:1px solid var(--line);
-  border-radius:18px;
-  padding:17px;
-  margin:13px 0;
-  box-shadow:0 4px 16px rgba(80,67,46,.035);
-}
-
-.panel-title{
-  font-weight:700;
-  color:var(--green);
-  font-size:14px;
-  margin-bottom:11px;
-}
-
-.row-between{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.btn{
-  border:0;
-  border-radius:13px;
-  background:var(--green);
-  color:#fffdf7;
-  padding:13px 17px;
-  font-weight:600;
-  font-size:13px;
-  box-shadow:0 4px 10px rgba(52,83,72,.12);
-  transition:opacity .2s,transform .2s;
-}
-
-.btn:active{transform:scale(.98)}
-.btn.gold{
-  background:linear-gradient(135deg,#d5bd91,#b99a68);
-  color:#fff;
-}
+.page.active{display:block}
+.section-title{font-size:18px;color:var(--green);font-weight:bold;margin:6px 0 4px}
+.section-sub{font-size:12px;color:var(--muted);margin:0 0 16px}
+.member-card{background:linear-gradient(135deg,#174638,#0b2d25);color:white;border:1px solid #b99a61;border-radius:20px;padding:20px;margin-top:-2px;box-shadow:0 10px 24px #153c3022}
+.card-head{display:flex;justify-content:space-between}
+.card-label{font-size:10px;letter-spacing:2px;color:#e4d0a5}
+.tier{border:1px solid var(--gold);border-radius:20px;padding:5px 11px;font-size:10px;color:#f3dfb4}
+.member-name{font-size:23px;font-weight:bold;margin:22px 0 3px}
+.member-phone{font-size:12px;color:#d3ddd6}
+.points-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px}
+.points-number{font-size:38px;color:#f0d7a3;font-weight:bold}
+.points-caption{font-size:11px;color:#e0e6df;margin-top:5px}
+.card-foot{border-top:1px solid #ffffff2b;margin-top:18px;padding-top:13px}
+.progress-line{height:6px;background:#ffffff35;border-radius:8px;overflow:hidden;margin:9px 0 6px}
+.progress-fill{height:100%;width:0;background:#ead7ad}
+.progress-text{display:flex;justify-content:space-between;font-size:10px;color:#e0e6df}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.quick{border:1px solid var(--line);border-radius:15px;background:white;padding:15px 7px;text-align:center;color:var(--green);min-height:84px}
+.quick .ico{font-size:22px;display:block;margin-bottom:7px}
+.quick span:last-child{font-size:11px}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+.panel-title{font-weight:bold;color:var(--green);font-size:14px;margin-bottom:10px}
+.row-between{display:flex;justify-content:space-between;align-items:center}
+.btn{border:0;border-radius:12px;background:var(--green);color:white;padding:12px 16px;font-weight:bold}
+.btn.gold{background:var(--gold);color:#2d2a20}
 .btn.full{width:100%}
-.btn:disabled{
-  opacity:.4;
-  cursor:not-allowed;
-  box-shadow:none;
-}
-
-.back{
-  border:0;
-  background:transparent;
-  color:#8b7958;
-  padding:5px 0 15px;
-  font-size:12px;
-  font-weight:600;
-}
-
-.item{
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  padding:14px 0;
-  border-bottom:1px solid #f0ece4;
-}
-
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.back{border:0;background:transparent;color:var(--green);padding:5px 0 13px;font-size:13px}
+.item{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #eee9df}
 .item:last-child{border-bottom:0}
-
-.item-title{
-  font-size:13px;
-  font-weight:600;
-  color:#46564b;
-}
-
-.item-meta{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-.item-points{
-  font-weight:700;
-  font-size:13px;
-  white-space:nowrap;
-}
-
-.plus{color:#58866b}
-.minus{color:#b4776d}
-
-.empty{
-  text-align:center;
-  color:var(--muted);
-  font-size:12px;
-  padding:27px 10px;
-  line-height:1.7;
-}
-
-.field{margin:14px 0}
-
-.field label{
-  display:block;
-  font-size:12px;
-  color:#69766c;
-  margin-bottom:7px;
-  font-weight:600;
-}
-
-.field input{
-  width:100%;
-  padding:13px 14px;
-  border:1px solid #e8e1d6;
-  border-radius:12px;
-  background:#fffefa;
-  color:var(--ink);
-  outline:none;
-  font-size:13px;
-  transition:border .2s,box-shadow .2s;
-}
-
-.field input:focus{
-  border-color:#b99a68;
-  box-shadow:0 0 0 3px #b99a681c;
-}
-
-.field input[readonly]{
-  background:#f7f4ed;
-  color:#667168;
-}
-
-.notice{
-  font-size:11px;
-  color:var(--muted);
-  line-height:1.8;
-}
-
-.reward{
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:17px;
-  margin:12px 0;
-  background:var(--white);
-  box-shadow:0 4px 14px rgba(80,67,46,.035);
-}
-
-.reward h3{
-  font-size:14px;
-  margin:0 0 8px;
-  color:var(--green);
-}
-
-.reward .cost{
-  font-size:12px;
-  color:#a48759;
-  margin-bottom:14px;
-}
-
-.coupon-box{
-  border:1px solid #e7dcc8;
-  background:linear-gradient(145deg,#fffefa,#f8f3e9);
-  border-radius:17px;
-  padding:17px;
-  margin:12px 0;
-  box-shadow:0 4px 14px rgba(80,67,46,.035);
-  position:relative;
-  overflow:hidden;
-}
-
-.coupon-tag{
-  font-size:10px;
-  letter-spacing:1.5px;
-  color:#a48a60;
-}
-
-.coupon-box h3{
-  margin:9px 0;
-  color:var(--green);
-  font-size:16px;
-}
-
-.coupon-discount{
-  font-size:24px;
-  font-weight:700;
-  color:#a88958;
-  margin:12px 0;
-}
-
-.coupon-status{
-  font-size:12px;
-  font-weight:700;
-  margin-top:13px;
-}
-
-.coupon-nav-btn{
-  border:1px solid #d6c29e;
-  background:#fbf7ee;
-  color:#8d744c;
-  border-radius:12px;
-  padding:12px 14px;
-  font-size:12px;
-  font-weight:700;
-}
-
-.privilege{
-  display:flex;
-  gap:13px;
-  padding:15px 0;
-  border-bottom:1px solid #f0ece4;
-}
-
+.item-title{font-size:13px;font-weight:bold;color:#34453c}
+.item-meta{font-size:11px;color:var(--muted);margin-top:5px}
+.item-points{font-weight:bold;font-size:13px;white-space:nowrap}
+.plus{color:#34835c}.minus{color:#a84e45}
+.empty{text-align:center;color:var(--muted);font-size:13px;padding:24px 10px}
+.field{margin:12px 0}
+.field label{display:block;font-size:12px;color:#5c6a62;margin-bottom:6px}
+.field input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:white}
+.notice{font-size:11px;color:var(--muted);line-height:1.6}
+.reward{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:white}
+.reward h3{font-size:14px;margin:0 0 6px;color:var(--green)}
+.reward .cost{font-size:12px;color:#9a7842;margin-bottom:12px}
+.coupon-box{border:1px dashed var(--gold);background:#fffdf7;border-radius:14px;padding:16px;margin:10px 0}
+.coupon-tag{font-size:10px;letter-spacing:1px;color:#9a7842}
+.coupon-box h3{margin:7px 0;color:var(--green);font-size:16px}
+.coupon-discount{font-size:22px;font-weight:bold;color:#9a7842;margin:10px 0}
+.coupon-status{font-size:12px;font-weight:bold;margin-top:12px}
+.coupon-nav-btn{border:1px solid var(--gold);background:#fffdf7;color:#8b6c38;border-radius:12px;padding:11px 14px;font-size:12px;font-weight:bold}
+.privilege{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #eee9df}
 .privilege:last-child{border:0}
-
-.privilege-icon{font-size:22px}
-
-.privilege-name{
-  font-size:14px;
-  font-weight:700;
-  color:var(--green);
-}
-
-.privilege-detail{
-  font-size:12px;
-  color:var(--muted);
-  line-height:1.7;
-  margin-top:5px;
-}
-
-.privilege-condition{
-  font-size:11px;
-  color:#a48759;
-  line-height:1.7;
-  margin-top:6px;
-}
-
-.visit-card{
-  background:linear-gradient(145deg,#526f60,#344f43 65%,#263e35);
-  color:white;
-  border:1px solid #c5aa79;
-  border-radius:21px;
-  padding:21px;
-  margin:13px 0;
-  box-shadow:0 10px 25px rgba(48,69,56,.14);
-}
-
-.visit-label{
-  font-size:10px;
-  letter-spacing:2px;
-  color:#ead8b8;
-}
-
-.visit-number{
-  font-size:56px;
-  font-weight:700;
-  color:#f0dcb5;
-  text-align:center;
-  margin:13px 0 0;
-}
-
-.visit-caption{
-  text-align:center;
-  font-size:12px;
-  color:#e0e6df;
-}
-
-.visit-progress{
-  height:8px;
-  background:#ffffff35;
-  border-radius:10px;
-  overflow:hidden;
-  margin:15px 0 9px;
-}
-
-.visit-progress-fill{
-  height:100%;
-  width:0;
-  background:linear-gradient(90deg,#d5b981,#f1dfba);
-  border-radius:10px;
-  transition:width .3s;
-}
-
-.visit-reward{
-  background:var(--white);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:17px;
-  margin:12px 0;
-  box-shadow:0 4px 14px rgba(80,67,46,.035);
-}
-
-.visit-reward h3{
-  margin:0 0 7px;
-  font-size:15px;
-  color:var(--green);
-}
-
-.visit-reward .visit-cost{
-  font-size:12px;
-  color:#a48759;
-  margin:8px 0 12px;
-}
-
-.visit-status{
-  display:inline-block;
-  border-radius:30px;
-  padding:6px 11px;
-  font-size:11px;
-  background:#f2eee5;
-  color:#85724f;
-  margin:6px 0 12px;
-}
-
-.visit-status.ready{
-  background:#eaf1e9;
-  color:#4c7558;
-}
-
-.visit-history-row{
-  padding:13px 0;
-  border-bottom:1px solid #f0ece4;
-}
-
+.privilege-icon{font-size:23px}
+.privilege-name{font-size:14px;font-weight:bold;color:var(--green)}
+.privilege-detail{font-size:12px;color:var(--muted);line-height:1.6;margin-top:5px}
+.privilege-condition{font-size:11px;color:#9a7842;line-height:1.6;margin-top:6px}
+.visit-card{background:linear-gradient(135deg,#174638,#0b2d25);color:white;border:1px solid var(--gold);border-radius:20px;padding:20px;margin:12px 0;box-shadow:0 10px 24px #153c3022}
+.visit-label{font-size:11px;letter-spacing:1.5px;color:#ead7ad}
+.visit-number{font-size:54px;font-weight:bold;color:#f0d7a3;text-align:center;margin:12px 0 0}
+.visit-caption{text-align:center;font-size:12px;color:#e0e6df}
+.visit-progress{height:9px;background:#ffffff35;border-radius:10px;overflow:hidden;margin:14px 0 8px}
+.visit-progress-fill{height:100%;width:0;background:#ead7ad;border-radius:10px;transition:width .3s}
+.visit-reward{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0}
+.visit-reward h3{margin:0 0 6px;font-size:15px;color:var(--green)}
+.visit-reward .visit-cost{font-size:12px;color:#9a7842;margin:6px 0 12px}
+.visit-status{display:inline-block;border-radius:20px;padding:5px 10px;font-size:11px;background:#f2eee4;color:#78643d;margin:5px 0 10px}
+.visit-status.ready{background:#e8f3eb;color:#286044}
+.visit-history-row{padding:12px 0;border-bottom:1px solid #eee9df}
 .visit-history-row:last-child{border-bottom:0}
-
-.visit-history-title{
-  font-size:13px;
-  font-weight:600;
-  color:#46564b;
-}
-
-.visit-history-meta{
-  font-size:11px;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-.visit-history-count{
-  font-size:12px;
-  font-weight:700;
-  margin-top:6px;
-}
-
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:50%;
-  transform:translateX(-50%);
-  width:min(520px,100%);
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  background:rgba(255,254,250,.97);
-  backdrop-filter:blur(14px);
-  border-top:1px solid #e9e2d7;
-  padding:9px 5px calc(9px + env(safe-area-inset-bottom));
-  z-index:10;
-  box-shadow:0 -5px 20px rgba(70,60,45,.045);
-}
-
-.nav-btn{
-  border:0;
-  background:transparent;
-  color:#99988e;
-  font-size:10px;
-  padding:5px 2px;
-  transition:color .2s;
-}
-
-.nav-btn b{
-  display:block;
-  font-size:20px;
-  margin-bottom:4px;
-  font-weight:400;
-}
-
-.nav-btn.active{
-  color:var(--green);
-  font-weight:700;
-}
-
-.nav-btn.active b{color:#a88958}
-
-.loader{
-  text-align:center;
-  padding:35px 15px;
-  color:var(--muted);
-  font-size:12px;
-}
-
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:100px;
-  transform:translateX(-50%);
-  background:#3c5749;
-  color:#fffdf7;
-  padding:12px 18px;
-  border-radius:13px;
-  font-size:12px;
-  display:none;
-  z-index:30;
-  max-width:90%;
-  text-align:center;
-  box-shadow:0 6px 20px rgba(0,0,0,.13);
-}
-
+.visit-history-title{font-size:13px;font-weight:bold;color:#34453c}
+.visit-history-meta{font-size:11px;color:var(--muted);margin-top:5px}
+.visit-history-count{font-size:12px;font-weight:bold;margin-top:5px}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:white;border-top:1px solid var(--line);padding:8px 5px calc(8px + env(safe-area-inset-bottom));z-index:10}
+.nav-btn{border:0;background:transparent;color:#89928c;font-size:10px;padding:5px 2px}
+.nav-btn b{display:block;font-size:19px;margin-bottom:3px}
+.nav-btn.active{color:var(--green);font-weight:bold}
+.loader{text-align:center;padding:34px 15px;color:var(--muted);font-size:13px}
+.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#243c32;color:white;padding:11px 16px;border-radius:12px;font-size:12px;display:none;z-index:30;max-width:90%;text-align:center}
 .hidden{display:none!important}
-
-.member-disabled-banner{
-  background:#fff3ef;
-  border:1px solid #e7c5bb;
-  color:#98564b;
-  border-radius:15px;
-  padding:16px;
-  margin:0 0 16px;
-  line-height:1.7;
-}
-
-.member-disabled-banner strong{
-  display:block;
-  font-size:15px;
-  margin-bottom:6px;
-}
-
-.member-disabled-banner p{
-  font-size:12px;
-  margin:0;
-}
-
-@media(max-width:380px){
-  .content{padding:17px 13px}
-  .member-card{padding:19px}
-  .member-name{font-size:21px}
-  .points-number{font-size:38px}
-  .quick-grid{gap:8px}
-  .quick{min-height:85px;padding:13px 4px}
-  .quick span:last-child{font-size:10px}
-}
-
-@media(prefers-reduced-motion:reduce){
-  *,*:before,*:after{
-    scroll-behavior:auto!important;
-    animation:none!important;
-    transition:none!important;
-  }
-}
-
-.welcome-card{
-  background:linear-gradient(135deg,#f1e8d8,#fffdf8);
-  border:1px solid #dfcfb2;
-  border-radius:20px;
-  padding:25px 20px;
-  margin-bottom:18px;
-  text-align:center;
-  box-shadow:0 5px 18px rgba(80,67,46,.05);
-}
-
-.welcome-label{
-  color:#a88958;
-  font-size:10px;
-  letter-spacing:3px;
-  font-weight:700;
-  margin-bottom:12px;
-}
-
-.welcome-title{
-  color:#345348;
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:8px;
-}
-
-.welcome-subtitle{
-  color:#898b82;
-  font-size:12px;
-  line-height:1.8;
-}
-
+.member-disabled-banner{background:#fff0ed;border:1px solid #e7a49b;color:#9c352b;border-radius:15px;padding:16px;margin:0 0 16px;line-height:1.7}
+.member-disabled-banner strong{display:block;font-size:16px;margin-bottom:6px}
+.member-disabled-banner p{font-size:12px;margin:0}
 </style>
 </head>
 <body>
@@ -765,17 +119,6 @@ button{cursor:pointer;-webkit-tap-highlight-color:transparent}
 <section class="page active" id="homePage">
   <div id="loading" class="loader">กำลังเริ่มต้นระบบสมาชิก…</div>
   <div id="homeContent" class="hidden">
-
-  
-<div class="welcome-card">
-  <div class="welcome-label">WELCOME TO NICHA</div>
-  <div class="welcome-title">ผ่อนคลาย...ให้รางวัลตัวเอง</div>
-  <div class="welcome-subtitle">
-    ดูแลสุขภาพกายและใจ ให้สดใสไปกับณิชานวดเพื่อสุขภาพ
-  </div>
-</div>
-
-
     <div id="memberDisabledBanner" class="member-disabled-banner hidden">
       <strong>⚠️ บัญชีสมาชิกถูกปิดใช้งาน</strong>
       <p>ขณะนี้บัญชีสมาชิกของคุณถูกระงับการใช้งานชั่วคราว ไม่สามารถสะสมคะแนน แลกรางวัล ใช้คูปอง หรือรับสิทธิพิเศษสมาชิกได้ กรุณาติดต่อพนักงานที่ร้านเพื่อสอบถามข้อมูลเพิ่มเติมค่ะ</p>
@@ -1218,7 +561,7 @@ function renderVisitHistory(list){
     const meta=document.createElement('div');meta.className='visit-history-meta';meta.textContent=formatDateTime(item.date);
     const count=document.createElement('div');count.className='visit-history-count';
     const added=Number(item.visitsAdded||0),used=Number(item.visitsUsed||0);
-    if(added>0){count.style.color='#55815c';count.textContent='+'+money(added)+' ครั้ง'}
+    if(added>0){count.style.color='#34835c';count.textContent='+'+money(added)+' ครั้ง'}
     else if(used>0){count.style.color='#a84e45';count.textContent='ใช้แลก '+money(used)+' ครั้ง'}
     else{count.textContent='รายการสะสมครั้ง'}
     row.append(title,meta,count);
