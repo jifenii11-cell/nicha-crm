@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -7,201 +6,611 @@
 <meta name="theme-color" content="#123d32">
 <title>NICHA CRM | สมาชิก</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
 <style>
 :root{
-  --green:#123d32;--green2:#1d5143;--gold:#c9a96e;
-  --cream:#f7f3e9;--ink:#26352f;--muted:#78827b;--line:#e8e1d3;
+  --green:#123d32;
+  --green2:#1d5143;
+  --gold:#c9a96e;
+  --cream:#f7f3e9;
+  --ink:#26352f;
+  --muted:#78827b;
+  --line:#e8e1d3;
 }
+
 *{box-sizing:border-box}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,"Noto Sans Thai",sans-serif}
+
+body{
+  margin:0;
+  background:var(--cream);
+  color:var(--ink);
+  font-family:Arial,"Noto Sans Thai",sans-serif
+}
+
 button,input{font:inherit}
 button{cursor:pointer}
-.app{max-width:520px;margin:auto;min-height:100vh;padding-bottom:85px;background:#fbfaf6}
-.top{background:linear-gradient(135deg,#0d3028,#1d5143);color:white;padding:22px 20px 25px;border-radius:0 0 26px 26px}
+
+.app{
+  max-width:520px;
+  margin:auto;
+  min-height:100vh;
+  padding-bottom:85px;
+  background:#fbfaf6
+}
+
+.top{
+  background:linear-gradient(135deg,#0d3028,#1d5143);
+  color:white;
+  padding:22px 20px 25px;
+  border-radius:0 0 26px 26px
+}
+
 .brand{display:flex;justify-content:space-between}
 .brand-name{font-size:13px;letter-spacing:2px;color:#ead7ad}
 .brand-sub{font-size:11px;color:#d9dfd9;margin-top:4px}
 .status{font-size:11px;color:#ead7ad}
+
 .content{padding:18px 16px}
 .page{display:none}
 .page.active{display:block}
-.section-title{font-size:18px;color:var(--green);font-weight:bold;margin:6px 0 4px}
-.section-sub{font-size:12px;color:var(--muted);margin:0 0 16px}
-.member-card{background:linear-gradient(135deg,#174638,#0b2d25);color:white;border:1px solid #b99a61;border-radius:20px;padding:20px;margin-top:-2px;box-shadow:0 10px 24px #153c3022}
+
+.section-title{
+  font-size:18px;
+  color:var(--green);
+  font-weight:bold;
+  margin:6px 0 4px
+}
+
+.section-sub{
+  font-size:12px;
+  color:var(--muted);
+  margin:0 0 16px
+}
+
+.member-card{
+  background:linear-gradient(135deg,#174638,#0b2d25);
+  color:white;
+  border:1px solid #b99a61;
+  border-radius:20px;
+  padding:20px;
+  margin-top:-2px;
+  box-shadow:0 10px 24px #153c3022
+}
+
 .card-head{display:flex;justify-content:space-between}
 .card-label{font-size:10px;letter-spacing:2px;color:#e4d0a5}
-.tier{border:1px solid var(--gold);border-radius:20px;padding:5px 11px;font-size:10px;color:#f3dfb4}
+
+.tier{
+  border:1px solid var(--gold);
+  border-radius:20px;
+  padding:5px 11px;
+  font-size:10px;
+  color:#f3dfb4
+}
+
 .member-name{font-size:23px;font-weight:bold;margin:22px 0 3px}
 .member-phone{font-size:12px;color:#d3ddd6}
-.points-row{display:flex;justify-content:space-between;align-items:flex-end;margin-top:20px;gap:12px}
+
+.points-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-top:20px;
+  gap:12px
+}
+
 .points-number{font-size:38px;color:#f0d7a3;font-weight:bold}
 .points-caption{font-size:11px;color:#e0e6df;margin-top:5px}
-.visit-mini{text-align:right;min-width:85px;padding-left:12px;border-left:1px solid #ffffff35}
+
+.visit-mini{
+  text-align:right;
+  min-width:85px;
+  padding-left:12px;
+  border-left:1px solid #ffffff35
+}
+
 .visit-mini-label{font-size:10px;letter-spacing:1.2px;color:#ead7ad}
 .visit-mini-number{font-size:25px;font-weight:bold;color:#f0d7a3;margin-top:5px;white-space:nowrap}
 .visit-mini-caption{font-size:10px;color:#e0e6df;margin-top:3px}
+
 .card-foot{border-top:1px solid #ffffff2b;margin-top:18px;padding-top:13px}
 .progress-line{height:6px;background:#ffffff35;border-radius:8px;overflow:hidden;margin:9px 0 6px}
 .progress-fill{height:100%;width:0;background:#ead7ad;transition:width .3s}
-.progress-text{display:flex;justify-content:space-between;font-size:10px;color:#e0e6df;gap:8px}
-.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
-.quick{border:1px solid var(--line);border-radius:15px;background:white;padding:15px 7px;text-align:center;color:var(--green);min-height:84px}
-.quick .ico{font-size:22px;display:block;margin-bottom:7px}
-.quick span:last-child{font-size:11px}
-.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+
+.progress-text{
+  display:flex;
+  justify-content:space-between;
+  font-size:10px;
+  color:#e0e6df;
+  gap:8px
+}
+
+/* เมนูหลัก 6 ปุ่ม สีเขียวแถบทอง */
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:13px;
+  margin:20px 0
+}
+
+.quick{
+  position:relative;
+  overflow:hidden;
+  min-height:132px;
+  border:1px solid #c9a96e;
+  border-radius:17px;
+  background:linear-gradient(145deg,#1d5143,#0d3028);
+  color:#fff;
+  padding:15px 10px 14px;
+  text-align:center;
+  box-shadow:0 5px 13px #123d321c;
+  transition:transform .2s,box-shadow .2s
+}
+
+.quick::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:4px;
+  background:linear-gradient(90deg,#a98243,#f2dfb5,#a98243)
+}
+
+.quick::after{
+  content:"";
+  position:absolute;
+  width:90px;
+  height:90px;
+  right:-38px;
+  bottom:-43px;
+  border:1px solid #d8bd8060;
+  border-radius:50%;
+  pointer-events:none
+}
+
+.quick:active{
+  transform:scale(.97);
+  box-shadow:0 2px 7px #123d3230
+}
+
+.quick .ico{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:59px;
+  height:59px;
+  margin:3px auto 10px;
+  border:1px solid #d7b978;
+  border-radius:50%;
+  background:linear-gradient(145deg,#f5e6c5,#c9a96e);
+  font-size:29px;
+  box-shadow:0 3px 10px #00000025
+}
+
+.quick span:last-child{
+  display:block;
+  position:relative;
+  z-index:1;
+  font-size:12px;
+  font-weight:bold;
+  color:#f5e7c7
+}
+
+.panel{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:16px;
+  margin:12px 0
+}
+
 .panel-title{font-weight:bold;color:var(--green);font-size:14px;margin-bottom:10px}
+
 .row-between{display:flex;justify-content:space-between;align-items:center}
-.btn{border:0;border-radius:12px;background:var(--green);color:white;padding:12px 16px;font-weight:bold}
+
+.btn{
+  border:0;
+  border-radius:12px;
+  background:var(--green);
+  color:white;
+  padding:12px 16px;
+  font-weight:bold
+}
+
 .btn.gold{background:var(--gold);color:#2d2a20}
 .btn.full{width:100%}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.back{border:0;background:transparent;color:var(--green);padding:5px 0 13px;font-size:13px}
-.item{display:flex;justify-content:space-between;gap:12px;padding:13px 0;border-bottom:1px solid #eee9df}
+
+.back{
+  border:0;
+  background:transparent;
+  color:var(--green);
+  padding:5px 0 13px;
+  font-size:13px
+}
+
+.item{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid #eee9df
+}
+
 .item:last-child{border-bottom:0}
 .item-title{font-size:13px;font-weight:bold;color:#34453c}
 .item-meta{font-size:11px;color:var(--muted);margin-top:5px}
 .item-points{font-weight:bold;font-size:13px;white-space:nowrap}
-.plus{color:#34835c}.minus{color:#a84e45}
+.plus{color:#34835c}
+.minus{color:#a84e45}
+
 .empty{text-align:center;color:var(--muted);font-size:13px;padding:24px 10px}
+
 .field{margin:12px 0}
 .field label{display:block;font-size:12px;color:#5c6a62;margin-bottom:6px}
-.field input{width:100%;padding:13px;border:1px solid var(--line);border-radius:11px;background:white}
+
+.field input{
+  width:100%;
+  padding:13px;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:white
+}
+
 .notice{font-size:11px;color:var(--muted);line-height:1.6}
-.reward{border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;background:white}
+
+.reward{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  margin:10px 0;
+  background:white
+}
+
 .reward h3{font-size:14px;margin:0 0 6px;color:var(--green)}
 .reward .cost{font-size:12px;color:#9a7842;margin-bottom:12px}
-.coupon-box{border:1px dashed var(--gold);background:#fffdf7;border-radius:14px;padding:16px;margin:10px 0}
+
+.coupon-box{
+  border:1px dashed var(--gold);
+  background:#fffdf7;
+  border-radius:14px;
+  padding:16px;
+  margin:10px 0
+}
+
 .coupon-tag{font-size:10px;letter-spacing:1px;color:#9a7842}
 .coupon-box h3{margin:7px 0;color:var(--green);font-size:16px}
 .coupon-discount{font-size:22px;font-weight:bold;color:#9a7842;margin:10px 0}
 .coupon-status{font-size:12px;font-weight:bold;margin-top:12px}
-.coupon-nav-btn{border:1px solid var(--gold);background:#fffdf7;color:#8b6c38;border-radius:12px;padding:11px 14px;font-size:12px;font-weight:bold}
-.privilege{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid #eee9df}
+
+.coupon-nav-btn{
+  border:1px solid var(--gold);
+  background:#fffdf7;
+  color:#8b6c38;
+  border-radius:12px;
+  padding:11px 14px;
+  font-size:12px;
+  font-weight:bold
+}
+
+.privilege{
+  display:flex;
+  gap:12px;
+  padding:14px 0;
+  border-bottom:1px solid #eee9df
+}
+
 .privilege:last-child{border:0}
 .privilege-icon{font-size:23px}
 .privilege-name{font-size:14px;font-weight:bold;color:var(--green)}
 .privilege-detail{font-size:12px;color:var(--muted);line-height:1.6;margin-top:5px}
 .privilege-condition{font-size:11px;color:#9a7842;line-height:1.6;margin-top:6px}
-.visit-card{background:linear-gradient(135deg,#174638,#0b2d25);color:white;border:1px solid var(--gold);border-radius:20px;padding:20px;margin:12px 0;box-shadow:0 10px 24px #153c3022}
+
+.visit-card{
+  background:linear-gradient(135deg,#174638,#0b2d25);
+  color:white;
+  border:1px solid var(--gold);
+  border-radius:20px;
+  padding:20px;
+  margin:12px 0;
+  box-shadow:0 10px 24px #153c3022
+}
+
 .visit-label{font-size:11px;letter-spacing:1.5px;color:#ead7ad}
 .visit-number{font-size:54px;font-weight:bold;color:#f0d7a3;text-align:center;margin:12px 0 0}
 .visit-caption{text-align:center;font-size:12px;color:#e0e6df}
 .visit-progress{height:9px;background:#ffffff35;border-radius:10px;overflow:hidden;margin:14px 0 8px}
 .visit-progress-fill{height:100%;width:0;background:#ead7ad;border-radius:10px;transition:width .3s}
-.visit-reward{background:white;border:1px solid var(--line);border-radius:15px;padding:15px;margin:10px 0}
+
+.visit-reward{
+  background:white;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:15px;
+  margin:10px 0
+}
+
 .visit-reward h3{margin:0 0 6px;font-size:15px;color:var(--green)}
 .visit-reward .visit-cost{font-size:12px;color:#9a7842;margin:6px 0 12px}
-.visit-status{display:inline-block;border-radius:20px;padding:5px 10px;font-size:11px;background:#f2eee4;color:#78643d;margin:5px 0 10px}
+
+.visit-status{
+  display:inline-block;
+  border-radius:20px;
+  padding:5px 10px;
+  font-size:11px;
+  background:#f2eee4;
+  color:#78643d;
+  margin:5px 0 10px
+}
+
 .visit-status.ready{background:#e8f3eb;color:#286044}
 .visit-history-row{padding:12px 0;border-bottom:1px solid #eee9df}
 .visit-history-row:last-child{border-bottom:0}
 .visit-history-title{font-size:13px;font-weight:bold;color:#34453c}
 .visit-history-meta{font-size:11px;color:var(--muted);margin-top:5px}
 .visit-history-count{font-size:12px;font-weight:bold;margin-top:5px}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(520px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:white;border-top:1px solid var(--line);padding:8px 5px calc(8px + env(safe-area-inset-bottom));z-index:10}
-.nav-btn{border:0;background:transparent;color:#89928c;font-size:10px;padding:5px 2px}
+
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:min(520px,100%);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  background:white;
+  border-top:1px solid var(--line);
+  padding:8px 5px calc(8px + env(safe-area-inset-bottom));
+  z-index:10
+}
+
+.nav-btn{
+  border:0;
+  background:transparent;
+  color:#89928c;
+  font-size:10px;
+  padding:5px 2px
+}
+
 .nav-btn b{display:block;font-size:19px;margin-bottom:3px}
 .nav-btn.active{color:var(--green);font-weight:bold}
+
 .loader{text-align:center;padding:34px 15px;color:var(--muted);font-size:13px}
-.toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);background:#243c32;color:white;padding:11px 16px;border-radius:12px;font-size:12px;display:none;z-index:30;max-width:90%;text-align:center}
+
+.toast{
+  position:fixed;
+  left:50%;
+  bottom:92px;
+  transform:translateX(-50%);
+  background:#243c32;
+  color:white;
+  padding:11px 16px;
+  border-radius:12px;
+  font-size:12px;
+  display:none;
+  z-index:30;
+  max-width:90%;
+  text-align:center
+}
+
 .hidden{display:none!important}
-.member-disabled-banner{background:#fff0ed;border:1px solid #e7a49b;color:#9c352b;border-radius:15px;padding:16px;margin:0 0 16px;line-height:1.7}
+
+.member-disabled-banner{
+  background:#fff0ed;
+  border:1px solid #e7a49b;
+  color:#9c352b;
+  border-radius:15px;
+  padding:16px;
+  margin:0 0 16px;
+  line-height:1.7
+}
+
 .member-disabled-banner strong{display:block;font-size:16px;margin-bottom:6px}
 .member-disabled-banner p{font-size:12px;margin:0}
+
+@media(min-width:400px){
+  .quick{min-height:140px}
+}
 </style>
 </head>
+
 <body>
 <div class="app">
+
 <header class="top">
   <div class="brand">
-    <div><div class="brand-name">NICHA MEMBER</div><div class="brand-sub">ณิชานวดเพื่อสุขภาพ · Loyalty Club</div></div>
+    <div>
+      <div class="brand-name">NICHA MEMBER</div>
+      <div class="brand-sub">ณิชานวดเพื่อสุขภาพ · Loyalty Club</div>
+    </div>
     <div class="status" id="connectionStatus">กำลังเชื่อมต่อ…</div>
   </div>
 </header>
+
 <main class="content">
 
 <section class="page active" id="homePage">
   <div id="loading" class="loader">กำลังเริ่มต้นระบบสมาชิก…</div>
+
   <div id="homeContent" class="hidden">
+
     <div id="memberDisabledBanner" class="member-disabled-banner hidden">
       <strong>⚠️ บัญชีสมาชิกถูกปิดใช้งาน</strong>
       <p>ขณะนี้บัญชีสมาชิกของคุณถูกระงับการใช้งานชั่วคราว ไม่สามารถสะสมคะแนน แลกรางวัล ใช้คูปอง หรือรับสิทธิพิเศษสมาชิกได้ กรุณาติดต่อพนักงานที่ร้านเพื่อสอบถามข้อมูลเพิ่มเติมค่ะ</p>
     </div>
+
     <div class="member-card">
-      <div class="card-head"><div class="card-label">NICHA MEMBER CARD</div><div class="tier" id="tierLabel">รอตรวจสอบ</div></div>
+      <div class="card-head">
+        <div class="card-label">NICHA MEMBER CARD</div>
+        <div class="tier" id="tierLabel">รอตรวจสอบ</div>
+      </div>
+
       <div class="member-name" id="memberName">สมาชิก NICHA</div>
       <div class="member-phone" id="memberPhone">—</div>
+
       <div class="points-row">
         <div>
           <div class="card-label">YOUR POINTS</div>
           <div class="points-number" id="pointsValue">0</div>
           <div class="points-caption">คะแนนสะสมของคุณ</div>
         </div>
+
         <div class="visit-mini">
           <div class="visit-mini-label">VISIT COUNT</div>
           <div class="visit-mini-number" id="memberVisitsValue">—/50</div>
           <div class="visit-mini-caption">ครั้งสะสม</div>
         </div>
       </div>
+
       <div class="card-foot">
-        <div class="progress-text"><span id="tierProgressText">ระดับสมาชิก</span><span id="nextTierText">—</span></div>
-        <div class="progress-line"><div class="progress-fill" id="tierProgress"></div></div>
-        <div class="progress-text"><span id="spendText">ยอดใช้จ่ายสะสม —</span><span id="needText"></span></div>
+        <div class="progress-text">
+          <span id="tierProgressText">ระดับสมาชิก</span>
+          <span id="nextTierText">—</span>
+        </div>
+
+        <div class="progress-line">
+          <div class="progress-fill" id="tierProgress"></div>
+        </div>
+
+        <div class="progress-text">
+          <span id="spendText">ยอดใช้จ่ายสะสม —</span>
+          <span id="needText"></span>
+        </div>
       </div>
     </div>
+
+    <!-- เมนูหลัก 6 ปุ่ม -->
     <div class="quick-grid">
-      <button class="quick" onclick="showPage('rewardsPage')"><span class="ico">🎁</span><span>แลกของรางวัล</span></button>
-      <button class="quick" onclick="showPage('visitPage')"><span class="ico">🎫</span><span>สะสมครบ 10 ฟรี 1</span></button>
-      <button class="quick" onclick="showPage('historyPage')"><span class="ico">🧾</span><span>ประวัติแต้ม</span></button>
-      <button class="quick" onclick="showPage('couponsPage')"><span class="ico">🎟️</span><span>คูปองของฉัน</span></button>
-      <button class="quick" onclick="showPage('privilegesPage')"><span class="ico">✨</span><span>สิทธิพิเศษ</span></button>
-      <button class="quick" onclick="showPage('memberPage')"><span class="ico">👤</span><span>ข้อมูลสมาชิก</span></button>
+
+      <button class="quick" onclick="showPage('rewardsPage')">
+        <span class="ico">🎁</span>
+        <span>แลกของรางวัล</span>
+      </button>
+
+      <button class="quick" onclick="showPage('visitPage')">
+        <span class="ico">🌸</span>
+        <span>สะสมครบ 10 ฟรี 1</span>
+      </button>
+
+      <button class="quick" onclick="showPage('historyPage')">
+        <span class="ico">📜</span>
+        <span>ประวัติแต้มสะสม</span>
+      </button>
+
+      <button class="quick" onclick="showPage('couponsPage')">
+        <span class="ico">🎟️</span>
+        <span>คูปองของฉัน</span>
+      </button>
+
+      <button class="quick" onclick="showPage('privilegesPage')">
+        <span class="ico">👑</span>
+        <span>สิทธิพิเศษสมาชิก</span>
+      </button>
+
+      <button class="quick" onclick="showPage('memberPage')">
+        <span class="ico">💎</span>
+        <span>ข้อมูลสมาชิก</span>
+      </button>
+
     </div>
+
     <div class="panel">
-      <div class="row-between"><div class="panel-title" style="margin:0">รายการล่าสุด</div><button class="back" style="padding:0" onclick="showPage('historyPage')">ดูทั้งหมด ›</button></div>
+      <div class="row-between">
+        <div class="panel-title" style="margin:0">รายการล่าสุด</div>
+        <button class="back" style="padding:0" onclick="showPage('historyPage')">ดูทั้งหมด ›</button>
+      </div>
       <div id="recentList" class="empty">ยังไม่มีรายการ</div>
     </div>
+
   </div>
+
   <div id="registerBox" class="panel hidden">
     <div class="panel-title">สมัครสมาชิก NICHA</div>
     <p class="notice">กรอกข้อมูลเพื่อเริ่มสะสมคะแนนกับณิชานวดเพื่อสุขภาพ</p>
-    <div class="field"><label>ชื่อ-นามสกุล</label><input id="registerName" maxlength="80" placeholder="กรอกชื่อของคุณ"></div>
-    <div class="field"><label>เบอร์โทรศัพท์</label><input id="registerPhone" inputmode="tel" maxlength="20" placeholder="กรอกเบอร์โทรศัพท์"></div>
+
+    <div class="field">
+      <label>ชื่อ-นามสกุล</label>
+      <input id="registerName" maxlength="80" placeholder="กรอกชื่อของคุณ">
+    </div>
+
+    <div class="field">
+      <label>เบอร์โทรศัพท์</label>
+      <input id="registerPhone" inputmode="tel" maxlength="20" placeholder="กรอกเบอร์โทรศัพท์">
+    </div>
+
     <button class="btn full" onclick="registerMember()">ยืนยันสมัครสมาชิก</button>
   </div>
 </section>
 
 <section class="page" id="rewardsPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
-  <div class="section-title">แลกของรางวัล</div><p class="section-sub">ใช้คะแนนสะสมแลกรับสิทธิพิเศษจาก NICHA</p>
+  <div class="section-title">แลกของรางวัล</div>
+  <p class="section-sub">ใช้คะแนนสะสมแลกรับสิทธิพิเศษจาก NICHA</p>
   <div id="rewardsList"><div class="loader">กำลังโหลดของรางวัล…</div></div>
 </section>
 
 <section class="page" id="visitPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
-  <div class="section-title">สะสมครั้ง รับรางวัล</div><p class="section-sub">ใช้บริการครบ 10 ครั้ง รับฟรี 1 ครั้ง จากณิชานวดเพื่อสุขภาพ</p>
+  <div class="section-title">สะสมครั้ง รับรางวัล</div>
+  <p class="section-sub">ใช้บริการครบ 10 ครั้ง รับฟรี 1 ครั้ง จากณิชานวดเพื่อสุขภาพ</p>
+
   <div class="visit-card">
-    <div class="visit-label">NICHA VISIT REWARDS</div><div class="visit-number" id="currentVisits">0</div><div class="visit-caption">ครั้งสะสมของคุณ</div>
-    <div class="visit-progress"><div class="visit-progress-fill" id="visitProgressFill"></div></div>
-    <div class="progress-text"><span id="visitProgressText">เริ่มสะสมครั้งแรก</span><span id="visitNextText">อีก 10 ครั้ง</span></div>
+    <div class="visit-label">NICHA VISIT REWARDS</div>
+    <div class="visit-number" id="currentVisits">0</div>
+    <div class="visit-caption">ครั้งสะสมของคุณ</div>
+
+    <div class="visit-progress">
+      <div class="visit-progress-fill" id="visitProgressFill"></div>
+    </div>
+
+    <div class="progress-text">
+      <span id="visitProgressText">เริ่มสะสมครั้งแรก</span>
+      <span id="visitNextText">อีก 10 ครั้ง</span>
+    </div>
   </div>
-  <div class="panel"><div class="panel-title">สิทธิพิเศษสะสมครั้ง</div><p class="notice">ทุกครั้งที่ใช้บริการนวดที่ร้าน นับเป็น 1 ครั้ง เมื่อสะสมครบตามจำนวนที่กำหนด สามารถแลกรางวัลได้</p><p class="notice">หมายเหตุ: เมื่อแลกรางวัลแล้ว จำนวนครั้งสะสมจะเริ่มนับใหม่จาก 0 โดยไม่มีการยกยอดครั้งที่เหลือ</p></div>
-  <div class="section-title">รางวัลที่สามารถแลกได้</div><div id="visitRewardsList"><div class="loader">กำลังโหลดรางวัลสะสมครั้ง...</div></div>
-  <div class="section-title" style="margin-top:22px">ประวัติสะสมครั้ง</div><p class="section-sub">รายการเพิ่มครั้งและแลกรางวัลของคุณ</p>
-  <div class="panel"><div id="visitHistoryList"><div class="loader">กำลังโหลดประวัติ...</div></div></div>
+
+  <div class="panel">
+    <div class="panel-title">สิทธิพิเศษสะสมครั้ง</div>
+    <p class="notice">ทุกครั้งที่ใช้บริการนวดที่ร้าน นับเป็น 1 ครั้ง เมื่อสะสมครบตามจำนวนที่กำหนด สามารถแลกรางวัลได้</p>
+    <p class="notice">หมายเหตุ: เมื่อแลกรางวัลแล้ว จำนวนครั้งสะสมจะเริ่มนับใหม่จาก 0 โดยไม่มีการยกยอดครั้งที่เหลือ</p>
+  </div>
+
+  <div class="section-title">รางวัลที่สามารถแลกได้</div>
+  <div id="visitRewardsList"><div class="loader">กำลังโหลดรางวัลสะสมครั้ง...</div></div>
+
+  <div class="section-title" style="margin-top:22px">ประวัติสะสมครั้ง</div>
+  <p class="section-sub">รายการเพิ่มครั้งและแลกรางวัลของคุณ</p>
+
+  <div class="panel">
+    <div id="visitHistoryList"><div class="loader">กำลังโหลดประวัติ...</div></div>
+  </div>
+
   <button class="btn full" onclick="loadVisitPage(true)">รีเฟรชข้อมูลสะสมครั้ง ↻</button>
 </section>
 
 <section class="page" id="historyPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
-  <div class="section-title">ประวัติแต้มสะสม</div><p class="section-sub">ตรวจสอบรายการได้รับและใช้คะแนนของคุณ</p>
-  <div class="panel"><div class="panel-title">ประวัติการสะสมคะแนน</div><div id="transactionsList"><div class="loader">กำลังโหลดประวัติ…</div></div></div>
-  <div class="panel"><div class="panel-title">ประวัติการแลกรางวัล</div><div id="redemptionsList"><div class="loader">กำลังโหลดประวัติ…</div></div></div>
+  <div class="section-title">ประวัติแต้มสะสม</div>
+  <p class="section-sub">ตรวจสอบรายการได้รับและใช้คะแนนของคุณ</p>
+
+  <div class="panel">
+    <div class="panel-title">ประวัติการสะสมคะแนน</div>
+    <div id="transactionsList"><div class="loader">กำลังโหลดประวัติ…</div></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">ประวัติการแลกรางวัล</div>
+    <div id="redemptionsList"><div class="loader">กำลังโหลดประวัติ…</div></div>
+  </div>
 </section>
 
 <section class="page" id="memberPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
-  <div class="section-title">ข้อมูลสมาชิก</div><p class="section-sub">ข้อมูลบัญชีสมาชิก NICHA ของคุณ</p>
+  <div class="section-title">ข้อมูลสมาชิก</div>
+  <p class="section-sub">ข้อมูลบัญชีสมาชิก NICHA ของคุณ</p>
+
   <div class="panel">
     <div class="field"><label>ชื่อสมาชิก</label><input id="infoName" readonly></div>
     <div class="field"><label>เบอร์โทรศัพท์</label><input id="infoPhone" readonly></div>
@@ -213,33 +622,61 @@ button{cursor:pointer}
 
 <section class="page" id="couponsPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
-  <div class="section-title">คูปองของฉัน</div><p class="section-sub">สิทธิ์ส่วนลดและคูปองพิเศษสำหรับสมาชิก NICHA</p>
-  <div class="row-between" style="margin-bottom:12px"><span class="notice">คูปองส่วนตัวของคุณ</span><button class="back" style="padding:0" onclick="loadCoupons(true)">รีเฟรชรายการ ↻</button></div>
+  <div class="section-title">คูปองของฉัน</div>
+  <p class="section-sub">สิทธิ์ส่วนลดและคูปองพิเศษสำหรับสมาชิก NICHA</p>
+
+  <div class="row-between" style="margin-bottom:12px">
+    <span class="notice">คูปองส่วนตัวของคุณ</span>
+    <button class="back" style="padding:0" onclick="loadCoupons(true)">รีเฟรชรายการ ↻</button>
+  </div>
+
   <button class="coupon-nav-btn" style="width:100%;margin-bottom:14px" onclick="showPage('usedCouponsPage')">✓ ดูคูปองที่ใช้แล้ว</button>
   <div id="couponsList"><div class="loader">กำลังโหลดคูปอง...</div></div>
 </section>
 
 <section class="page" id="usedCouponsPage">
   <button class="back" onclick="showPage('couponsPage')">‹ กลับหน้าคูปองของฉัน</button>
-  <div class="section-title">คูปองที่ใช้แล้ว</div><p class="section-sub">รายการคูปองที่พนักงานยืนยันการใช้เรียบร้อยแล้ว</p>
-  <div class="row-between" style="margin-bottom:12px"><span class="notice">ประวัติคูปองของคุณ</span><button class="back" style="padding:0" onclick="loadUsedCoupons(true)">รีเฟรชรายการ ↻</button></div>
+  <div class="section-title">คูปองที่ใช้แล้ว</div>
+  <p class="section-sub">รายการคูปองที่พนักงานยืนยันการใช้เรียบร้อยแล้ว</p>
+
+  <div class="row-between" style="margin-bottom:12px">
+    <span class="notice">ประวัติคูปองของคุณ</span>
+    <button class="back" style="padding:0" onclick="loadUsedCoupons(true)">รีเฟรชรายการ ↻</button>
+  </div>
+
   <div id="usedCouponsList"><div class="loader">กำลังโหลดคูปองที่ใช้แล้ว...</div></div>
   <button class="coupon-nav-btn" style="width:100%;margin-top:14px" onclick="showPage('memberCouponHistoryPage')">🧾 ประวัติการใช้คูปอง</button>
 </section>
 
 <section class="page" id="memberCouponHistoryPage">
   <button class="back" onclick="showPage('usedCouponsPage')">‹ กลับหน้าคูปองที่ใช้แล้ว</button>
-  <div class="section-title">ประวัติการใช้คูปอง</div><p class="section-sub">รายการคูปองที่พนักงานยืนยันการใช้เรียบร้อยแล้ว</p>
-  <div class="row-between" style="margin-bottom:12px"><span class="notice">ประวัติการใช้สิทธิ์ของคุณ</span><button class="back" style="padding:0" onclick="loadMemberCouponHistory()">รีเฟรชรายการ ↻</button></div>
+  <div class="section-title">ประวัติการใช้คูปอง</div>
+  <p class="section-sub">รายการคูปองที่พนักงานยืนยันการใช้เรียบร้อยแล้ว</p>
+
+  <div class="row-between" style="margin-bottom:12px">
+    <span class="notice">ประวัติการใช้สิทธิ์ของคุณ</span>
+    <button class="back" style="padding:0" onclick="loadMemberCouponHistory()">รีเฟรชรายการ ↻</button>
+  </div>
+
   <div id="memberCouponHistoryList"><div class="loader">กำลังโหลดประวัติ...</div></div>
 </section>
 
 <section class="page" id="privilegesPage">
   <button class="back" onclick="showPage('homePage')">‹ กลับหน้าสมาชิก</button>
-  <div class="section-title">สิทธิพิเศษสมาชิก</div><p class="section-sub">ความพิเศษที่ NICHA ตั้งใจมอบให้สมาชิก</p>
-  <div class="panel"><div class="row-between"><div class="panel-title" style="margin:0">สิทธิพิเศษของคุณ</div><div class="tier" id="privilegeTier">รอตรวจสอบ</div></div><div id="memberPrivilegesList"><div class="loader">กำลังโหลดสิทธิพิเศษ...</div></div></div>
+  <div class="section-title">สิทธิพิเศษสมาชิก</div>
+  <p class="section-sub">ความพิเศษที่ NICHA ตั้งใจมอบให้สมาชิก</p>
+
+  <div class="panel">
+    <div class="row-between">
+      <div class="panel-title" style="margin:0">สิทธิพิเศษของคุณ</div>
+      <div class="tier" id="privilegeTier">รอตรวจสอบ</div>
+    </div>
+    <div id="memberPrivilegesList"><div class="loader">กำลังโหลดสิทธิพิเศษ...</div></div>
+  </div>
+
   <p class="notice">สิทธิพิเศษและเงื่อนไขเป็นไปตามประกาศของณิชานวดเพื่อสุขภาพ</p>
 </section>
+
 </main>
 
 <nav class="bottom-nav">
@@ -248,6 +685,7 @@ button{cursor:pointer}
   <button class="nav-btn" data-page="historyPage" onclick="showPage('historyPage')"><b>▤</b>ประวัติแต้ม</button>
   <button class="nav-btn" data-page="memberPage" onclick="showPage('memberPage')"><b>♙</b>ข้อมูลสมาชิก</button>
 </nav>
+
 <div class="toast" id="toast"></div>
 </div>
 
@@ -288,6 +726,7 @@ function showToast(msg){
 /* MEMBER STATUS */
 function isMemberDisabled(){
   if(!member)return false;
+
   const rawStatus=
     member.status ??
     member.memberStatus ??
@@ -295,7 +734,9 @@ function isMemberDisabled(){
     member['สถานะสมาชิก'] ??
     member['สถานะ'] ??
     'เปิดใช้งาน';
+
   const status=String(rawStatus).trim().toLowerCase();
+
   return [
     'ปิด','ปิดใช้งาน','ระงับ','ระงับการใช้งาน',
     'disabled','inactive','suspended','false','0'
@@ -313,7 +754,9 @@ function checkMemberActive(){
     showToast('ไม่พบข้อมูลสมาชิก');
     return false;
   }
+
   if(!isMemberDisabled())return true;
+
   showPageDisabledHome();
   showToast('บัญชีสมาชิกถูกปิดใช้งาน กรุณาติดต่อพนักงาน');
   return false;
@@ -326,8 +769,10 @@ function showPage(id){
     showToast('บัญชีสมาชิกถูกปิดใช้งาน กรุณาติดต่อพนักงาน');
     return;
   }
+
   document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+
   if(id==='rewardsPage'&&!rewardsLoaded)loadRewards();
   if(id==='historyPage'&&!historyLoaded)loadHistory();
   if(id==='memberPage')renderMemberInfo();
@@ -336,6 +781,7 @@ function showPage(id){
   if(id==='usedCouponsPage')loadUsedCoupons(true);
   if(id==='memberCouponHistoryPage')loadMemberCouponHistory();
   if(id==='privilegesPage')loadMemberPrivileges();
+
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -350,6 +796,7 @@ function jsonp(action,params={}){
   return new Promise((resolve,reject)=>{
     const cb='nicha_cb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
     const script=document.createElement('script');
+
     const timer=setTimeout(()=>{
       cleanup();
       reject(new Error('เชื่อมต่อระบบไม่สำเร็จ กรุณาลองใหม่'));
@@ -368,10 +815,12 @@ function jsonp(action,params={}){
 
     const query=new URLSearchParams({...params,action,callback:cb});
     script.src=API_URL+'?'+query.toString();
+
     script.onerror=()=>{
       cleanup();
       reject(new Error('ไม่สามารถเชื่อมต่อฐานข้อมูลได้'));
     };
+
     document.body.appendChild(script);
   });
 }
@@ -424,10 +873,7 @@ async function loadMember(){
   }
 }
 
-/* TIER INFORMATION
-   เกณฑ์ระดับสมาชิกและยอดขั้นต่ำมาจาก Code.gs
-   ใช้ยอดใช้จ่ายสะสมเท่านั้น ไม่ใช้ member.level เดิม
-*/
+/* TIER INFORMATION */
 function tierInfo(){
 
   if(!tierSettingsLoaded || !tierRules.length){
@@ -569,16 +1015,12 @@ async function loadMemberSpending(){
     tierRules=[];
 
     document.getElementById('tierLabel').textContent='ตรวจสอบข้อมูล';
-    document.getElementById('spendText').textContent=
-      'ไม่สามารถโหลดข้อมูลระดับสมาชิกได้';
+    document.getElementById('spendText').textContent='ไม่สามารถโหลดข้อมูลระดับสมาชิกได้';
 
     document.getElementById('needText').textContent='';
     document.getElementById('tierProgress').style.width='0%';
-    document.getElementById('tierProgressText').textContent=
-      'ไม่สามารถตรวจสอบระดับสมาชิกได้';
-
-    document.getElementById('nextTierText').textContent=
-      'กรุณาลองใหม่';
+    document.getElementById('tierProgressText').textContent='ไม่สามารถตรวจสอบระดับสมาชิกได้';
+    document.getElementById('nextTierText').textContent='กรุณาลองใหม่';
 
     const infoTier=document.getElementById('infoTier');
     if(infoTier)infoTier.value='รอตรวจสอบข้อมูล';
@@ -704,6 +1146,7 @@ function renderMemberInfo(){
     money(member.points||0)+' คะแนน';
 
   const privilegeTier=document.getElementById('privilegeTier');
+
   if(privilegeTier){
     privilegeTier.textContent=
       info.verified?info.tier.name:'รอตรวจสอบ';
@@ -1298,9 +1741,7 @@ function renderCouponCards(list,box,emptyTitle){
     const status=String(c.status||'ใช้งาน').trim();
     const couponId=c.couponId||c.id||c['Coupon ID']||'';
 
-    const discount=type==='%'
-      ?'ส่วนลด '+value+'%'
-      :'ส่วนลด '+money(value)+' บาท';
+    const discount=type==='%'?'ส่วนลด '+value+'%':'ส่วนลด '+money(value)+' บาท';
 
     let statusColor='#286044';
 
@@ -1564,9 +2005,7 @@ async function loadMemberCouponHistory(){
       const type=String(item.discountType||'บาท').trim();
       const value=Number(item.discountValue||0);
 
-      discount.textContent=type==='%'
-        ?'ส่วนลด '+money(value)+'%'
-        :'ส่วนลด '+money(value)+' บาท';
+      discount.textContent=type==='%'?'ส่วนลด '+money(value)+'%':'ส่วนลด '+money(value)+' บาท';
 
       const minimum=document.createElement('div');
       minimum.className='notice';
@@ -1733,5 +2172,6 @@ function formatDate(value){
 /* START */
 startApp();
 </script>
+
 </body>
 </html>
