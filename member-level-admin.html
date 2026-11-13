@@ -8,275 +8,618 @@
 <title>NICHA CRM | กำหนดระดับสมาชิก</title>
 
 <style>
-:root {
+*{box-sizing:border-box}
+
+:root{
   --green:#123d32;
   --green2:#1d5143;
   --gold:#c9a45c;
   --bg:#f5f3ed;
-  --white:#fff;
   --text:#26352e;
   --muted:#78847d;
-  --border:#e5e8e3;
 }
-* { box-sizing:border-box; }
-body {
+
+body{
   margin:0;
-  padding:20px;
+  padding:16px;
   background:var(--bg);
   color:var(--text);
   font-family:Arial,"Tahoma",sans-serif;
 }
-.container {
-  max-width:650px;
-  margin:auto;
+
+.container{
+  max-width:700px;
+  margin:20px auto;
 }
-.header {
+
+.header{
   background:linear-gradient(135deg,var(--green),var(--green2));
   color:white;
-  padding:24px;
+  padding:25px 20px;
   border-radius:18px;
-  margin-bottom:20px;
+  margin-bottom:18px;
 }
-.header h2 { margin:0 0 8px; }
-.header p { margin:0; color:#e1e9e3; font-size:14px; }
-.card {
+
+.header h1{
+  margin:0 0 8px;
+  font-size:24px;
+}
+
+.header p{
+  margin:0;
+  color:#e0e9e2;
+  font-size:14px;
+}
+
+.card{
   background:white;
-  border:1px solid var(--border);
-  border-radius:16px;
   padding:20px;
+  border-radius:16px;
   margin-bottom:16px;
+  box-shadow:0 4px 15px #0000000c;
 }
-.card h3 { margin:0 0 16px; color:var(--green); }
-.level {
+
+.card h2{
+  margin:0 0 18px;
+  color:var(--green);
+  font-size:19px;
+}
+
+.level{
   display:flex;
   align-items:center;
   gap:12px;
-  padding:14px 0;
-  border-bottom:1px solid var(--border);
+  padding:16px 0;
+  border-bottom:1px solid #edf0eb;
 }
-.level:last-child { border-bottom:0; }
-.level-name {
-  width:115px;
+
+.level:last-child{
+  border-bottom:0;
+}
+
+.level-info{
+  width:125px;
+  flex-shrink:0;
+}
+
+.level-name{
   font-weight:bold;
-}
-.level-input { flex:1; }
-input {
-  width:100%;
-  padding:12px;
-  border:1px solid #dce2dc;
-  border-radius:10px;
   font-size:16px;
-  outline:none;
 }
-input:focus { border-color:var(--gold); }
-.unit {
+
+.level-desc{
   color:var(--muted);
-  font-size:13px;
+  font-size:12px;
   margin-top:5px;
 }
-button {
+
+.level-input{
+  flex:1;
+}
+
+.level-input input{
   width:100%;
+  padding:13px;
+  border:1px solid #dce3dc;
+  border-radius:10px;
+  font-size:17px;
+  outline:none;
+}
+
+.level-input input:focus{
+  border-color:var(--gold);
+}
+
+.unit{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:5px;
+}
+
+.bronze{color:#a87843}
+.silver{color:#78838b}
+.gold{color:#b58a28}
+.platinum{color:#9272a7}
+
+.note{
+  background:#f5f7f2;
+  border-radius:10px;
+  padding:13px;
+  font-size:13px;
+  line-height:1.8;
+  color:#65736a;
+  margin-top:15px;
+}
+
+button{
   border:0;
-  border-radius:12px;
-  padding:15px;
-  font-size:16px;
+  border-radius:11px;
+  padding:14px 18px;
+  font-size:15px;
   font-weight:bold;
   cursor:pointer;
 }
-.save {
+
+button:disabled{
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.save-btn{
+  width:100%;
   background:var(--green);
   color:white;
 }
-.save:disabled { opacity:.6; cursor:wait; }
-.message {
-  margin-top:14px;
-  padding:12px;
-  border-radius:10px;
+
+.secondary{
+  background:#e8eee9;
+  color:var(--green);
+}
+
+.top-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+}
+
+.message{
   display:none;
+  padding:13px;
+  border-radius:10px;
+  margin-top:14px;
   font-size:14px;
+  line-height:1.6;
 }
-.success { display:block; background:#e8f4eb; color:#24643b; }
-.error { display:block; background:#fff0ed; color:#a33c2d; }
-.note {
+
+.success{
+  display:block;
+  background:#e6f5e9;
+  color:#216b3b;
+}
+
+.error{
+  display:block;
+  background:#ffeded;
+  color:#a52c2c;
+}
+
+.loading{
+  text-align:center;
+  padding:22px 10px;
   color:var(--muted);
-  font-size:13px;
-  line-height:1.7;
 }
-.loading { text-align:center; padding:20px; color:var(--muted); }
-@media(max-width:480px) {
-  body { padding:12px; }
-  .level { gap:8px; }
-  .level-name { width:90px; font-size:14px; }
+
+.hidden{
+  display:none!important;
+}
+
+@media(max-width:480px){
+  body{padding:10px}
+  .container{margin:10px auto}
+  .card{padding:16px}
+  .level-info{width:100px}
+  .level-name{font-size:14px}
+  .level{gap:8px}
+  .top-row button{font-size:13px;padding:10px}
 }
 </style>
 </head>
 
 <body>
+
 <div class="container">
 
   <div class="header">
-    <h2>ตั้งค่าระดับสมาชิก</h2>
-    <p>NICHA CRM · Member Level Management</p>
+    <h1>NICHA CRM</h1>
+    <p>ระบบกำหนดระดับสมาชิกและคะแนนเลื่อนขั้น</p>
   </div>
 
-  <div class="card">
-    <h3>กำหนดคะแนนเลื่อนระดับ</h3>
+  <div id="adminPanel" class="hidden">
 
-    <div id="levelList" class="loading">
-      กำลังโหลดข้อมูลระดับสมาชิก...
+    <div class="card">
+
+      <div class="top-row">
+        <h2 style="margin:0">กำหนดระดับสมาชิก</h2>
+        <button class="secondary" onclick="backToCenter()">
+          ← กลับหน้ารวม
+        </button>
+      </div>
+
+      <div id="levelList" class="loading">
+        กำลังโหลดข้อมูลระดับสมาชิก...
+      </div>
+
+      <div class="note">
+        <strong>หลักการกำหนดระดับสมาชิก</strong><br>
+        คะแนนที่ใช้เลื่อนระดับจะคำนวณจากแต้มสะสมตลอดชีพของสมาชิก
+        ไม่ใช่แต้มคงเหลือที่สมาชิกนำไปแลกรางวัล<br>
+        Bronze เริ่มต้นที่ 0 คะแนน
+      </div>
+
     </div>
 
-    <p class="note">
-      กำหนดคะแนนสะสมตลอดชีพที่สมาชิกต้องมีเพื่อเลื่อนระดับ
-      ระบบจะคำนวณระดับสมาชิกใหม่ตามคะแนนสะสมโดยอัตโนมัติ
-    </p>
+    <div class="card">
+
+      <h2>บันทึกการตั้งค่า</h2>
+
+      <button
+        id="saveBtn"
+        class="save-btn"
+        onclick="saveLevels()">
+        บันทึกระดับสมาชิก
+      </button>
+
+      <button
+        class="secondary"
+        style="width:100%;margin-top:10px"
+        onclick="loadLevels()">
+        รีเฟรชข้อมูล
+      </button>
+
+      <div id="message" class="message"></div>
+
+    </div>
+
   </div>
 
-  <div class="card">
-    <h3>บันทึกการตั้งค่า</h3>
-    <button id="saveBtn" class="save" onclick="saveLevels()">
-      บันทึกระดับสมาชิก
+  <div id="loginError" class="card hidden">
+    <h3>ไม่พบข้อมูลเข้าสู่ระบบ</h3>
+    <p>กรุณาเข้าสู่ระบบพนักงานก่อนใช้งาน</p>
+    <button class="save-btn" onclick="backToCenter()">
+      กลับหน้ารวมพนักงาน
     </button>
-    <div id="message" class="message"></div>
   </div>
 
 </div>
 
 <script>
-/*
-  เปลี่ยน URL นี้เป็น URL เว็บแอป Apps Script
-  ที่ระบบ NICHA CRM ใช้งานจริง
-*/
-const API_URL = 'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
 
+/**************************************************
+ * NICHA CRM
+ * MEMBER LEVEL ADMIN
+ **************************************************/
+
+const API_URL =
+'https://script.google.com/macros/s/AKfycbyTicniXNgmKtRavQPXdaJa8FWU05-_alup6V4A6Ikm5B1rxMDs8Bv4cj5G6ywPt0Pu0Q/exec';
+
+const SESSION_KEY = 'NICHA_STAFF_PIN';
+
+let staffPin = '';
 let levels = [];
 
-function getPin() {
-  return sessionStorage.getItem('NICHA_STAFF_PIN') || '';
+/**************************************************
+ * INITIALIZE
+ **************************************************/
+
+function initializePage(){
+
+  staffPin = sessionStorage.getItem(SESSION_KEY) || '';
+
+  if(!/^\d{6}$/.test(staffPin)){
+    document.getElementById('loginError')
+      .classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('adminPanel')
+    .classList.remove('hidden');
+
+  loadLevels();
 }
 
-function showMessage(message, type) {
-  const box = document.getElementById('message');
-  box.textContent = message;
-  box.className = 'message ' + type;
+/**************************************************
+ * BACK TO STAFF CENTER
+ **************************************************/
+
+function backToCenter(){
+
+  if(
+    window.parent &&
+    window.parent !== window &&
+    typeof window.parent.backToMenu === 'function'
+  ){
+    window.parent.backToMenu();
+  }else{
+    window.location.href = 'staff-center.html';
+  }
+
 }
 
-async function api(action, data = {}) {
-  const response = await fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify({
-      action: action,
-      pin: getPin(),
-      ...data
+/**************************************************
+ * API CONNECTION
+ * ใช้รูปแบบเดียวกับ rewards-admin.html
+ **************************************************/
+
+async function api(action,data={}){
+
+  if(!staffPin){
+    throw new Error(
+      'ไม่พบข้อมูลเข้าสู่ระบบ กรุณากลับไปหน้ารวม'
+    );
+  }
+
+  const response = await fetch(API_URL,{
+    method:'POST',
+    headers:{
+      'Content-Type':'text/plain;charset=utf-8'
+    },
+    body:JSON.stringify({
+      ...data,
+      action:action
     })
   });
 
-  return await response.json();
-}
-
-function renderLevels() {
-  const list = document.getElementById('levelList');
-
-  if (!levels.length) {
-    list.textContent = 'ไม่พบข้อมูลระดับสมาชิก';
-    return;
+  if(!response.ok){
+    throw new Error(
+      'เชื่อมต่อเซิร์ฟเวอร์ไม่สำเร็จ HTTP ' +
+      response.status
+    );
   }
 
-  list.innerHTML = '';
+  const raw = await response.text();
 
-  levels.forEach((level, index) => {
-    const row = document.createElement('div');
-    row.className = 'level';
+  try{
+    return JSON.parse(raw);
+  }catch(error){
+    console.error('API RESPONSE:',raw);
 
-    const name = document.createElement('div');
-    name.className = 'level-name';
-    name.textContent = level.name;
+    throw new Error(
+      'เซิร์ฟเวอร์ส่งข้อมูลไม่ถูกต้อง กรุณาตรวจสอบ URL และ Apps Script'
+    );
+  }
 
-    const wrapper = document.createElement('div');
-    wrapper.className = 'level-input';
-
-    const input = document.createElement('input');
-    input.type = 'number';
-    input.min = '0';
-    input.step = '1';
-    input.value = level.min;
-    input.id = 'level-' + index;
-
-    const unit = document.createElement('div');
-    unit.className = 'unit';
-    unit.textContent = 'คะแนนสะสมตลอดชีพ';
-
-    wrapper.appendChild(input);
-    wrapper.appendChild(unit);
-    row.appendChild(name);
-    row.appendChild(wrapper);
-    list.appendChild(row);
-  });
 }
 
-async function loadLevels() {
-  try {
-    const result = await api('getLevelSettings');
+/**************************************************
+ * MESSAGE
+ **************************************************/
 
-    if (!result.success) {
-      throw new Error(result.message || 'โหลดข้อมูลไม่สำเร็จ');
+function showMessage(message,isError=false){
+
+  const box = document.getElementById('message');
+
+  box.textContent = message;
+  box.className =
+    'message ' + (isError ? 'error' : 'success');
+
+}
+
+/**************************************************
+ * LOAD LEVEL SETTINGS
+ **************************************************/
+
+async function loadLevels(){
+
+  const list = document.getElementById('levelList');
+
+  list.textContent = 'กำลังโหลดข้อมูลระดับสมาชิก...';
+  list.className = 'loading';
+
+  document.getElementById('message').style.display='none';
+
+  try{
+
+    const result = await api(
+      'getLevelSettings',
+      {pin:staffPin}
+    );
+
+    if(!result.success){
+      throw new Error(
+        result.message || 'โหลดข้อมูลไม่สำเร็จ'
+      );
     }
 
     levels = result.levels || [];
+
+    if(levels.length !== 4){
+      throw new Error(
+        'ข้อมูลระดับสมาชิกไม่ครบ 4 ระดับ'
+      );
+    }
+
     renderLevels();
 
-  } catch (error) {
-    document.getElementById('levelList').textContent =
+  }catch(error){
+
+    list.textContent =
       'โหลดข้อมูลไม่สำเร็จ: ' + error.message;
+
+    showMessage(error.message,true);
+
   }
+
 }
 
-async function saveLevels() {
-  const button = document.getElementById('saveBtn');
+/**************************************************
+ * RENDER LEVELS
+ **************************************************/
 
-  const updatedLevels = levels.map((level, index) => ({
-    name: level.name,
-    min: Number(document.getElementById('level-' + index).value)
-  }));
+function renderLevels(){
 
-  if (updatedLevels.some(level =>
-    !Number.isInteger(level.min) || level.min < 0
-  )) {
-    showMessage('กรุณากรอกคะแนนเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป', 'error');
-    return;
+  const list = document.getElementById('levelList');
+
+  list.innerHTML = '';
+  list.className = '';
+
+  const styles = [
+    'bronze',
+    'silver',
+    'gold',
+    'platinum'
+  ];
+
+  levels.forEach((level,index)=>{
+
+    const row = document.createElement('div');
+    row.className = 'level';
+
+    const info = document.createElement('div');
+    info.className = 'level-info';
+
+    const name = document.createElement('div');
+    name.className =
+      'level-name ' + styles[index];
+
+    name.textContent = level.name;
+
+    const desc = document.createElement('div');
+    desc.className = 'level-desc';
+
+    desc.textContent =
+      index === 0 ? 'ระดับเริ่มต้น' : 'คะแนนขั้นต่ำ';
+
+    info.append(name,desc);
+
+    const inputWrap = document.createElement('div');
+    inputWrap.className = 'level-input';
+
+    const input = document.createElement('input');
+
+    input.type = 'number';
+    input.min = '0';
+    input.step = '1';
+    input.id = 'level-' + index;
+    input.value = level.min;
+
+    if(index===0){
+      input.readOnly = true;
+      input.style.background = '#f1f3ef';
+    }
+
+    const unit = document.createElement('div');
+    unit.className = 'unit';
+    unit.textContent = 'แต้มสะสมตลอดชีพ';
+
+    inputWrap.append(input,unit);
+    row.append(info,inputWrap);
+
+    list.appendChild(row);
+
+  });
+
+}
+
+/**************************************************
+ * VALIDATE LEVELS
+ **************************************************/
+
+function collectLevels(){
+
+  const updated = levels.map((level,index)=>{
+
+    const input = document.getElementById('level-'+index);
+
+    return {
+      name:level.name,
+      min:Number(input.value)
+    };
+
+  });
+
+  if(updated[0].min !== 0){
+    throw new Error(
+      'ระดับ Bronze ต้องเริ่มต้นที่ 0 คะแนน'
+    );
   }
 
-  for (let i = 1; i < updatedLevels.length; i++) {
-    if (updatedLevels[i].min <= updatedLevels[i - 1].min) {
-      showMessage('คะแนนของแต่ละระดับต้องเพิ่มขึ้นตามลำดับ', 'error');
-      return;
+  for(let i=0;i<updated.length;i++){
+
+    if(
+      !Number.isSafeInteger(updated[i].min) ||
+      updated[i].min < 0
+    ){
+      throw new Error(
+        'กรุณากรอกคะแนนเป็นจำนวนเต็มตั้งแต่ 0 ขึ้นไป'
+      );
     }
+
+    if(i>0 && updated[i].min <= updated[i-1].min){
+      throw new Error(
+        'คะแนนแต่ละระดับต้องเพิ่มขึ้นตามลำดับ'
+      );
+    }
+
+  }
+
+  return updated;
+
+}
+
+/**************************************************
+ * SAVE LEVEL SETTINGS
+ **************************************************/
+
+async function saveLevels(){
+
+  const button = document.getElementById('saveBtn');
+
+  let updatedLevels;
+
+  try{
+
+    updatedLevels = collectLevels();
+
+  }catch(error){
+
+    showMessage(error.message,true);
+    return;
+
+  }
+
+  if(!confirm(
+    'ยืนยันบันทึกคะแนนเลื่อนระดับสมาชิกหรือไม่?'
+  )){
+    return;
   }
 
   button.disabled = true;
   button.textContent = 'กำลังบันทึก...';
 
-  try {
-    const result = await api('saveLevelSettings', {
-      levels: updatedLevels
-    });
+  try{
 
-    if (!result.success) {
-      throw new Error(result.message || 'บันทึกไม่สำเร็จ');
+    const result = await api(
+      'saveLevelSettings',
+      {
+        pin:staffPin,
+        levels:updatedLevels
+      }
+    );
+
+    if(!result.success){
+      throw new Error(
+        result.message || 'บันทึกไม่สำเร็จ'
+      );
     }
 
     levels = updatedLevels;
-    showMessage('บันทึกระดับสมาชิกเรียบร้อยแล้ว', 'success');
 
-  } catch (error) {
-    showMessage(error.message, 'error');
-  } finally {
+    showMessage(
+      result.message || 'บันทึกระดับสมาชิกเรียบร้อยแล้ว'
+    );
+
+  }catch(error){
+
+    showMessage(error.message,true);
+
+  }finally{
+
     button.disabled = false;
     button.textContent = 'บันทึกระดับสมาชิก';
+
   }
+
 }
 
-loadLevels();
+/**************************************************
+ * START
+ **************************************************/
+
+initializePage();
+
 </script>
+
 </body>
 </html>
