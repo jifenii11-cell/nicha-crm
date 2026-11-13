@@ -131,7 +131,6 @@ button{cursor:pointer}
       <div class="card-head"><div class="card-label">NICHA MEMBER CARD</div><div class="tier" id="tierLabel">BRONZE</div></div>
       <div class="member-name" id="memberName">สมาชิก NICHA</div>
       <div class="member-phone" id="memberPhone">—</div>
-
       <div class="points-row">
         <div>
           <div class="card-label">YOUR POINTS</div>
@@ -144,7 +143,6 @@ button{cursor:pointer}
           <div class="visit-mini-caption">ครั้งสะสม</div>
         </div>
       </div>
-
       <div class="card-foot">
         <div class="progress-text"><span id="tierProgressText">ระดับสมาชิก</span><span id="nextTierText">—</span></div>
         <div class="progress-line"><div class="progress-fill" id="tierProgress"></div></div>
@@ -429,36 +427,43 @@ async function loadMember(){
   }
 }
 
-/* TIER INFORMATION */
+/* TIER INFORMATION
+   ใช้ยอดใช้จ่ายสะสมเท่านั้น ไม่ใช้ member.level เดิม
+   เพราะระดับเดิมอาจถูกคำนวณจากคะแนนสะสม
+*/
 function tierInfo(){
   const rawSpend=
     member?.lifetimeSpend ??
     member?.totalSpend ??
     member?.totalSpent;
 
-  const spend=Number(rawSpend);
-
-  if(rawSpend!==undefined&&rawSpend!==null&&rawSpend!==''&&Number.isFinite(spend)&&spend>=0){
-    let idx=0;
-
-    for(let i=0;i<tierRules.length;i++){
-      if(spend>=tierRules[i].min)idx=i;
-    }
-
+  if(
+    rawSpend===undefined ||
+    rawSpend===null ||
+    rawSpend==='' ||
+    !Number.isFinite(Number(rawSpend)) ||
+    Number(rawSpend)<0
+  ){
     return {
-      tier:tierRules[idx],
-      spend,
-      verified:true
+      tier:tierRules[0],
+      spend:null,
+      verified:false
     };
   }
 
-  const returned=String(member?.level||'BRONZE').toUpperCase();
-  const matched=tierRules.find(t=>t.name===returned)||tierRules[0];
+  const spend=Number(rawSpend);
+  let idx=0;
+
+  for(let i=0;i<tierRules.length;i++){
+    if(spend>=tierRules[i].min){
+      idx=i;
+    }
+  }
 
   return {
-    tier:matched,
-    spend:null,
-    verified:false
+    tier:tierRules[idx],
+    spend,
+    verified:true
   };
 }
 
@@ -477,22 +482,36 @@ async function loadMemberSpending(){
       throw new Error(data?.message||'โหลดข้อมูลยอดใช้จ่ายไม่สำเร็จ');
     }
 
-    const spend=Number(data.totalSpend);
+    const rawSpend=
+      data.totalSpend ??
+      data.lifetimeSpend ??
+      data.totalSpent;
 
-    if(!Number.isFinite(spend)||spend<0){
-      throw new Error('ยอดใช้จ่ายไม่ถูกต้อง');
+    if(
+      rawSpend===undefined ||
+      rawSpend===null ||
+      rawSpend==='' ||
+      !Number.isFinite(Number(rawSpend)) ||
+      Number(rawSpend)<0
+    ){
+      throw new Error('ไม่พบยอดใช้จ่ายสะสมที่ถูกต้อง');
     }
 
+    const spend=Number(rawSpend);
+
     member.lifetimeSpend=spend;
+    member.totalSpend=spend;
 
     renderTierSpending();
     renderMemberInfo();
 
     console.log('NICHA CRM ยอดใช้จ่ายสะสมจริง:',spend);
+    console.log('NICHA CRM ระดับสมาชิก:',tierInfo().tier.name);
 
   }catch(error){
     console.error('โหลดข้อมูลยอดใช้จ่ายผิดพลาด:',error);
 
+    document.getElementById('tierLabel').textContent='ตรวจสอบข้อมูล';
     document.getElementById('spendText').textContent=
       'ไม่สามารถโหลดข้อมูลยอดใช้จ่ายได้';
 
@@ -500,6 +519,12 @@ async function loadMemberSpending(){
     document.getElementById('tierProgress').style.width='0%';
     document.getElementById('tierProgressText').textContent='ไม่สามารถตรวจสอบยอดได้';
     document.getElementById('nextTierText').textContent='กรุณาลองใหม่';
+
+    const infoTier=document.getElementById('infoTier');
+    if(infoTier)infoTier.value='รอตรวจสอบยอดใช้จ่าย';
+
+    const privilegeTier=document.getElementById('privilegeTier');
+    if(privilegeTier)privilegeTier.textContent='รอตรวจสอบ';
   }
 }
 
@@ -507,9 +532,8 @@ async function loadMemberSpending(){
 function renderTierSpending(){
   const info=tierInfo();
 
-  document.getElementById('tierLabel').textContent=info.tier.name;
-
   if(!info.verified){
+    document.getElementById('tierLabel').textContent='รอตรวจสอบ';
     document.getElementById('tierProgress').style.width='0%';
     document.getElementById('tierProgressText').textContent='ระดับสมาชิก';
     document.getElementById('nextTierText').textContent='รอตรวจสอบยอดใช้จ่าย';
@@ -517,6 +541,8 @@ function renderTierSpending(){
     document.getElementById('needText').textContent='';
     return;
   }
+
+  document.getElementById('tierLabel').textContent=info.tier.name;
 
   const next=info.tier.next;
 
@@ -609,11 +635,19 @@ function renderMemberInfo(){
   document.getElementById('infoPhone').value=
     member.phone||'';
 
+  const info=tierInfo();
+
   document.getElementById('infoTier').value=
-    tierInfo().tier.name;
+    info.verified?info.tier.name:'กำลังตรวจสอบยอดใช้จ่าย';
 
   document.getElementById('infoPoints').value=
     money(member.points||0)+' คะแนน';
+
+  const privilegeTier=document.getElementById('privilegeTier');
+  if(privilegeTier){
+    privilegeTier.textContent=
+      info.verified?info.tier.name:'รอตรวจสอบ';
+  }
 }
 
 /* REGISTER */
@@ -639,7 +673,7 @@ async function registerMember(){
     }
 
     member=data.member||{
-      name,phone,points:0,level:'BRONZE',status:'เปิดใช้งาน'
+      name,phone,points:0,status:'เปิดใช้งาน'
     };
 
     document.getElementById('registerBox').classList.add('hidden');
@@ -1544,7 +1578,9 @@ async function loadMemberPrivileges(){
   }
 
   box.innerHTML='<div class="loader">กำลังโหลดสิทธิพิเศษ...</div>';
-  tierElement.textContent=tierInfo().tier.name;
+
+  const info=tierInfo();
+  tierElement.textContent=info.verified?info.tier.name:'รอตรวจสอบยอด';
 
   try{
     const data=await jsonp('getMemberPrivileges',{lineUserId});
