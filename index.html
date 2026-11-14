@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#123d32">
+<meta name="theme-color" content="#687054">
 <title>NICHA CRM | สมาชิก</title>
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
@@ -425,6 +425,133 @@ button{cursor:pointer}
 @media(min-width:400px){
   .quick{min-height:120px}
 }
+
+/* ===== NICHA LUXURY OLIVE & CHAMPAGNE THEME ===== */
+:root{
+  --green:#687054;
+  --green2:#7b8062;
+  --gold:#b9a071;
+  --cream:#f5ecdc;
+  --ink:#505542;
+  --muted:#898875;
+  --line:#d9c9a8;
+}
+body{
+  background:#687054;
+  color:var(--ink);
+}
+.app{
+  background:#f5ecdc;
+  box-shadow:0 0 35px #30362535;
+}
+.top{
+  background:
+    radial-gradient(ellipse at 8% 15%,#a4a17a30 0 2%,transparent 22%),
+    radial-gradient(ellipse at 96% 82%,#c5b58a24 0 2%,transparent 24%),
+    linear-gradient(135deg,#70785a,#596348 58%,#73785b);
+  color:#f7efdf;
+  border-radius:0 0 26px 26px;
+  border-bottom:1px solid #c8b17e;
+  padding:25px 20px 28px;
+}
+.brand-name{color:#e7d2a5;font-family:Georgia,serif;font-size:18px;letter-spacing:2.5px}
+.brand-sub{color:#f2eadb}
+.status{color:#ead9b5}
+.content{background:#f5ecdc}
+.section-title,.panel-title{color:#555b45}
+.section-sub{color:#8b8977}
+.member-card{
+  position:relative;
+  overflow:hidden;
+  background:
+    radial-gradient(ellipse at 100% 20%,#b6aa8140 0 2%,transparent 26%),
+    radial-gradient(ellipse at 0% 100%,#c6b78d35 0 2%,transparent 23%),
+    linear-gradient(135deg,#fbf5e9,#f1e6d3);
+  color:#505542;
+  border:1px solid #bda878;
+  border-radius:25px;
+  padding:23px;
+  box-shadow:inset 0 0 0 4px #f5ecdc,inset 0 0 0 5px #d8c49a,0 12px 25px #343b2830;
+}
+.card-label,.tier,.visit-mini-label{color:#9b875c}
+.tier{border-color:#b9a071;background:#f8f1e5;color:#6a684f}
+.member-name{color:#515743;font-family:Georgia,"Noto Serif Thai",serif;font-size:27px}
+.member-phone,.points-caption,.visit-mini-caption{color:#777762}
+.points-number,.visit-mini-number{color:#596348}
+.visit-mini{border-left:1px solid #d7c8a9}
+.card-foot{border-top:1px solid #d8c9aa}
+.progress-text{color:#696b55}
+.progress-line{background:#e5dac3}
+.progress-fill{background:#687054}
+.quick{
+  background:linear-gradient(145deg,#fbf5e9,#f0e5d2);
+  color:#555b45;
+  border:1px solid #c5ad7d;
+  border-radius:19px;
+  box-shadow:0 5px 14px #4b503f18,inset 0 0 0 3px #fbf5e9,inset 0 0 0 4px #dfcfad;
+}
+.quick::before{background:linear-gradient(90deg,#b49a68,#ead9b3,#b49a68);height:3px}
+.quick::after{border-color:#b6a47755}
+.quick .ico{
+  border:1px solid #c5ad7d;
+  background:linear-gradient(145deg,#fffaf0,#e8dcc4);
+  color:#8d805d;
+  box-shadow:0 3px 10px #766b4b18;
+}
+.quick span:last-child{color:#555b45}
+.panel,.reward,.visit-reward{
+  background:#fbf6eb;
+  border:1px solid #d9c9a8;
+  border-radius:18px;
+  box-shadow:0 4px 12px #555b4510;
+}
+.item{border-bottom-color:#e5dac5}
+.item-title,.visit-history-title{color:#555b45}
+.item-meta,.visit-history-meta{color:#898875}
+.btn{background:#687054;color:#fff8e9}
+.btn.gold{background:#c2aa79;color:#4e503d}
+.back{color:#687054}
+.field label{color:#666a53}
+.field input{background:#fffaf1;border-color:#d9c9a8;color:#505542}
+.notice{color:#898875}
+.reward h3,.visit-reward h3,.privilege-name{color:#555b45}
+.reward .cost,.privilege-condition,.coupon-tag{color:#9b875c}
+.coupon-box{
+  background:#fbf5e9;
+  border-color:#b9a071;
+  color:#505542;
+}
+.coupon-box h3{color:#555b45}
+.coupon-discount{color:#9b875c}
+.coupon-nav-btn{background:#f8f0e2;color:#786b4b;border-color:#c5ad7d}
+.privilege{border-bottom-color:#e5dac5}
+.privilege-detail{color:#898875}
+.visit-card{
+  background:linear-gradient(135deg,#70785a,#596348);
+  color:#f8f0e2;
+  border:1px solid #c5ad7d;
+  box-shadow:0 10px 24px #343b2825;
+}
+.visit-label{color:#e8d6ae}
+.visit-number{color:#f4e5c5}
+.visit-caption{color:#f0eadc}
+.visit-progress{background:#ffffff45}
+.visit-progress-fill{background:#e5d2a8}
+.visit-status{background:#eee5d3;color:#766b4b}
+.visit-status.ready{background:#e8eadc;color:#586348}
+.bottom-nav{
+  background:#f5ecdc;
+  border-top:1px solid #cdbb96;
+  box-shadow:0 -5px 18px #4b503f12;
+}
+.nav-btn{color:#9a957f}
+.nav-btn.active{color:#687054}
+.toast{background:#596348;color:#fff8e9}
+.member-disabled-banner{background:#f8e9e2;border-color:#d7a89a;color:#8d4037}
+@media(max-width:360px){
+  .member-card{padding:19px}
+}
+
 </style>
 </head>
 
