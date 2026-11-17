@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -9,72 +10,52 @@
 <style>
 *{box-sizing:border-box}
 body{
-  margin:0;
-  padding:20px;
-  background:#f1f7f2;
-  color:#244333;
-  font-family:Arial,sans-serif;
+  margin:0;padding:20px;background:#f1f7f2;
+  color:#244333;font-family:Arial,sans-serif;
 }
 .container{max-width:1100px;margin:auto}
 .header{
-  background:#123d32;
-  color:white;
-  padding:22px;
-  border-radius:16px;
-  margin-bottom:18px;
+  background:#123d32;color:white;padding:22px;
+  border-radius:16px;margin-bottom:18px;
 }
 .header h2{margin:0 0 8px}
 .card{
-  background:white;
-  padding:18px;
-  border-radius:14px;
-  margin-bottom:15px;
-  box-shadow:0 2px 10px #0000000b;
+  background:white;padding:18px;border-radius:14px;
+  margin-bottom:15px;box-shadow:0 2px 10px #0000000b;
 }
 input{
-  width:100%;
-  padding:13px;
-  border:1px solid #ccd9cf;
-  border-radius:9px;
-  font-size:15px;
+  width:100%;padding:13px;border:1px solid #ccd9cf;
+  border-radius:9px;font-size:15px;
 }
 button{
-  border:0;
-  padding:10px 14px;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
+  border:0;padding:10px 14px;border-radius:8px;
+  cursor:pointer;font-weight:bold;
 }
 .refresh{background:#28734b;color:white}
 .disable{background:#ffe5e5;color:#a32626}
 .enable{background:#dff5e5;color:#176b38}
-table{width:100%;border-collapse:collapse;min-width:850px}
+table{width:100%;border-collapse:collapse;min-width:950px}
 th,td{
-  padding:12px 9px;
-  border-bottom:1px solid #e5ece6;
-  text-align:left;
-  font-size:14px;
+  padding:12px 9px;border-bottom:1px solid #e5ece6;
+  text-align:left;font-size:14px;
 }
 th{background:#edf5ee}
 .table-wrap{overflow-x:auto}
 .status{
-  padding:5px 9px;
-  border-radius:20px;
-  font-size:12px;
-  font-weight:bold;
+  padding:5px 9px;border-radius:20px;
+  font-size:12px;font-weight:bold;
 }
 .active{background:#dcf5e3;color:#176b38}
 .inactive{background:#ffe1e1;color:#a32626}
+.visit-count{
+  display:inline-block;min-width:42px;text-align:center;
+  padding:6px 10px;border-radius:20px;
+  background:#edf5ee;color:#176b38;font-weight:bold;
+}
 .summary{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
 }
-.summary div{
-  background:#edf5ee;
-  padding:15px;
-  border-radius:10px;
-}
+.summary div{background:#edf5ee;padding:15px;border-radius:10px}
 .summary strong{display:block;font-size:23px;margin-top:5px}
 #message{margin:12px 0;color:#28734b}
 @media(max-width:600px){
@@ -114,6 +95,7 @@ th{background:#edf5ee}
         <tr>
           <th>ลำดับ</th>
           <th>ชื่อสมาชิก</th>
+          <th>จำนวนครั้งสะสม</th>
           <th>เบอร์โทร</th>
           <th>แต้มคงเหลือ</th>
           <th>แต้มสะสม</th>
@@ -123,7 +105,7 @@ th{background:#edf5ee}
         </tr>
       </thead>
       <tbody id="memberList">
-        <tr><td colspan="8">กำลังโหลดข้อมูล...</td></tr>
+        <tr><td colspan="9">กำลังโหลดข้อมูล...</td></tr>
       </tbody>
     </table>
   </div>
@@ -185,7 +167,7 @@ async function loadMembers(){
   }catch(error){
     showMessage(error.message);
     document.getElementById('memberList').innerHTML =
-      '<tr><td colspan="8">'+escapeHTML(error.message)+'</td></tr>';
+      '<tr><td colspan="9">'+escapeHTML(error.message)+'</td></tr>';
   }
 }
 
@@ -211,18 +193,20 @@ function renderMembers(){
   const tbody=document.getElementById('memberList');
 
   if(!filtered.length){
-    tbody.innerHTML='<tr><td colspan="8">ไม่พบข้อมูลสมาชิก</td></tr>';
+    tbody.innerHTML='<tr><td colspan="9">ไม่พบข้อมูลสมาชิก</td></tr>';
     return;
   }
 
   tbody.innerHTML=filtered.map((m,index)=>{
     const enabled=isActive(m);
     const lineId=m.lineUserId || m.lineUserID || '';
+    const visitCount=Math.max(0,Number(m.visitCount)||0);
 
     return `
       <tr>
         <td>${index+1}</td>
         <td>${escapeHTML(m.name || '-')}</td>
+        <td><span class="visit-count">${visitCount.toLocaleString('th-TH')} ครั้ง</span></td>
         <td>${escapeHTML(m.phone || '-')}</td>
         <td>${Number(m.remainingPoints || 0).toLocaleString()}</td>
         <td>${Number(m.lifetimePoints || 0).toLocaleString()}</td>
