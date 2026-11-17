@@ -133,7 +133,7 @@ document.getElementById('frameStatus').textContent='กำลังเปิด�
 document.querySelectorAll('.menu button').forEach(btn=>btn.classList.toggle('active',btn.dataset.page===file));
 const frame=document.getElementById('appFrame');
 frame.onload=function(){if(currentPage!==file)return;document.getElementById('frameStatus').textContent='เปิดหน้า '+info.title+' แล้ว';};
-frame.src=BASE_URL+file;
+frame.src=BASE_URL+file+'?v='+Date.now();
 }
 function backToMenu(){
 document.getElementById('pagePanel').classList.add('hidden');
